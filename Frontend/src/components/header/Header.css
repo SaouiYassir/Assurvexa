@@ -1,0 +1,358 @@
+
+/* =========================================
+   ASSURVEXA — HEADER
+   Uses global variables from index.css
+   ========================================= */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+
+  width: 100%;
+  min-height: var(--header-height);
+  padding: 0 max(3rem, calc((100vw - var(--container-width)) / 2));
+
+  background: var(--color-bg);
+  border-bottom: var(--border);
+
+  font-family: var(--font-body);
+}
+
+/* Logo */
+.logo {
+  flex-shrink: 0;
+
+  color: var(--color-ink);
+  font-family: var(--font-heading);
+  font-size: 1.65rem;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+
+  transition: color var(--transition-base);
+}
+
+.logo:hover {
+  color: var(--color-bronze);
+}
+
+.logo-dot {
+  color: var(--color-bronze);
+}
+
+/* Desktop Navigation */
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+
+  flex: 1;
+}
+
+.nav-links a,
+.nav a {
+  position: relative;
+
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+
+  transition: color var(--transition-base);
+}
+
+.nav-links a::after,
+.nav > a::after {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+
+  height: 1px;
+  background: var(--color-bronze);
+
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.nav-links a:hover,
+.nav-links a.active,
+.nav a:hover {
+  color: var(--color-bronze);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after,
+.nav > a:hover::after {
+  transform: scaleX(1);
+}
+
+/* Authentication Buttons */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.btn-login,
+.btn-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 0.7rem 1.2rem;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color var(--transition-base),
+    background var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.btn-login {
+  color: var(--color-ink);
+  border-color: var(--color-border);
+  background: transparent;
+}
+
+.btn-login:hover {
+  color: var(--color-bronze);
+  border-color: var(--color-bronze);
+}
+
+.btn-register {
+  color: var(--color-white);
+  border-color: var(--color-bronze);
+  background: var(--color-bronze);
+}
+
+.btn-register:hover {
+  color: var(--color-white);
+  border-color: var(--color-bronze-dark);
+  background: var(--color-bronze-dark);
+}
+
+/* Mobile Menu Toggle */
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+
+  cursor: pointer;
+  transition: border-color var(--transition-base);
+}
+
+.hamburger:hover {
+  border-color: var(--color-bronze);
+}
+
+.hamburger .bar {
+  display: block;
+
+  width: 20px;
+  height: 1.5px;
+
+  background: var(--color-ink);
+  transform-origin: center;
+
+  transition:
+    transform var(--transition-base),
+    opacity var(--transition-fast),
+    background var(--transition-base);
+}
+
+.hamburger.active .bar {
+  background: var(--color-bronze);
+}
+
+.hamburger.active .bar:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* Mobile Navigation Panel */
+.nav {
+  display: none;
+}
+
+/* Tablet and Mobile */
+@media (max-width: 1024px) {
+  .header {
+    gap: var(--space-4);
+    padding-inline: 2rem;
+  }
+
+  .nav-links {
+    gap: 1.25rem;
+  }
+
+  .logo {
+    font-size: 1.45rem;
+  }
+
+  .btn-login,
+  .btn-register {
+    padding-inline: 0.9rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .header {
+    min-height: var(--header-height);
+    padding-inline: 1.5rem;
+  }
+
+  /* Hide desktop navigation and desktop auth buttons */
+  .header > .nav-links,
+  .header > .auth-buttons {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1002;
+  }
+
+  /* Mobile dropdown */
+  .nav {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    z-index: 1001;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+
+    max-height: calc(100dvh - var(--header-height));
+    padding: 1rem 1.5rem 1.5rem;
+
+    overflow-y: auto;
+
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(-8px);
+
+    transition:
+      opacity var(--transition-base),
+      transform var(--transition-base),
+      visibility var(--transition-base);
+  }
+
+  .nav.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav > a {
+    position: relative;
+    display: block;
+
+    padding: 1rem 0;
+
+    border-bottom: 1px solid var(--color-border);
+
+    color: var(--color-ink);
+    font-size: var(--text-base);
+  }
+
+  .nav > a::after {
+    bottom: 0;
+  }
+
+  .nav > a:last-of-type {
+    border-bottom: none;
+  }
+
+  /* Auth buttons inside mobile navigation */
+  .nav .auth-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+
+    padding-top: 1.5rem;
+  }
+
+  .nav .btn-login,
+  .nav .btn-register {
+    width: 100%;
+    min-height: 46px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Small Phones */
+@media (max-width: 480px) {
+  .header {
+    padding-inline: 1rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .nav {
+    padding-inline: 1rem;
+  }
+
+  .nav .auth-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .header *,
+  .header *::before,
+  .header *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
