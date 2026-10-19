@@ -139,7 +139,7 @@
 }
 
 .btn-register {
-  color: var(--color-white);
+  color: var(--color-white) !important;
   border-color: var(--color-bronze);
   background: var(--color-bronze);
 }
