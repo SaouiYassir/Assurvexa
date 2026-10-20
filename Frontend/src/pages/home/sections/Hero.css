@@ -15,7 +15,7 @@
       rgba(245, 242, 238, 0.75) 40%,
       rgba(245, 242, 238, 0.3) 100%
     ),
-    url("../../../../public/hero.jpg");
+    url("/hero.jpg");
 
   background-size: cover;
   background-position: center;
