@@ -1,0 +1,177 @@
+/* =========================================
+   ASSURVEXA — FOOTER
+   ========================================= */
+
+.site-footer {
+  --ft-ink: var(--color-ink, #232220);
+  --ft-ink-soft: var(--color-ink-soft, #7a7672);
+  --ft-border: var(--color-border, #d1ccc4);
+  --ft-accent: #8c7355;
+  --ft-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  padding: 5rem 1.5rem 2.5rem;
+  background: transparent;
+  color: var(--ft-ink-soft);
+  font-family: var(--font-body);
+  box-sizing: border-box;
+}
+
+.site-footer *,
+.site-footer *::before,
+.site-footer *::after {
+  box-sizing: inherit;
+}
+
+.footer-inner {
+  max-width: 1330px;
+  margin: 0 auto;
+}
+
+/* ---------- Grid ---------- */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.8fr repeat(3, 1fr);
+  gap: 2rem;
+  padding-bottom: 4.5rem;
+  border-bottom: 1px solid var(--ft-border);
+}
+
+/* ---------- Brand ---------- */
+.footer-logo {
+  display: inline-block;
+  font-family: var(--font-heading, serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ft-ink);
+}
+
+.footer-tagline {
+  max-width: 17rem;
+  margin: 1.4rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  color: var(--ft-ink-soft);
+}
+
+/* ---------- Columns ---------- */
+.footer-heading {
+  margin: 0 0 1.6rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ft-ink);
+}
+
+.footer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-link {
+  position: relative;
+  display: inline-block;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: left;
+  text-decoration: none;
+  color: var(--ft-ink-soft);
+  cursor: pointer;
+  transition: color 0.25s var(--ft-ease);
+}
+
+/* Hairline underline that draws in on hover */
+.footer-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ft-ease);
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--ft-ink);
+}
+
+.footer-link:hover::after,
+.footer-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.footer-link:focus-visible,
+.footer-logo:focus-visible {
+  outline: 1px solid var(--ft-accent);
+  outline-offset: 4px;
+}
+
+/* ---------- Bottom bar ---------- */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 2.5rem;
+  font-size: 0.85rem;
+  color: var(--ft-ink-soft);
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 3rem;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-footer {
+    padding-top: 3.5rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    padding-bottom: 3rem;
+  }
+
+  .footer-col:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer .footer-link,
+  .site-footer .footer-link::after {
+    transition: none;
+  }
+}
