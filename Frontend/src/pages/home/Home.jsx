@@ -1,6 +1,7 @@
 import Hero from "./sections/Hero";
 import Stats from "./sections/Stats";
 import Cover from "./sections/Cover";
+import Philosophy from "./sections/Philosophy";
 
 function Home() {
     return (
@@ -8,6 +9,7 @@ function Home() {
             <Hero />
             <Stats />
             <Cover />
+            <Philosophy />
         </main>
     )
 }
