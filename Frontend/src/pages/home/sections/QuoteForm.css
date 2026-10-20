@@ -1,0 +1,188 @@
+/* =========================================
+   ASSURVEXA — QUOTE FORM
+   ========================================= */
+
+.quote-form {
+  --qf-ink: var(--color-ink, #232220);
+  --qf-ink-soft: var(--color-ink-soft, #7a7672);
+  --qf-border: var(--color-border, #d1ccc4);
+  --qf-accent: #8c7355;
+  --qf-accent-deep: #725d43;
+  --qf-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  max-width: 500px;
+  padding: 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.quote-form *,
+.quote-form *::before,
+.quote-form *::after {
+  box-sizing: inherit;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2.25rem;
+}
+
+/* ---------- Eyebrow labels ---------- */
+.form-label {
+  margin-bottom: 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--qf-ink-soft);
+}
+
+/* ---------- Interest tags ---------- */
+.interest-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-btn {
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: 1px solid var(--qf-border);
+  color: var(--qf-ink);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.25s var(--qf-ease),
+    background-color 0.25s var(--qf-ease),
+    color 0.25s var(--qf-ease);
+}
+
+.tag-btn:hover {
+  border-color: var(--qf-ink);
+}
+
+/* Selected: quiet inversion, still very restrained */
+.tag-btn.active {
+  background-color: var(--qf-ink);
+  border-color: var(--qf-ink);
+  color: #fff;
+}
+
+/* ---------- Underline inputs & select ---------- */
+.underline-input,
+.underline-select {
+  width: 100%;
+  padding: 0.4rem 0 0.55rem;
+  border: none;
+  border-bottom: 1px solid var(--qf-border);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-heading, serif);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--qf-ink);
+  outline: none;
+  transition: border-color 0.3s var(--qf-ease);
+}
+
+.underline-input::placeholder {
+  color: var(--qf-ink-soft);
+  opacity: 0.55;
+}
+
+.underline-input:hover,
+.underline-select:hover {
+  border-bottom-color: var(--qf-ink-soft);
+}
+
+/* Subtle keyboard-only focus cue (keeps mouse clicks calm) */
+.underline-input:focus-visible,
+.underline-select:focus-visible {
+  border-bottom-color: var(--qf-accent);
+}
+
+/* ---------- Select ---------- */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.underline-select {
+  padding-right: 1.5rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 12 8'><path fill='%23232220' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.1rem center;
+}
+
+/* ---------- Submit ---------- */
+.submit-btn {
+  width: auto;
+  margin-top: 1rem;
+  padding: 1.1rem 2.25rem;
+  background-color: var(--qf-accent);
+  border: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.3s var(--qf-ease),
+    letter-spacing 0.3s var(--qf-ease);
+}
+
+.submit-btn:hover {
+  background-color: var(--qf-accent-deep);
+  letter-spacing: 0.2em;
+}
+
+.submit-btn:focus-visible {
+  outline: 1px solid var(--qf-accent-deep);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quote-form * {
+    transition: none !important;
+  }
+}
+
+/* Kill the global focus box, keep the underline as the only cue */
+.quote-form .underline-input,
+.quote-form .underline-select {
+  height: auto;
+  min-height: 0;
+  padding: 0.25rem 0 0.4rem;   /* smaller than before */
+  font-size: 0.9rem;
+  line-height: 1.3;
+  border: none;
+  border-bottom: 1px solid var(--qf-border);
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
+}
+
+.quote-form .underline-input:focus,
+.quote-form .underline-input:focus-visible,
+.quote-form .underline-select:focus,
+.quote-form .underline-select:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-bottom-color: var(--qf-accent);
+}
+
+/* Tighter vertical rhythm to match the smaller fields */
+.quote-form .form-group {
+  margin-bottom: 1.75rem;
+}
