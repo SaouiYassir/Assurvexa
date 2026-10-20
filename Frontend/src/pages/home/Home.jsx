@@ -2,6 +2,7 @@ import Hero from "./sections/Hero";
 import Stats from "./sections/Stats";
 import Cover from "./sections/Cover";
 import Philosophy from "./sections/Philosophy";
+import Process from "./sections/Process";
 
 function Home() {
     return (
@@ -10,6 +11,7 @@ function Home() {
             <Stats />
             <Cover />
             <Philosophy />
+            <Process />
         </main>
     )
 }
