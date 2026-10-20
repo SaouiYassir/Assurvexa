@@ -1,0 +1,226 @@
+/* =========================================
+   ASSURVEXA — SPLIT LOGIN PAGE (Fixed Responsive Width)
+   ========================================= */
+
+.login-split-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%; /* Changed from 100vw to prevent scrollbar overflow */
+  max-width: 100%;
+  min-height: calc(100vh - 80px); /* Adjust based on your header height */
+  background-color: var(--color-bg, #f5f2ee);
+  box-sizing: border-box;
+  overflow-x: hidden; /* Guards against horizontal scrolling */
+}
+
+/* -----------------------------------------
+   LEFT COLUMN — BRAND HERO
+   ----------------------------------------- */
+.login-left {
+  background-color: var(--color-border, #e6e2db);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.left-content {
+  width: 100%;
+  max-width: 420px;
+}
+
+.brand-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-bronze, #a3704c);
+  margin-bottom: 1.25rem;
+}
+
+.brand-quote {
+  font-family: var(--font-heading, serif);
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--color-ink, #1c1c1c);
+  letter-spacing: -0.01em;
+  margin-bottom: 1.5rem;
+}
+
+.brand-caption {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--color-ink-soft, #7a7672);
+}
+
+/* -----------------------------------------
+   RIGHT COLUMN — FORM AREA
+   ----------------------------------------- */
+.login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  box-sizing: border-box;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Header */
+.login-header {
+  margin-bottom: 2.5rem;
+}
+
+.login-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-bronze, #a3704c);
+  margin-bottom: 0.5rem;
+}
+
+.login-title {
+  font-family: var(--font-heading, serif);
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  font-weight: 400;
+  color: var(--color-ink, #1c1c1c);
+  letter-spacing: -0.01em;
+}
+
+/* Form Fields */
+.login-form .form-group {
+  margin-bottom: 2.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form .label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.login-form .form-label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft, #7a7672);
+  margin-bottom: 0.8rem;
+}
+
+.login-form .forgot-link {
+  font-family: var(--font-body);
+  font-size: 0.725rem;
+  color: var(--color-ink-soft, #7a7672);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.login-form .forgot-link:hover {
+  color: var(--color-bronze, #a3704c);
+}
+
+/* Minimalist Underline Inputs */
+.login-form .underline-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--color-border, #d1ccc4);
+  background: transparent;
+  padding: 0.3rem 0;
+  font-family: var(--font-heading, serif);
+  font-size: 0.95rem;
+  color: var(--color-ink, #1c1c1c);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login-form .underline-input:focus {
+  border-bottom-color: var(--color-border, #d1ccc4);
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: #8c7355;
+  border: none;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.725rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.login-btn:hover {
+  background-color: #725d43;
+}
+
+/* Footer Link */
+.login-footer {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.login-footer p {
+  font-family: var(--font-body);
+  font-size: 0.825rem;
+  color: var(--color-ink-soft, #7a7672);
+}
+
+.login-footer .register-link {
+  color: var(--color-ink, #1c1c1c);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.login-footer .register-link:hover {
+  color: var(--color-bronze, #a3704c);
+}
+
+/* -----------------------------------------
+   RESPONSIVE DESIGN
+   ----------------------------------------- */
+@media (max-width: 900px) {
+  .login-split-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-left {
+    padding: 3rem 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border, #d1ccc4);
+  }
+
+  .login-right {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-left {
+    padding: 2.5rem 1.25rem;
+  }
+
+  .login-right {
+    padding: 2.5rem 1.25rem;
+  }
+}
