@@ -1,39 +1,35 @@
 /* =========================================
    ASSURVEXA — DASHBOARD SIDEBAR
+   Luxury Insurance Design System
    ========================================= */
 
-.sidebar {
-  --sidebar-bg: #f5f3ee;
-  --sidebar-surface: #e8e4dd;
-  --sidebar-text: #2d2d2d;
-  --sidebar-muted: #77746e;
-  --sidebar-accent: #8b7355;
-  --sidebar-border: #ded9d0;
+/* Main sidebar */
 
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
+.sidebar {
+  --sidebar-bg: var(--color-background, #f5f3ee);
+  --sidebar-surface: var(--color-surface, #e8e4dd);
+  --sidebar-text: var(--color-text, #2d2d2d);
+  --sidebar-muted: var(--color-muted, #77736c);
+  --sidebar-accent: var(--color-accent, #8b7355);
+  --sidebar-border: var(--color-border, #ddd8cf);
 
   display: flex;
   flex-direction: column;
 
   width: 260px;
+  min-width: 260px;
   height: 100vh;
   height: 100dvh;
 
   padding: 28px 18px 20px;
 
+  box-sizing: border-box;
+  flex-shrink: 0;
+
   background-color: var(--sidebar-bg);
   border-right: 1px solid var(--sidebar-border);
 
   color: var(--sidebar-text);
-
-  font-family: "IBM Plex Sans", sans-serif;
-
-  transition:
-    width 0.3s ease,
-    transform 0.3s ease;
 }
 
 /* =========================================
@@ -45,8 +41,10 @@
   align-items: center;
 
   min-height: 48px;
-  padding: 0 12px;
-  margin-bottom: 48px;
+  padding: 0 10px;
+  margin-bottom: 42px;
+
+  flex-shrink: 0;
 }
 
 .sidebar .logo {
@@ -67,7 +65,7 @@
 }
 
 .sidebar .logo:hover {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .sidebar .logo-dot {
@@ -88,61 +86,81 @@
 
   overflow-y: auto;
   overflow-x: hidden;
+
+  padding: 0 0 12px;
 }
+
+/* Navigation section heading */
 
 .sidebar-section-title {
   padding: 0 12px;
-  margin: 0 0 14px;
+  margin: 0 0 12px;
 
   color: var(--sidebar-muted);
 
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 1.8px;
-  line-height: 1.5;
+  letter-spacing: 1.6px;
+  line-height: 1.6;
 
   text-transform: uppercase;
 }
 
-/* Navigation links */
+/* =========================================
+   NAVIGATION LINKS
+   ========================================= */
 
 .sidebar .nav-link {
   position: relative;
 
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
 
-  min-height: 46px;
-  padding: 0 13px;
+  min-height: 44px;
+  padding: 0 12px;
+
+  box-sizing: border-box;
 
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 4px;
 
-  color: #65615b;
+  color: var(--sidebar-muted);
   text-decoration: none;
 
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
   font-weight: 500;
+  line-height: 1.4;
 
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+    border-color 0.2s ease;
 }
 
+/* Navigation icons */
+
 .sidebar .nav-link svg {
+  width: 18px;
+  height: 18px;
+
   flex-shrink: 0;
 
-  color: #827b70;
+  color: #928777;
+  stroke-width: 1.7;
 
   transition:
     color 0.2s ease,
     transform 0.2s ease;
 }
 
+/* Navigation labels */
+
 .sidebar .nav-link span {
+  min-width: 0;
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -151,20 +169,20 @@
 /* Hover state */
 
 .sidebar .nav-link:hover {
-  background-color: rgba(232, 228, 221, 0.75);
+  background-color: rgba(232, 228, 221, 0.7);
   color: var(--sidebar-text);
 }
 
 .sidebar .nav-link:hover svg {
   color: var(--sidebar-accent);
-  transform: translateX(2px);
+  transform: translateX(1px);
 }
 
-/* Active state */
+/* Active navigation state */
 
 .sidebar .nav-link.active {
   background-color: var(--sidebar-surface);
-  border-color: #ddd5c9;
+  border-color: rgba(139, 115, 85, 0.2);
 
   color: var(--sidebar-accent);
   font-weight: 600;
@@ -172,6 +190,7 @@
 
 .sidebar .nav-link.active svg {
   color: var(--sidebar-accent);
+  stroke-width: 2;
 }
 
 /* Keyboard accessibility */
@@ -190,43 +209,43 @@
 .sidebar-footer {
   flex-shrink: 0;
 
-  padding-top: 20px;
-  margin-top: 20px;
+  padding-top: 18px;
+  margin-top: 16px;
 
   border-top: 1px solid var(--sidebar-border);
 }
 
-/* User information */
+/* User information row */
 
 .sidebar-user {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
 
   min-width: 0;
-  padding: 4px 5px 18px;
+  padding: 2px 4px 16px;
 }
 
-/* Avatar */
+/* User avatar */
 
 .user-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
 
+  width: 38px;
+  height: 38px;
+
   flex-shrink: 0;
 
-  width: 40px;
-  height: 40px;
-
-  background-color: #e4ddd1;
-  border: 1px solid #d8cbbb;
+  background-color: var(--sidebar-surface);
+  border: 1px solid rgba(139, 115, 85, 0.25);
   border-radius: 50%;
 
   color: var(--sidebar-accent);
 
   font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -240,13 +259,14 @@
 .user-name {
   overflow: hidden;
 
-  margin: 0 0 5px;
+  margin: 0 0 4px;
 
   color: var(--sidebar-text);
 
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.5;
 
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -259,9 +279,10 @@
 
   color: var(--sidebar-muted);
 
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 11px;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.5;
 
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -278,18 +299,21 @@
   gap: 12px;
 
   width: 100%;
-  min-height: 44px;
+  min-height: 42px;
   padding: 0 12px;
+
+  box-sizing: border-box;
 
   background-color: transparent;
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 4px;
 
-  color: #77716a;
+  color: var(--sidebar-muted);
 
-  font-family: inherit;
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
+  text-align: left;
 
   cursor: pointer;
 
@@ -299,14 +323,22 @@
     border-color 0.2s ease;
 }
 
+/* Logout icon */
+
 .sidebar-logout svg {
+  width: 17px;
+  height: 17px;
+
   flex-shrink: 0;
+
   transition: transform 0.2s ease;
 }
 
+/* Logout hover */
+
 .sidebar-logout:hover {
-  background-color: #eee4df;
-  border-color: #e4d4cb;
+  background-color: rgba(139, 81, 70, 0.07);
+  border-color: rgba(139, 81, 70, 0.12);
 
   color: #8b5146;
 }
@@ -316,12 +348,17 @@
 }
 
 .sidebar-logout:active {
-  background-color: #e9dcd5;
+  background-color: rgba(139, 81, 70, 0.12);
 }
 
 /* =========================================
    SCROLLBAR
    ========================================= */
+
+.sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: #d4cdc1 transparent;
+}
 
 .sidebar-nav::-webkit-scrollbar {
   width: 4px;
@@ -332,12 +369,12 @@
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background-color: #d7d0c5;
+  background-color: #d4cdc1;
   border-radius: 10px;
 }
 
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
-  background-color: #b9ad9c;
+  background-color: #b7aa97;
 }
 
 /* =========================================
@@ -349,13 +386,21 @@
 @media (max-width: 1024px) {
   .sidebar {
     width: 235px;
+    min-width: 235px;
+
     padding-right: 14px;
     padding-left: 14px;
   }
 
   .sidebar-header {
+    padding-left: 8px;
+    margin-bottom: 32px;
+  }
+
+  .sidebar .nav-link {
+    gap: 10px;
+    padding-right: 10px;
     padding-left: 10px;
-    margin-bottom: 36px;
   }
 }
 
@@ -364,13 +409,15 @@
 @media (max-width: 768px) {
   .sidebar {
     width: 260px;
+    min-width: 260px;
+
     padding: 24px 18px 18px;
 
     box-shadow: 8px 0 30px rgba(45, 45, 45, 0.06);
   }
 
   .sidebar-header {
-    margin-bottom: 32px;
+    margin-bottom: 30px;
   }
 }
 
@@ -378,32 +425,40 @@
 
 @media (max-height: 600px) {
   .sidebar {
-    padding-top: 18px;
-    padding-bottom: 14px;
+    padding-top: 16px;
+    padding-bottom: 12px;
   }
 
   .sidebar-header {
-    margin-bottom: 24px;
-  }
-
-  .sidebar-footer {
-    padding-top: 12px;
-    margin-top: 12px;
-  }
-
-  .sidebar-user {
-    padding-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   .sidebar .nav-link {
-    min-height: 40px;
+    min-height: 38px;
+  }
+
+  .sidebar-footer {
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  .sidebar-user {
+    padding-bottom: 8px;
+  }
+
+  .user-avatar {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sidebar-logout {
+    min-height: 36px;
   }
 }
 
 /* Reduced motion accessibility */
 
 @media (prefers-reduced-motion: reduce) {
-  .sidebar,
   .sidebar *,
   .sidebar *::before,
   .sidebar *::after {

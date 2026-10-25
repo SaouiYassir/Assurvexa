@@ -6,8 +6,7 @@ import {
   ShieldCheck,
   FileText,
   LogOut,
-  Briefcase,
-  FileText
+  Briefcase
 } from "lucide-react";
 import "./Sidebar.css";
 
@@ -91,7 +90,7 @@ function Sidebar({ user }) {
         <button
           type="button"
           className="sidebar-logout"
-          onClick={onSignOut}
+          onClick={onSignOut}          
         >
           <LogOut size={18} strokeWidth={1.8} />
           <span>Sign out</span>
