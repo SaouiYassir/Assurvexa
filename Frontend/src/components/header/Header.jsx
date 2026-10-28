@@ -1,13 +1,12 @@
-
 import { useEffect, useId, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import './Header.css'
 
 const links = [
-  { to: '/', label: 'Home' },
-  { to: '/#plans', label: 'Insurance plans' },
-  { to: '/#about', label: 'Why Assurvexa' },
-  { to: '/#reviews', label: 'Reviews' },
+  { to: '/', label: 'Home', type: 'route' },
+  { to: '#cover', label: 'Insurance plans', type: 'anchor' },
+  { to: '#philosophy', label: 'Why Assurvexa', type: 'anchor' },
+  { to: '#quote', label: 'Contact Us', type: 'anchor' },
 ]
 
 function Header() {
@@ -30,25 +29,49 @@ function Header() {
     }
   }, [isOpen])
 
-  const handleNavigation = () => {
+  const handleRouteClick = () => {
     setIsOpen(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleAnchorClick = (e, targetId) => {
+    e.preventDefault()
+    setIsOpen(false)
+
+    const element = document.querySelector(targetId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   const renderNavItems = () =>
-    links.map(({ to, label }) => (
-      <NavLink
-        key={to}
-        to={to}
-        end={to === '/'}
-        className={({ isActive }) =>
-          isActive && to === '/' ? 'active' : undefined
-        }
-        onClick={handleNavigation}
-      >
-        {label}
-      </NavLink>
-    ))
+    links.map(({ to, label, type }) => {
+      if (type === 'anchor') {
+        return (
+          <a
+            key={to}
+            href={to}
+            onClick={(e) => handleAnchorClick(e, to)}
+          >
+            {label}
+          </a>
+        )
+      }
+
+      return (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === '/'}
+          className={({ isActive }) =>
+            isActive && to === '/' ? 'active' : undefined
+          }
+          onClick={handleRouteClick}
+        >
+          {label}
+        </NavLink>
+      )
+    })
 
   const renderAuthButtons = () => (
     <div className="auth-buttons">
@@ -76,7 +99,7 @@ function Header() {
         to="/"
         className="logo"
         aria-label="Assurvexa — Home"
-        onClick={handleNavigation}
+        onClick={handleRouteClick}
       >
         Assurvexa<span className="logo-dot">.</span>
       </NavLink>

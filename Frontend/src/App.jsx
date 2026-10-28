@@ -11,7 +11,7 @@ import AdminOverview from './pages/dashboard/admin/AdminOverview'
 function AppContent() {
   const location = useLocation()
 
-  const isDashboard = location.pathname === '/dashboard'
+  const isDashboard = location.pathname.startsWith('/dashboard');
 
   const user = { name: "Yassir", role: "admin" };
 
