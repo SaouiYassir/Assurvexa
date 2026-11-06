@@ -13,11 +13,13 @@ class Contract extends Model
         'policy_id',
         'date_debut',
         'date_fin',
+        'status',
     ];
 
     protected $casts = [
         'date_debut' => 'date',
         'date_fin' => 'date',
+        'status' => \App\Enums\ContractStatus::class,
     ];
 
     public function policy(): BelongsTo

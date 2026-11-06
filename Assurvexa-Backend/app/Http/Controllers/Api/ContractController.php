@@ -7,6 +7,8 @@ use App\Models\Contract;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use App\Enums\ContractStatus;
 
 class ContractController extends Controller
 {
@@ -53,6 +55,10 @@ class ContractController extends Controller
                 'required',
                 'date',
                 'after_or_equal:date_debut',
+            ],
+            'status' => [
+                'required',
+                Rule::enum(ContractStatus::class)
             ],
         ]);
 
@@ -116,6 +122,12 @@ class ContractController extends Controller
                 'sometimes',
                 'required',
                 'date',
+            ],
+            'status' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:50',
             ],
         ]);
 
