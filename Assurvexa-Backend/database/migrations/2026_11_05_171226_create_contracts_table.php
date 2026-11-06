@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('policy_id')->constrained('policies')->cascadeOnDelete();
             $table->date('date_debut');
             $table->date('date_fin');
-            $table->enum('status', ['pending', 'active', 'expired', 'cancelled', 'suspended']);
+            $table->enum('status', ['pending', 'active', 'expired', 'cancelled', 'suspended'])->default('pending');
             $table->timestamps();
         });
     }

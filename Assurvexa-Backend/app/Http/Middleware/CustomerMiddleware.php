@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckIfAgent
+class CustomerMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,10 @@ class CheckIfAgent
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== 'agent') {
+        if (!$request->user() || $request->user()->role !== 'customer') {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized. Agent access only.'
+                'message' => 'Unauthorized. Customer access only.'
             ], 403);
         }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\AgentController;
 use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\ContractController;
+use App\Http\Controllers\Api\ClaimController;
 
 
 // Unprotected Routes :
@@ -35,6 +36,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Agent Routes
     Route::middleware('agent')->group(function () {
+        // Contracts
         Route::apiResource('contracts', ContractController::class);
+
+        // Customers
+        Route::apiResource('customers', CustomerController::class);
+
+        // Claims update
+        Route::put('claims/{claim}', [ClaimController::class, 'update']);
+    });
+
+    // Customer Routes
+    Route::middleware('customer')->group(function () {
+        // Claims
+        Route::apiResource('claims', ClaimController::class);
     });
 });
