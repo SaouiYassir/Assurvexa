@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 // Controllers :
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\PolicyController;
 
 
 // Unprotected Routes :
@@ -22,4 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{id}', [UsersController::class, 'show']);
     Route::put('/users/{id}', [UsersController::class, 'update']);
     Route::delete('/users/{id}', [UsersController::class, 'destroy']);
+
+    Route::middleware('admin')->group(function () {
+
+        Route::apiResource('policies', PolicyController::class);
+
+    });
 });
