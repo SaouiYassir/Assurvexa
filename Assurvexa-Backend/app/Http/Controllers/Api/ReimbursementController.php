@@ -70,7 +70,7 @@ class ReimbursementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Reimbursement $reimbursement)
     {
         $reimbursement->load('claim');
 
@@ -83,7 +83,7 @@ class ReimbursementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Reimbursement $reimbursement)
     {
         $validated = $request->validate([
             'claim_id' => [
@@ -128,7 +128,7 @@ class ReimbursementController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Reimbursement $reimbursement)
     {
         $reimbursement->delete();
 
