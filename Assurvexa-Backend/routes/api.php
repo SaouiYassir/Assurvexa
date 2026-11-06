@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 // Controllers :
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\AgentController;
 use App\Http\Controllers\Api\PolicyController;
 
 
@@ -18,15 +19,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
 
-    // Users
-    Route::get('/users', [UsersController::class, 'index']);
-    Route::get('/users/{id}', [UsersController::class, 'show']);
-    Route::put('/users/{id}', [UsersController::class, 'update']);
-    Route::delete('/users/{id}', [UsersController::class, 'destroy']);
-
+    // Admin Routes
     Route::middleware('admin')->group(function () {
+        // Customers
+        Route::apiResource('customers', CustomerController::class);
 
+        // Policies
         Route::apiResource('policies', PolicyController::class);
+
+        // Agents
+        Route::apiResource('agents', AgentController::class);
 
     });
 });
