@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 // Controllers :
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UsersController;
 
 
 // Unprotected Routes :
