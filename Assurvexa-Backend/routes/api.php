@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\AgentController;
 use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\ClaimController;
+use App\Http\Controllers\Api\ReimbursementController;
 
 
 // Unprotected Routes :
@@ -44,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Claims update
         Route::put('claims/{claim}', [ClaimController::class, 'update']);
+
+        // Reimbursements
+        Route::apiResource('reimbursements', ReimbursementController::class);
     });
 
     // Customer Routes
