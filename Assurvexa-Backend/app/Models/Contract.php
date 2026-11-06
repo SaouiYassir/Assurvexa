@@ -13,7 +13,6 @@ class Contract extends Model
         'policy_id',
         'date_debut',
         'date_fin',
-        'status',
     ];
 
     protected $casts = [

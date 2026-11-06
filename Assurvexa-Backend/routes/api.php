@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\AgentController;
 use App\Http\Controllers\Api\PolicyController;
+use App\Http\Controllers\Api\ContractController;
 
 
 // Unprotected Routes :
@@ -30,5 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Agents
         Route::apiResource('agents', AgentController::class);
 
+    });
+
+    // Agent Routes
+    Route::middleware('agent')->group(function () {
+        Route::apiResource('contracts', ContractController::class);
     });
 });
