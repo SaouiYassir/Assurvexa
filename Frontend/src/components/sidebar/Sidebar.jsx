@@ -14,22 +14,22 @@ import "./Sidebar.css";
 const NAV_ITEMS_BY_ROLE = {
   admin: [
     { label: "Overview", path: "/dashboard", icon: LayoutDashboard },
-    { label: "Agents", path: "/agents", icon: Briefcase },
-    { label: "Customers", path: "/customers", icon: Users },
-    { label: "Policies", path: "/policies", icon: ShieldCheck },
-    { label: "Claims", path: "/claims", icon: FileText },
+    { label: "Agents", path: "/dashboard/agents", icon: Briefcase },
+    { label: "Customers", path: "/dashboard/customers", icon: Users },
+    { label: "Policies", path: "/dashboard/policies", icon: ShieldCheck },
+    { label: "Claims", path: "/dashboard/claims", icon: FileText },
   ],
   agent: [
     { label: "My Activity", path: "/dashboard", icon: LayoutDashboard },
-    { label: "My Clients", path: "/customers", icon: UserCheck },
-    { label: "Policies", path: "/policies", icon: ShieldCheck },
-    { label: "Claims", path: "/claims", icon: FileText },
+    { label: "My Clients", path: "/dashboard/customers", icon: UserCheck },
+    { label: "Policies", path: "/dashboard/policies", icon: ShieldCheck },
+    { label: "Claims", path: "/dashboard/claims", icon: FileText },
   ],
   client: [
     { label: "My Workspace", path: "/dashboard", icon: LayoutDashboard },
-    { label: "My insurance", path: "/policies", icon: ShieldCheck },
-    { label: "My Claims", path: "/claims", icon: FileText },
-    { label: "My Documents", path: "/documents", icon: FileText },
+    { label: "My insurance", path: "/dashboard/policies", icon: ShieldCheck },
+    { label: "My Claims", path: "/dashboard/claims", icon: FileText },
+    { label: "My Documents", path: "/dashboard/documents", icon: FileText },
   ],
 };
 

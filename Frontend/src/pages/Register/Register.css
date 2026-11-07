@@ -1,365 +1,636 @@
+
 /* =========================================
    ASSURVEXA — REGISTER PAGE
-   Split layout · editorial luxury insurance
+   Editorial Luxury Experience
    ========================================= */
 
-/* ---------- Page shell ---------- */
-.register-split-page {
+.register-page {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 0.85fr 1.15fr;
   min-height: 100vh;
   background: var(--color-bg);
 }
 
-/* ---------- Left column — brand panel ---------- */
-.register-left {
+/* =========================================
+   01. BRAND PANEL
+   ========================================= */
+
+.register-brand {
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-16) var(--space-12);
+  min-height: 100vh;
+  padding: clamp(2rem, 5vw, 5rem);
   overflow: hidden;
-  background:
-    linear-gradient(160deg, rgb(45 45 45 / 82%), rgb(45 45 45 / 62%)),
-    url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=80')
-      center / cover no-repeat;
-  color: var(--color-white);
+  background: var(--color-surface);
 }
 
-/* subtle bronze framing rule */
-.register-left::before {
+.register-brand::before {
   position: absolute;
-  inset: var(--space-8);
-  border: 1px solid rgb(139 115 85 / 45%);
-  pointer-events: none;
-  content: '';
+  right: -140px;
+  bottom: -180px;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgb(139 115 85 / 18%);
+  border-radius: 50%;
+  content: "";
 }
 
-/* decorative oversized quotation mark */
-.register-left::after {
+.register-brand::after {
   position: absolute;
-  right: var(--space-10);
-  bottom: var(--space-6);
-  color: rgb(139 115 85 / 28%);
-  font-family: var(--font-heading);
-  font-size: clamp(8rem, 16vw, 14rem);
-  line-height: 1;
-  content: '”';
-  pointer-events: none;
+  right: -75px;
+  bottom: -115px;
+  width: 290px;
+  height: 290px;
+  border: 1px solid rgb(139 115 85 / 18%);
+  border-radius: 50%;
+  content: "";
 }
 
-.left-content {
+.register-brand-inner {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  max-width: 460px;
-  animation: fadeIn 800ms ease both;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 520px;
+  margin-inline: auto;
 }
 
-.brand-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: 0;
-  color: var(--color-bronze);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  line-height: 1.5;
-  text-transform: uppercase;
-}
-
-.brand-eyebrow::before {
-  width: 28px;
-  height: 1px;
-  background: currentColor;
-  content: '';
-}
-
-.brand-quote {
-  margin: 0;
-  color: var(--color-white);
+.register-logo {
+  width: fit-content;
   font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
-  font-style: italic;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.register-logo span {
+  color: var(--color-bronze);
+}
+
+.register-brand-content {
+  max-width: 460px;
+  margin-block: auto;
+  padding-block: 5rem;
+  animation: fadeIn 700ms ease both;
+}
+
+.register-brand-label,
+.register-brand-footer {
+  color: var(--color-bronze);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+}
+
+.register-brand-line {
+  width: 45px;
+  height: 1px;
+  margin-block: 2rem;
+  background: var(--color-bronze);
+}
+
+.register-brand-content h2 {
+  margin-bottom: 1.5rem;
+  font-size: clamp(2.8rem, 4.3vw, 4.7rem);
+  line-height: 1.17;
+  letter-spacing: -0.055em;
+}
+
+.register-brand-content h2 em {
+  color: var(--color-bronze);
   font-weight: 400;
-  line-height: 1.45;
-  letter-spacing: -0.02em;
 }
 
-.brand-caption {
-  margin: 0;
-  color: rgb(255 255 255 / 68%);
-  font-size: var(--text-sm);
-  line-height: 1.85;
+.register-brand-content > p {
+  max-width: 390px;
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.9;
 }
 
-/* ---------- Right column — form panel ---------- */
-.register-right {
+.register-brand-feature {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: var(--space-16) var(--space-12);
-  background: var(--color-surface-light);
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: var(--border);
 }
 
-.register-container {
+.feature-icon {
+  display: grid;
+  flex-shrink: 0;
+  width: 43px;
+  height: 43px;
+  place-items: center;
+  border: 1px solid var(--color-bronze);
+  color: var(--color-bronze);
+}
+
+.register-brand-feature strong,
+.register-brand-feature span {
+  display: block;
+}
+
+.register-brand-feature strong {
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.register-brand-feature span {
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
+}
+
+.register-brand-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: var(--border);
+  font-size: 0.6rem;
+}
+
+/* =========================================
+   02. MAIN REGISTRATION AREA
+   ========================================= */
+
+.register-main {
+  display: flex;
+  justify-content: center;
+  padding: 4rem clamp(2rem, 5vw, 6rem);
+}
+
+.register-content {
   width: 100%;
-  max-width: 460px;
-  animation: fadeIn 700ms ease 100ms both;
+  max-width: 650px;
+  margin-block: auto;
+  animation: fadeIn 700ms ease both;
 }
 
 .register-header {
-  margin-bottom: var(--space-10);
+  margin-bottom: 3rem;
 }
 
 .register-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: 0 0 var(--space-3);
+  display: inline-block;
+  margin-bottom: 1rem;
   color: var(--color-bronze);
-  font-size: var(--text-xs);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0.17em;
 }
 
-.register-eyebrow::before {
-  width: 28px;
-  height: 1px;
-  background: currentColor;
-  content: '';
+.register-header h1 {
+  margin-bottom: 1rem;
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  line-height: 1.2;
 }
 
-.register-title {
-  margin: 0;
-  font-size: var(--text-3xl);
-  letter-spacing: -0.035em;
+.register-header > p {
+  max-width: 480px;
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.8;
 }
 
-/* ---------- Form ---------- */
+/* =========================================
+   03. FORM SECTIONS
+   ========================================= */
+
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: 2rem;
 }
 
-.form-row {
+.register-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: var(--border);
+}
+
+.register-section-heading span {
+  color: var(--color-bronze);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+}
+
+.register-section-heading h3 {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+.register-fields-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-5);
+  gap: 1.6rem 1.5rem;
+  margin-top: -0.9rem;
 }
 
-.register-form .form-group {
-  gap: var(--space-1);
+.register-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.55rem;
 }
 
-.register-form .form-label {
+.register-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.register-field label {
   color: var(--color-ink-soft);
-  font-size: 0.6875rem;
+  font-size: 0.67rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  line-height: 1.6;
-  text-transform: uppercase;
-  transition: color var(--transition-fast);
+  letter-spacing: 0.09em;
 }
 
-.register-form .form-group:focus-within .form-label {
-  color: var(--color-bronze);
-}
-
-/* Underline-only inputs — focus removes the border entirely */
-.underline-input {
-  width: 100%;
-  min-height: 44px;
-  padding: var(--space-2) var(--space-1);
-  border: 0;
+.register-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid var(--color-border);
-  border-radius: 0;
+  transition: border-color var(--transition-base);
+}
+
+.register-input-wrapper:hover {
+  border-color: var(--color-bronze);
+}
+
+.register-input-wrapper:focus-within {
+  border-color: var(--color-bronze);
+}
+
+.register-input-wrapper input {
+  width: 100%;
+  min-width: 0;
+  height: 45px;
+  padding: 0.5rem 0;
+  border: none;
   background: transparent;
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: var(--text-base);
+  font-size: 0.87rem;
   outline: none;
-  transition:
-    border-color var(--transition-base),
-    background var(--transition-base);
 }
 
-.underline-input::placeholder {
-  color: transparent;
+.register-input-wrapper input::placeholder {
+  color: #aaa297;
+  font-size: 0.82rem;
 }
 
-.underline-input:hover {
-  border-bottom-color: #b5aa99;
-}
-
-/* Focus: remove the bottom border completely, use background tint instead */
-.underline-input:focus,
-.underline-input:focus-visible {
-  border-bottom-color: transparent;
-  background: rgb(139 115 85 / 6%);
+.register-input-wrapper input:focus-visible {
   outline: none;
-  box-shadow: none;
 }
 
-/* native autofill — keep the parchment background */
-.underline-input:-webkit-autofill,
-.underline-input:-webkit-autofill:hover,
-.underline-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: var(--color-ink);
-  box-shadow: 0 0 0 1000px var(--color-surface-light) inset;
-  transition: background-color 9999s ease-in-out 0s;
+.register-input-wrapper.has-error {
+  border-color: var(--color-danger);
 }
 
-/* ---------- Submit button ---------- */
-.register-btn {
-  display: inline-flex;
+.register-field-error {
+  color: var(--color-danger);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.password-toggle {
+  display: grid;
+  flex-shrink: 0;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.password-toggle:hover {
+  color: var(--color-bronze);
+}
+
+/* =========================================
+   04. SECURITY NOTE
+   ========================================= */
+
+.register-security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.register-security-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-bronze);
+}
+
+/* =========================================
+   05. SUBMIT BUTTON
+   ========================================= */
+
+.register-submit {
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
-  min-height: 52px;
-  margin-top: var(--space-2);
-  padding: 0.9rem 1.5rem;
+  min-height: 58px;
+  padding: 0 1.5rem;
   border: 1px solid var(--color-bronze);
-  border-radius: var(--radius-sm);
   background: var(--color-bronze);
   color: var(--color-white);
   font-family: var(--font-body);
-  font-size: var(--text-xs);
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
   transition:
     background var(--transition-base),
-    border-color var(--transition-base),
-    transform var(--transition-base);
+    border-color var(--transition-base);
 }
 
-.register-btn:hover {
-  background: var(--color-bronze-dark);
+.register-submit:hover:not(:disabled) {
   border-color: var(--color-bronze-dark);
-  transform: translateY(-1px);
+  background: var(--color-bronze-dark);
 }
 
-.register-btn:active {
-  transform: translateY(0);
+.register-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
-.register-btn:focus-visible {
-  outline: 2px solid var(--color-bronze);
-  outline-offset: 4px;
+.register-submit svg {
+  transition: transform var(--transition-base);
 }
 
-/* ---------- Footer redirect ---------- */
+.register-submit:hover:not(:disabled) svg {
+  transform: translateX(4px);
+}
+
+.register-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgb(255 255 255 / 35%);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: registerSpin 700ms linear infinite;
+}
+
+@keyframes registerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   06. FEEDBACK MESSAGES
+   ========================================= */
+
+.register-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid;
+  animation: fadeIn 300ms ease both;
+}
+
+.register-alert > span {
+  display: grid;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 600;
+}
+
+.register-alert p {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.register-alert-error {
+  border-color: #e0c5c0;
+  background: #f6ebe8;
+  color: var(--color-danger);
+}
+
+.register-alert-error > span {
+  background: #ead3cf;
+}
+
+.register-alert-success {
+  border-color: #c5d3c4;
+  background: #edf2eb;
+  color: var(--color-success);
+}
+
+.register-alert-success > svg {
+  flex-shrink: 0;
+}
+
+.register-alert-success strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.register-alert-success p {
+  margin-bottom: 0.35rem;
+}
+
+.register-alert-success small {
+  font-size: 0.72rem;
+}
+
+/* =========================================
+   07. FOOTER
+   ========================================= */
+
 .register-footer {
-  margin-top: var(--space-8);
-  padding-top: var(--space-6);
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
   border-top: var(--border);
   text-align: center;
 }
 
 .register-footer p {
-  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
   color: var(--color-ink-soft);
-  font-size: var(--text-sm);
+  font-size: 0.82rem;
 }
 
-.login-link {
+.register-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   color: var(--color-bronze);
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 4px;
-  transition: text-decoration-color var(--transition-fast);
+  font-weight: 600;
+  transition: color var(--transition-fast);
 }
 
-.login-link:hover {
-  text-decoration-color: currentColor;
+.register-footer a:hover {
+  color: var(--color-bronze-dark);
+}
+
+.register-footer a svg {
+  transition: transform var(--transition-fast);
+}
+
+.register-footer a:hover svg {
+  transform: translateX(3px);
+}
+
+.register-footer > span {
+  color: #999187;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
 }
 
 /* =========================================
-   Responsive
+   08. RESPONSIVE DESIGN
    ========================================= */
-@media (max-width: 1024px) {
-  .register-split-page {
-    grid-template-columns: 1fr;
-    min-height: auto;
+
+@media (max-width: 1100px) {
+  .register-page {
+    grid-template-columns: 0.75fr 1.25fr;
   }
 
-  .register-left {
-    min-height: 320px;
-    padding: var(--space-12) var(--space-8);
+  .register-brand {
+    padding: 2.5rem;
   }
 
-  .register-left::before {
-    inset: var(--space-5);
-  }
-
-  .register-left::after {
-    display: none;
-  }
-
-  .left-content {
-    max-width: 560px;
-    text-align: center;
-    align-items: center;
-  }
-
-  .brand-eyebrow::before {
-    display: none;
-  }
-
-  .register-right {
-    padding: var(--space-12) var(--space-6);
+  .register-main {
+    padding-inline: 2.5rem;
   }
 }
 
-@media (max-width: 640px) {
-  .register-left {
-    min-height: 260px;
-    padding: var(--space-10) var(--space-6);
+@media (max-width: 800px) {
+  .register-page {
+    grid-template-columns: 1fr;
   }
 
-  .brand-quote {
-    font-size: 1.375rem;
+  .register-brand {
+    min-height: auto;
+    padding: 1.75rem 2rem;
   }
 
-  .register-right {
-    padding: var(--space-10) var(--space-5);
+  .register-brand-content {
+    padding-block: 3rem 2rem;
+  }
+
+  .register-brand-content h2 {
+    font-size: 3rem;
+  }
+
+  .register-brand-feature {
+    margin-top: 1.5rem;
+  }
+
+  .register-brand-footer {
+    padding-top: 1rem;
+  }
+
+  .register-main {
+    padding: 3.5rem 2rem;
+  }
+
+  .register-content {
+    max-width: 600px;
+  }
+}
+
+@media (max-width: 520px) {
+  .register-brand {
+    padding: 1.5rem;
+  }
+
+  .register-brand-content {
+    padding-block: 2.5rem 1.5rem;
+  }
+
+  .register-brand-content h2 {
+    font-size: 2.6rem;
+  }
+
+  .register-brand-content > p {
+    font-size: 0.85rem;
+  }
+
+  .register-brand-footer {
+    font-size: 0.53rem;
+  }
+
+  .register-main {
+    padding: 3rem 1.5rem;
   }
 
   .register-header {
-    margin-bottom: var(--space-8);
+    margin-bottom: 2.5rem;
   }
 
-  .form-row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-5);
+  .register-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .register-fields-grid {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .register-field.full-width {
+    grid-column: auto;
   }
 
   .register-form {
-    gap: var(--space-5);
+    gap: 1.7rem;
   }
 
-  .register-btn {
-    min-height: 48px;
+  .register-submit {
+    min-height: 54px;
   }
 }
 
 /* =========================================
-   Reduced motion
+   09. ACCESSIBILITY
    ========================================= */
-@media (prefers-reduced-motion: reduce) {
-  .left-content,
-  .register-container {
-    animation: none;
-  }
 
-  .register-btn:hover {
-    transform: none;
+.register-input-wrapper:focus-within {
+  box-shadow: 0 1px 0 var(--color-bronze);
+}
+
+.register-submit:focus-visible,
+.password-toggle:focus-visible,
+.register-logo:focus-visible,
+.register-footer a:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .register-page *,
+  .register-page *::before,
+  .register-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
