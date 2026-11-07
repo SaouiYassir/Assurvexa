@@ -40,10 +40,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('reimbursements', ReimbursementController::class);
 
         // Claims
-        Route::apiResource('claims', [ClaimController::class]);
+        Route::apiResource('claims', ClaimController::class);
 
         // Contracts
-        Route::apiResource('contracts', [ContractController::class]);
+        Route::apiResource('contracts', ContractController::class);
     });
 
     // Agent Routes
