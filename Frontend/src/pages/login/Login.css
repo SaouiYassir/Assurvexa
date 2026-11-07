@@ -1,247 +1,621 @@
+
 /* =========================================
-   ASSURVEXA — SPLIT LOGIN PAGE
+   ASSURVEXA — LOGIN PAGE
+   Editorial Luxury Experience
    ========================================= */
 
-.login-split-page {
+.login-page {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  width: 100%;
-  max-width: 100%;
-  min-height: calc(100vh - 80px); /* Adjust based on header height */
-  background-color: var(--color-bg, #f5f2ee);
-  box-sizing: border-box;
-  overflow-x: hidden;
+  grid-template-columns: 0.85fr 1.15fr;
+  min-height: 100vh;
+  background: var(--color-bg);
 }
 
-/* -----------------------------------------
-   LEFT COLUMN — EDITORIAL BRAND HERO WITH BG IMAGE
-   ----------------------------------------- */
-.login-left {
+/* =========================================
+   01. BRAND PANEL
+   ========================================= */
+
+.login-brand {
   position: relative;
-  /* Reference image located in public/login-bg.png */
-  background-image: url('/login-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 3rem;
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
+  min-height: 100vh;
+  padding: clamp(2rem, 5vw, 5rem);
+  overflow: hidden;
+  background: var(--color-surface);
 }
 
-/* Dark subtle overlay tint to keep HTML overlay text sharp & readable */
-.login-left::before {
-  content: '';
+.login-brand::before,
+.login-brand::after {
   position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.15); /* Adjust opacity if needed */
-  z-index: 1;
+  right: -140px;
+  bottom: -180px;
+  border: 1px solid rgb(139 115 85 / 18%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
 }
 
-.left-content {
+.login-brand::before {
+  width: 420px;
+  height: 420px;
+}
+
+.login-brand::after {
+  right: -75px;
+  bottom: -115px;
+  width: 290px;
+  height: 290px;
+}
+
+.login-brand-inner {
   position: relative;
-  z-index: 2; /* Sits above the gradient/tint overlay */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
+  margin-inline: auto;
 }
 
-.brand-eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  font-weight: 700; /* Increased weight for crisp readability */
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #725d43; /* Darker bronze tone for clear visibility */
-  margin-bottom: 1.25rem;
+.login-logo {
+  width: fit-content;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
 }
 
-.brand-quote {
-  font-family: var(--font-heading, serif);
-  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
-  font-weight: 400;
-  line-height: 1.25;
-  color: #1a1a1a; /* Deep charcoal/ink black */
-  letter-spacing: -0.01em;
+.login-logo span {
+  color: var(--color-bronze);
+}
+
+/* Brand Content */
+
+.login-brand-content {
+  max-width: 460px;
+  margin-block: auto;
+  padding-block: 5rem;
+  animation: fadeIn 700ms ease both;
+}
+
+.login-brand-label,
+.login-brand-footer {
+  color: var(--color-bronze);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+}
+
+.login-brand-line {
+  width: 45px;
+  height: 1px;
+  margin-block: 2rem;
+  background: var(--color-bronze);
+}
+
+.login-brand-content h2 {
   margin-bottom: 1.5rem;
+  font-size: clamp(2.8rem, 4.3vw, 4.7rem);
+  line-height: 1.17;
+  letter-spacing: -0.055em;
 }
 
-/* Subtitle Caption */
-.brand-caption {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
+.login-brand-content h2 em {
+  color: var(--color-bronze);
+  font-weight: 400;
+}
+
+.login-brand-content > p {
+  max-width: 390px;
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+/* Feature */
+
+.login-brand-feature {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: var(--border);
+}
+
+.login-feature-icon {
+  display: grid;
+  flex-shrink: 0;
+  width: 43px;
+  height: 43px;
+  place-items: center;
+  border: 1px solid var(--color-bronze);
+  color: var(--color-bronze);
+}
+
+.login-brand-feature strong,
+.login-brand-feature span {
+  display: block;
+}
+
+.login-brand-feature strong {
+  margin-bottom: 0.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.login-brand-feature span {
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
   line-height: 1.6;
-  color: #3b3835; /* Dark espresso brown/grey for crisp contrast */
-  font-weight: 500;
 }
 
-/* -----------------------------------------
-   RIGHT COLUMN — LOGIN FORM AREA
-   ----------------------------------------- */
-.login-right {
+/* Brand Footer */
+
+.login-brand-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: var(--border);
+  font-size: 0.6rem;
+}
+
+/* =========================================
+   02. LOGIN MAIN
+   ========================================= */
+
+.login-main {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
-  box-sizing: border-box;
-  background-color: var(--color-bg, #f5f2ee);
+  padding: 4rem clamp(2rem, 5vw, 6rem);
 }
 
-.login-container {
+.login-content {
   width: 100%;
-  max-width: 380px;
+  max-width: 470px;
+  margin-block: auto;
+  animation: fadeIn 700ms ease both;
 }
 
-/* Header */
+/* =========================================
+   03. LOGIN HEADER
+   ========================================= */
+
 .login-header {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.login-header-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 2rem;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-bronze);
 }
 
 .login-eyebrow {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  color: var(--color-bronze);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-bronze, #a3704c);
-  margin-bottom: 0.5rem;
+  letter-spacing: 0.17em;
 }
 
-.login-title {
-  font-family: var(--font-heading, serif);
-  font-size: clamp(2rem, 3vw, 2.5rem);
-  font-weight: 400;
-  color: var(--color-ink, #1c1c1c);
-  letter-spacing: -0.01em;
+.login-header h1 {
+  margin-bottom: 1rem;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  line-height: 1.2;
 }
 
-/* Form Fields */
-.login-form .form-group {
-  margin-bottom: 2.25rem;
+.login-header > p {
+  max-width: 430px;
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+/* =========================================
+   04. LOGIN FORM
+   ========================================= */
+
+.login-form {
   display: flex;
   flex-direction: column;
+  gap: 2rem;
 }
 
-.login-form .label-row {
+.login-field {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
-.login-form .form-label {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
+.login-field label {
+  color: var(--color-ink-soft);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-ink-soft, #7a7672);
-  margin-bottom: 0.8rem;
+  letter-spacing: 0.1em;
 }
 
-.login-form .forgot-link {
-  font-family: var(--font-body);
-  font-size: 0.725rem;
-  color: var(--color-ink-soft, #7a7672);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease;
+/* Inputs */
+
+.login-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color var(--transition-base);
 }
 
-.login-form .forgot-link:hover {
-  color: var(--color-bronze, #a3704c);
+.login-input-wrapper:hover {
+  border-color: var(--color-bronze);
 }
 
-/* Minimalist Underline Inputs (No focus outlines) */
-.login-form .underline-input {
+.login-input-wrapper:focus-within {
+  border-color: var(--color-bronze);
+  box-shadow: 0 1px 0 var(--color-bronze);
+}
+
+.login-input-wrapper.has-error {
+  border-color: var(--color-danger);
+}
+
+.login-input-wrapper input {
   width: 100%;
+  min-width: 0;
+  height: 52px;
+  padding: 0.5rem 0;
   border: none;
-  border-bottom: 1px solid var(--color-border, #d1ccc4);
-  background: transparent;
-  padding: 0.3rem 0;
-  font-family: var(--font-heading, serif);
-  font-size: 0.95rem;
-  color: var(--color-ink, #1c1c1c);
   outline: none;
-  box-sizing: border-box;
-}
-
-.login-form .underline-input:focus {
-  border-bottom-color: var(--color-border, #d1ccc4);
-}
-
-/* Button */
-.login-btn {
-  width: 100%;
-  padding: 1rem;
-  background-color: #8c7355;
-  border: none;
-  color: #ffffff;
+  background: transparent;
+  color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: 0.725rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.login-input-wrapper input::placeholder {
+  color: #aaa297;
+  font-size: 0.85rem;
+}
+
+.login-input-wrapper input:focus-visible {
+  outline: none;
+}
+
+/* Password Toggle */
+
+.login-password-toggle {
+  display: grid;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-soft);
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 0.5rem;
+  transition: color var(--transition-fast);
 }
 
-.login-btn:hover {
-  background-color: #725d43;
+.login-password-toggle:hover {
+  color: var(--color-bronze);
 }
 
-/* Footer Link */
-.login-footer {
+/* Validation */
+
+.login-field-error {
+  color: var(--color-danger);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+/* =========================================
+   05. FORGOT PASSWORD
+   ========================================= */
+
+.login-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -1.2rem;
+}
+
+.login-options a {
+  color: var(--color-bronze);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color var(--transition-fast);
+}
+
+.login-options a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* =========================================
+   06. SUBMIT BUTTON
+   ========================================= */
+
+.login-submit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 1.5rem;
+  border: 1px solid var(--color-bronze);
+  background: var(--color-bronze);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition:
+    background var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.login-submit:hover:not(:disabled) {
+  border-color: var(--color-bronze-dark);
+  background: var(--color-bronze-dark);
+}
+
+.login-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.login-submit svg {
+  transition: transform var(--transition-base);
+}
+
+.login-submit:hover:not(:disabled) svg {
+  transform: translateX(4px);
+}
+
+.login-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgb(255 255 255 / 35%);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: loginSpin 700ms linear infinite;
+}
+
+@keyframes loginSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   07. GENERAL ERROR
+   ========================================= */
+
+.login-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid;
+  animation: fadeIn 300ms ease both;
+}
+
+.login-alert > span {
+  display: grid;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: #ead3cf;
+  font-weight: 600;
+}
+
+.login-alert p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.login-alert-error {
+  border-color: #e0c5c0;
+  background: #f6ebe8;
+  color: var(--color-danger);
+}
+
+/* =========================================
+   08. SECURITY NOTE
+   ========================================= */
+
+.login-security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
   margin-top: 2rem;
-  text-align: left;
+  color: var(--color-ink-soft);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.login-security-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-bronze);
+}
+
+/* =========================================
+   09. FOOTER
+   ========================================= */
+
+.login-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: var(--border);
+  text-align: center;
 }
 
 .login-footer p {
-  font-family: var(--font-body);
-  font-size: 0.825rem;
-  color: var(--color-ink-soft, #7a7672);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-ink-soft);
+  font-size: 0.82rem;
 }
 
-.login-footer .register-link {
-  color: var(--color-ink, #1c1c1c);
+.login-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-bronze);
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.2s ease;
+  transition: color var(--transition-fast);
 }
 
-.login-footer .register-link:hover {
-  color: var(--color-bronze, #a3704c);
+.login-footer a:hover {
+  color: var(--color-bronze-dark);
 }
 
-/* -----------------------------------------
-   RESPONSIVE DESIGN
-   ----------------------------------------- */
-@media (max-width: 900px) {
-  .login-split-page {
+.login-footer a svg {
+  transition: transform var(--transition-fast);
+}
+
+.login-footer a:hover svg {
+  transform: translateX(3px);
+}
+
+.login-footer > span {
+  color: #999187;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+/* =========================================
+   10. RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 1100px) {
+  .login-page {
+    grid-template-columns: 0.75fr 1.25fr;
+  }
+
+  .login-brand {
+    padding: 2.5rem;
+  }
+
+  .login-main {
+    padding-inline: 2.5rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .login-page {
     grid-template-columns: 1fr;
   }
 
-  .login-left {
-    padding: 4rem 1.5rem;
-    border-right: none;
-    border-bottom: 1px solid var(--color-border, #d1ccc4);
-    min-height: 380px;
+  .login-brand {
+    min-height: auto;
+    padding: 1.75rem 2rem;
   }
 
-  .login-right {
-    padding: 3rem 1.5rem;
+  .login-brand-content {
+    padding-block: 3rem 2rem;
+  }
+
+  .login-brand-content h2 {
+    font-size: 3rem;
+  }
+
+  .login-brand-feature {
+    margin-top: 1.5rem;
+  }
+
+  .login-brand-footer {
+    padding-top: 1rem;
+  }
+
+  .login-main {
+    padding: 3.5rem 2rem;
+  }
+
+  .login-content {
+    max-width: 550px;
   }
 }
 
-@media (max-width: 480px) {
-  .login-left {
-    padding: 3rem 1.25rem;
+@media (max-width: 520px) {
+  .login-brand {
+    padding: 1.5rem;
   }
 
-  .login-right {
-    padding: 2.5rem 1.25rem;
+  .login-brand-content {
+    padding-block: 2.5rem 1.5rem;
+  }
+
+  .login-brand-content h2 {
+    font-size: 2.6rem;
+  }
+
+  .login-brand-content > p {
+    font-size: 0.85rem;
+  }
+
+  .login-brand-footer {
+    font-size: 0.53rem;
+  }
+
+  .login-main {
+    padding: 3rem 1.5rem;
+  }
+
+  .login-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .login-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .login-form {
+    gap: 1.7rem;
+  }
+
+  .login-submit {
+    min-height: 54px;
+  }
+}
+
+/* =========================================
+   11. ACCESSIBILITY
+   ========================================= */
+
+.login-submit:focus-visible,
+.login-password-toggle:focus-visible,
+.login-options a:focus-visible,
+.login-footer a:focus-visible,
+.login-logo:focus-visible {
+  outline: 2px solid var(--color-bronze);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-page *,
+  .login-page *::before,
+  .login-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
