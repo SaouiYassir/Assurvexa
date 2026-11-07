@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import api from "../../services/api";
 import {
   LayoutDashboard,
   Users,
@@ -34,9 +35,17 @@ const NAV_ITEMS_BY_ROLE = {
 };
 
 function Sidebar({ user }) {
-  function onSignOut() {
-    // Process sign out logic (clear tokens, reset state, redirect, etc.)
-  }
+  const navigate = useNavigate();
+
+  const onSignOut = async () => {
+    try {
+      await api.post("/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      navigate("/", { replace: true });
+    }
+  };
 
   // Normalize role safely (defaults to "client" if undefined)
   const role = user?.role?.toLowerCase() || "client";
