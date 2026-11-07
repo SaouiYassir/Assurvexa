@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+use App\Http\Middleware\AuthenticateFromCookie;
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -16,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'agent' => \App\Http\Middleware\AgentMiddleware::class,
             'customer' => \App\Http\Middleware\CustomerMiddleware::class
+        ]);
+
+        $middleware->api(prepend: [
+            AuthenticateFromCookie::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

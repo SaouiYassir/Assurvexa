@@ -77,12 +77,20 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $cookie = cookie(
+            'auth_token',   // Cookie name
+            $token,         // Cookie value
+            120,           // Minutes (2 hours)
+            '/',            // Path
+            null,           // Domain
+            false,          // Secure (set to true if using HTTPS in production)
+            true            // HttpOnly (crucial: hides it from JavaScript/XSS)
+        );
+
         return response()->json([
             'message' => 'Login successful.',
             'user' => $user->load('customer'),
-            'token' => $token,
-            'token_type' => 'Bearer',
-        ], 200);
+        ], 200)->cookie($cookie);
     }
 
     /**
@@ -92,9 +100,11 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()?->delete();
 
+        $cookie = cookie()->forget('auth_token');
+
         return response()->json([
             'message' => 'Logged out successfully.',
-        ], 200);
+        ], 200)->cookie($cookie);
     }
 
     /**
