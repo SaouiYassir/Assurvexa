@@ -7,6 +7,10 @@ import './login.css';
 function Login() {
     const navigate = useNavigate();
 
+    const scroll = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     const [infos, setInfos] = useState({
         email: '',
         password: ''
@@ -39,6 +43,7 @@ function Login() {
                 'Unable to sign in. Please check your credentials.'
             );
         } finally {
+            scroll();
             setLoading(false);
         }
     };
@@ -75,13 +80,6 @@ function Login() {
 
             {/* Right login section */}
             <section className="login-content">
-
-                <div className="login-top">
-                    <Link to="/" className="mobile-logo">
-                        ASSURVEXA<span>.</span>
-                    </Link>
-
-                </div>
 
                 <div className="login-form-wrapper">
 
@@ -167,7 +165,7 @@ function Login() {
                     <div className="login-security">
                         <span className="login-top-text">
                             New to Assurvexa?
-                            <Link to="/register"> Create an account</Link>
+                            <Link to="/register" onClick={scroll}> Create an account</Link>
                         </span>
                     </div>
 
@@ -175,7 +173,7 @@ function Login() {
 
                 <div className="login-bottom">
                     <span>© 2026 Assurvexa. All rights reserved.</span>
-                    <Link to="/privacy">Privacy & Security</Link>
+                    <Link to="/privacy" onClick={scroll}>Privacy & Security</Link>
                 </div>
 
             </section>

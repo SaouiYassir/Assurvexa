@@ -1,0 +1,361 @@
+
+/* =========================================
+   ASSURVEXA — REGISTER
+   ========================================= */
+
+.register-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - var(--header-height));
+    background: var(--color-bg);
+}
+
+/* LEFT VISUAL SECTION */
+
+.register-visual {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3.5rem;
+    color: var(--color-white);
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(35, 32, 28, 0.35),
+            rgba(35, 32, 28, 0.8)
+        ),
+        url('/register-bg.jpg') center / cover no-repeat;
+}
+
+.register-visual .visual-content {
+    max-width: 480px;
+    margin-block: auto;
+    padding-block: 3rem;
+}
+
+.visual-tag {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: #d5c3a8;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+}
+
+.visual-content h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2.5rem, 4vw, 3.8rem);
+    line-height: 1.2;
+}
+
+.visual-content h1 em {
+    color: #c6a982;
+}
+
+.visual-content p {
+    max-width: 390px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.visual-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+}
+
+/* RIGHT SECTION */
+
+.register-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem clamp(2rem, 4vw, 4rem);
+}
+
+.register-top {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobile-logo {
+    display: none;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    letter-spacing: 0.05em;
+}
+
+.mobile-logo span {
+    color: var(--color-bronze);
+}
+
+.register-top-text {
+    color: var(--color-ink-soft);
+    font-size: 0.85rem;
+}
+
+.register-top-text a {
+    color: var(--color-bronze);
+    font-weight: 600;
+}
+
+.register-top-text a:hover {
+    color: var(--color-bronze-dark);
+}
+
+/* FORM WRAPPER */
+
+.register-form-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    padding-block: 2rem;
+}
+
+.register-heading {
+    margin-bottom: 1.5rem;
+}
+
+.register-subtitle {
+    color: var(--color-bronze);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+}
+
+.register-heading h2 {
+    margin-block: 0.7rem;
+    font-size: 2.3rem;
+}
+
+.register-heading p {
+    color: var(--color-ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.7;
+}
+
+/* FORM FIELDS */
+
+.register-form-wrapper form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+}
+
+.register-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    height: 46px;
+    padding: 0 0.85rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-light);
+    font-size: 0.85rem;
+    outline: none;
+    cursor: text;
+    transition: var(--transition);
+}
+
+.form-group input::placeholder {
+    color: #aaa49b;
+}
+
+.form-group input:focus {
+    border-color: var(--color-bronze);
+    box-shadow: 0 0 0 2px rgba(139, 115, 85, 0.1);
+}
+
+/* PASSWORD */
+
+.password-input {
+    position: relative;
+}
+
+.password-input input {
+    padding-right: 2.8rem;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--color-ink-soft);
+    cursor: pointer;
+}
+
+.toggle-password:hover {
+    color: var(--color-bronze);
+}
+
+/* SUBMIT BUTTON */
+
+.register-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid var(--color-bronze);
+    border-radius: var(--radius-sm);
+    background: var(--color-bronze);
+    color: var(--color-white);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.register-submit:hover:not(:disabled) {
+    border-color: var(--color-bronze-dark);
+    background: var(--color-bronze-dark);
+}
+
+.register-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* ERROR */
+
+.error-message {
+    padding: 0.8rem 1rem;
+    border: 1px solid #e5b8b3;
+    background: #fdf0ee;
+    color: #a33e35;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+/* BOTTOM */
+
+.register-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--color-ink-soft);
+    font-size: 0.72rem;
+}
+
+.register-bottom a {
+    color: var(--color-bronze);
+}
+
+.register-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+    .register-visual {
+        padding: 2.5rem;
+    }
+
+    .register-content {
+        padding-inline: 2rem;
+    }
+
+    .register-form-wrapper {
+        max-width: 460px;
+    }
+}
+
+@media (max-width: 850px) {
+    .register-page {
+        grid-template-columns: 0.8fr 1.2fr;
+    }
+
+    .register-fields {
+        gap: 0.8rem;
+    }
+
+    .register-heading h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 700px) {
+    .register-page {
+        grid-template-columns: 1fr;
+    }
+
+    .register-visual {
+        display: none;
+    }
+
+    .register-content {
+        min-height: calc(100vh - var(--header-height));
+        padding: 1.5rem;
+    }
+
+    .register-top {
+        justify-content: space-between;
+    }
+
+    .mobile-logo {
+        display: inline-block;
+    }
+
+    .register-form-wrapper {
+        max-width: 500px;
+        padding-block: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-content {
+        padding-inline: 1.2rem;
+    }
+
+    .register-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .register-heading h2 {
+        font-size: 2rem;
+    }
+
+    .register-bottom {
+        flex-wrap: wrap;
+        font-size: 0.68rem;
+    }
+}

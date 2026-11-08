@@ -49,7 +49,7 @@ function Header() {
                     ) : (
                         <>
                             <NavLink to="/login" onClick={scrollToTop}>Login</NavLink>
-                            <NavLink to="/get-started" onClick={scrollToTop} className="btn-get-started">Get started</NavLink>
+                            <NavLink to="/register" onClick={scrollToTop} className="btn-get-started">Get started</NavLink>
                         </>
                     )}
                 </div>
@@ -61,7 +61,7 @@ function Header() {
                 ) : (
                     <>
                         <NavLink to="/login" onClick={scrollToTop}>Login</NavLink>
-                        <NavLink to="/get-started" onClick={scrollToTop} className="btn-get-started">Get started</NavLink>
+                        <NavLink to="/register" onClick={scrollToTop} className="btn-get-started">Get started</NavLink>
                     </>
                 )}
             </div>
