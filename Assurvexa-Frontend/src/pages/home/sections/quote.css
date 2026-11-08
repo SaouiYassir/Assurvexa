@@ -1,0 +1,197 @@
+
+.quote-section {
+    padding: 110px 8%;
+    background: #f5f3ee;
+    color: #2d2d2d;
+}
+
+.quote-container {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 100px;
+    align-items: center;
+}
+
+.quote-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #8b7355;
+    font-weight: 600;
+}
+
+.quote-content h1 {
+    font-size: clamp(38px, 5vw, 65px);
+    font-weight: 400;
+    letter-spacing: -2px;
+    margin: 25px 0 15px;
+}
+
+.quote-content h1 span {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    color: #8b7355;
+}
+
+.quote-content h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 23px;
+    font-weight: 400;
+    margin-bottom: 18px;
+}
+
+.quote-content > p {
+    max-width: 480px;
+    color: #77736c;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.quote-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 35px;
+}
+
+.quote-primary-btn,
+.quote-secondary-btn {
+    min-height: 52px;
+    padding: 0 23px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.3s ease;
+}
+
+.quote-primary-btn {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+.quote-primary-btn:hover {
+    background: #8b7355;
+}
+
+.quote-secondary-btn {
+    border: 1px solid #d5d0c6;
+    color: #2d2d2d;
+}
+
+.quote-secondary-btn:hover {
+    border-color: #8b7355;
+    color: #8b7355;
+}
+
+.quote-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 45px;
+    padding-top: 25px;
+    border-top: 1px solid #dedad2;
+}
+
+.quote-contact div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #77736c;
+    font-size: 12px;
+}
+
+.quote-contact svg {
+    color: #8b7355;
+}
+
+.quote-decoration {
+    min-height: 380px;
+    padding: 55px 45px;
+    background: #e8e4dd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.quote-icon {
+    width: 85px;
+    height: 85px;
+    border: 1px solid #b8a68e;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #8b7355;
+    margin-bottom: 35px;
+}
+
+.quote-decoration-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 25px;
+    line-height: 1.5;
+    max-width: 280px;
+}
+
+.quote-decoration p {
+    color: #77736c;
+    font-size: 13px;
+    line-height: 1.9;
+    margin-top: 15px;
+}
+
+.quote-decoration-line {
+    width: 45px;
+    height: 1px;
+    background: #8b7355;
+    margin: 30px 0 20px;
+}
+
+.quote-decoration-label {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    color: #8b7355;
+}
+
+@media (max-width: 850px) {
+    .quote-container {
+        grid-template-columns: 1fr;
+        gap: 55px;
+    }
+
+    .quote-section {
+        padding: 80px 6%;
+    }
+
+    .quote-decoration {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .quote-content h1 {
+        font-size: 38px;
+    }
+
+    .quote-actions {
+        flex-direction: column;
+    }
+
+    .quote-actions a {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .quote-decoration {
+        padding: 40px 30px;
+    }
+
+    .quote-contact {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
