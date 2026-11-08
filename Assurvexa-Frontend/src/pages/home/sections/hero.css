@@ -1,0 +1,139 @@
+/* =========================================
+   ASSURVEXA — HERO
+   Vertical Editorial Layout
+========================================= */
+
+.hero {
+    display: flex;
+    align-items: center;
+
+    min-height: calc(100vh - var(--header-height));
+    padding-block: 6rem;
+
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(245, 243, 238, 0.93) 0%,
+            rgba(245, 243, 238, 0.82) 50%,
+            rgba(245, 243, 238, 0.45) 100%
+        ),
+        url("/hero.jpg") center / cover no-repeat;
+}
+
+/* Content container */
+
+.hero .container {
+    width: min(100% - 3rem, var(--container-width));
+    margin-inline: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Eyebrow */
+
+.hero .eyebrow {
+    margin-bottom: 2rem;
+}
+
+/* Heading */
+
+.hero__title {
+    max-width: 14ch;
+    margin-bottom: 1.75rem;
+
+    font-family: var(--font-heading);
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.05em;
+
+    color: var(--color-ink);
+}
+
+.hero__title em {
+    color: var(--color-bronze);
+    font-style: italic;
+}
+
+/* Description */
+
+.hero .section-description {
+    max-width: 570px;
+    margin-bottom: 2rem;
+
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.9;
+}
+
+/* CTA buttons */
+
+.hero__cta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.hero__cta .btn {
+    min-height: 52px;
+    padding-inline: 1.75rem;
+
+    transition: all var(--transition);
+}
+
+.hero__cta .btn:hover {
+    transform: translateY(-2px);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+    .hero {
+        min-height: calc(100vh - 72px);
+        padding-block: 5rem;
+
+        background:
+            linear-gradient(
+                rgba(245, 243, 238, 0.88),
+                rgba(245, 243, 238, 0.88)
+            ),
+            url("/hero.jpg") center / cover no-repeat;
+    }
+
+    .hero__title {
+        max-width: 100%;
+        font-size: clamp(3rem, 10vw, 4.5rem);
+    }
+
+    .hero .section-description {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero .container {
+        width: calc(100% - 2rem);
+    }
+
+    .hero__title {
+        font-size: clamp(2.6rem, 11vw, 3.5rem);
+    }
+
+    .hero__cta {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero__cta .btn {
+        width: 100%;
+    }
+}
