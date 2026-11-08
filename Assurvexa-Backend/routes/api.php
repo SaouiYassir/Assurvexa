@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('customers', CustomerController::class);
 
         // Policies
-        Route::apiResource('policies', PolicyController::class);
+        Route::apiResource('policies', PolicyController::class)->except(['index', 'show']);
 
         // Agents
         Route::apiResource('agents', AgentController::class);
@@ -53,10 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/contracts', [ContractController::class, 'store']);
         Route::get('/contracts/{contract}', [ContractController::class, 'show']);
         Route::put('/contracts/{contract}', [ContractController::class, 'update']);
-
-        // View policies
-        Route::get('/policies', [PolicyController::class, 'index']);
-        Route::get('/policies/{policy}', [PolicyController::class, 'show']);
 
 
         // View customers
@@ -80,10 +76,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Own profile
         Route::get('/customers/{customer}', [CustomerController::class, 'show']);
         Route::put('/customers/{customer}', [CustomerController::class, 'update']);
-
-        // View available policies
-        Route::get('/policies', [PolicyController::class, 'index']);
-        Route::get('/policies/{policy}', [PolicyController::class, 'show']);
 
         // Own contracts
         Route::get('/contracts', [ContractController::class, 'index']);
