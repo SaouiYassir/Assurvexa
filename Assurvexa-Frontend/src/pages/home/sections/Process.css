@@ -1,0 +1,106 @@
+/* =========================================
+   ASSURVEXA — PROCESS SECTION
+   ========================================= */
+
+.process-section {
+  width: 100%;
+  padding-block: var(--space-16, 4rem);
+  background-color: var(--color-bg, #f5f2ee);
+  border-bottom: var(--border, 1px solid #e6e2db);
+  box-sizing: border-box;
+
+  padding-inline: max(2rem, calc((100vw - var(--container-width, 1200px)) / 2));
+}
+
+/* Eyebrow / Tagline */
+.process-section h1 {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-bronze, #a3704c);
+  margin-bottom: 0.5rem;
+}
+
+/* Main Heading */
+.process-section h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  font-weight: 400;
+  color: var(--color-ink, #1c1c1c);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-12, 3rem);
+}
+
+/* 3-Column Steps Container */
+.process-section > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  border-top: 1px solid var(--color-border, #e6e2db);
+  border-left: 1px solid var(--color-border, #e6e2db);
+}
+
+/* Individual Step Box */
+.process-section > div > div {
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 2rem;
+  
+  background-color: transparent;
+  border-right: 1px solid var(--color-border, #e6e2db);
+  border-bottom: 1px solid var(--color-border, #e6e2db);
+  
+  transition: background-color var(--transition-base, 0.2s ease);
+}
+
+.process-section > div > div:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Step Number (01, 02, 03) */
+.process-section span {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--color-bronze, #a3704c);
+  margin-bottom: 1.5rem;
+}
+
+/* Step Title */
+.process-section h4 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--color-ink, #1c1c1c);
+  margin-bottom: 0.5rem;
+}
+
+/* Step Description */
+.process-section p {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--color-ink-soft, #666);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 900px) {
+  .process-section > div {
+    grid-template-columns: 1fr; /* Stack vertically on tablet/mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .process-section {
+    padding-inline: 1.25rem;
+  }
+
+  .process-section > div > div {
+    padding: 1.75rem 1.25rem;
+  }
+}
