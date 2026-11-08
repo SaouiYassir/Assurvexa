@@ -1,0 +1,137 @@
+/* =========================================
+ASSURVEXA — COVER SECTION (Soft Grid Style)
+========================================= */
+
+.cover {
+  padding-block: var(--space-20, 5rem);
+  background-color: var(--color-bg, #f5f2ee);
+}
+
+.cover__header {
+  max-width: 36rem;
+  margin-bottom: var(--space-12, 3rem);
+}
+
+.cover__header .eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-bronze, #a3704c);
+  margin-bottom: 0.75rem;
+}
+
+.cover__header h2.section__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 400;
+  color: var(--color-ink);
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.cover__header .section-description {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--color-ink-soft, #666);
+  line-height: 1.6;
+}
+
+.cover__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  border-top: 1px solid var(--color-border, #e6e2db);
+  border-left: 1px solid var(--color-border, #e6e2db);
+}
+
+.cover__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem 2.5rem;
+  
+  background: transparent; /* Seamless with section background */
+  border-right: 1px solid var(--color-border, #e6e2db);
+  border-bottom: 1px solid var(--color-border, #e6e2db);
+  
+  transition: background-color var(--transition-base, 0.2s ease);
+}
+
+.cover__card:hover {
+  background-color: rgba(255, 255, 255, 0.4); /* Very subtle soft highlight on hover */
+}
+
+.cover__icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align left to match reference */
+  
+  margin-bottom: 2rem;
+  color: var(--color-ink); /* Uses ink/bronze tone without solid backgrounds */
+}
+
+.cover__title {
+  margin-bottom: 0.75rem;
+  
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--color-ink);
+  letter-spacing: -0.01em;
+}
+
+.cover__desc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-ink-soft, #666);
+  margin-bottom: 2.5rem;
+}
+
+/* Enquire link styling matching the reference underline */
+.cover__card p:last-child {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  text-decoration: none;
+  position: relative;
+  width: fit-content;
+  cursor: pointer;
+}
+
+.cover__card p:last-child::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-ink);
+  opacity: 0.3;
+  transition: opacity var(--transition-base);
+}
+
+.cover__card p:last-child:hover::after {
+  opacity: 1;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 1024px) {
+  .cover__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cover__grid {
+    grid-template-columns: 1fr;
+  }
+}
