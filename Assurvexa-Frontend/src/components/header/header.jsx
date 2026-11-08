@@ -5,16 +5,20 @@ import './header.css'
 
 const links = [
     { to: '/', label: 'Home' },
-    { to: '#cover', label: 'Insurance plans' },
-    { to: '#philosophy', label: 'Why Assurvexa' },
-    { to: '#quote', label: 'Contact Us' }
+    { to: '/#cover', label: 'Insurance plans' },
+    { to: '/#philosophy', label: 'Why Assurvexa' },
+    { to: '/#quote', label: 'Contact Us' }
 ]
 
 function Header() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const scroll = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        closeMenu();
+    };
+
     const closeMenu = () => setIsMobileMenuOpen(false);
 
     return (
@@ -23,14 +27,18 @@ function Header() {
                 to="/" 
                 className="logo" 
                 aria-label="Assurvexa — Home" 
-                onClick={scroll}
+                onClick={scrollToTop}
             >
                 Assurvexa
             </NavLink>
 
             <nav className={isMobileMenuOpen ? 'nav-open' : ''}>
                 {links.map((element) => (
-                    <a key={element.to} href={element.to} onClick={closeMenu}>
+                    <a 
+                        key={element.to} 
+                        href={element.to} 
+                        onClick={closeMenu}
+                    >
                         {element.label}
                     </a>
                 ))}
@@ -40,8 +48,8 @@ function Header() {
                         <NavLink to="/dashboard" onClick={closeMenu}>Dashboard</NavLink>
                     ) : (
                         <>
-                            <NavLink to="/login" onClick={closeMenu}>Login</NavLink>
-                            <NavLink to="/get-started" onClick={closeMenu} className="btn-get-started">Get started</NavLink>
+                            <NavLink to="/login" onClick={scrollToTop}>Login</NavLink>
+                            <NavLink to="/register" onClick={scrollToTop} className="btn-get-started">Get started</NavLink>
                         </>
                     )}
                 </div>
@@ -52,8 +60,8 @@ function Header() {
                     <NavLink to="/dashboard" onClick={closeMenu}>Dashboard</NavLink>
                 ) : (
                     <>
-                        <NavLink to="/login" onClick={closeMenu}>Login</NavLink>
-                        <NavLink to="/get-started" onClick={closeMenu}>Get started</NavLink>
+                        <NavLink to="/login" onClick={scrollToTop}>Login</NavLink>
+                        <NavLink to="/register" onClick={scrollToTop} className="btn-get-started">Get started</NavLink>
                     </>
                 )}
             </div>
