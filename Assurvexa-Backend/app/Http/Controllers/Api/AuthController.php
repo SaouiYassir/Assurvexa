@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
+use Laravel\Sanctum\PersonalAccessToken;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class AuthController extends Controller
 {
@@ -77,34 +80,46 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        $cookie = cookie(
-            'auth_token',   // Cookie name
-            $token,         // Cookie value
-            120,           // Minutes (2 hours)
-            '/',            // Path
-            null,           // Domain
-            false,          // Secure (set to true if using HTTPS in production)
-            true            // HttpOnly (crucial: hides it from JavaScript/XSS)
-        );
-
         return response()->json([
             'message' => 'Login successful.',
             'user' => $user->load('customer'),
-        ], 200)->cookie($cookie);
+        ], 200)->cookie($this->authCookie($token, 120));
     }
 
     /**
-     * Revoke the current access token.
+     * Revoke the current access token and expire the auth cookie.
+     * This route is public so an already invalid session can still clear the cookie.
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()?->delete();
+        $token = Auth::guard('sanctum')->user()?->currentAccessToken();
 
-        $cookie = cookie()->forget('auth_token');
+        if ($token instanceof PersonalAccessToken) {
+            $token->delete();
+        }
 
         return response()->json([
             'message' => 'Logged out successfully.',
-        ], 200)->cookie($cookie);
+        ], 200)->cookie($this->authCookie('', -2628000));
+    }
+
+    /**
+     * Login and logout must use the same name, path, domain, secure and SameSite
+     * flags. A mismatch makes the browser keep the old cookie.
+     */
+    private function authCookie(string $value, int $minutes): Cookie
+    {
+        return cookie(
+            'auth_token',
+            $value,
+            $minutes,
+            '/',
+            null,
+            false,
+            true,
+            false,
+            'lax'
+        );
     }
 
     /**
