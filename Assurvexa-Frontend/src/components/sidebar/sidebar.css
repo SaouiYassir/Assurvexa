@@ -1,0 +1,148 @@
+/* =========================================
+   SIDEBAR COMPONENT — ASSURVEXA DESIGN SYSTEM
+   ========================================= */
+
+aside {
+    width: 260px;
+    height: 100vh;
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-right: 1px solid var(--color-border);
+    z-index: 100;
+    font-family: var(--font-body);
+}
+
+/* --- Header / Logo --- */
+.sidebar-header {
+    padding: 1.5rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.logo {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--color-ink);
+    text-decoration: none;
+    letter-spacing: -0.035em;
+    display: flex;
+    align-items: center;
+}
+
+.logo-dot {
+    color: var(--color-bronze);
+}
+
+/* --- Navigation Section --- */
+nav {
+    flex: 1;
+    padding: 1.25rem 0.75rem;
+    overflow-y: auto;
+}
+
+.sidebar-section-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--color-ink-soft);
+    padding: 0 0.75rem 0.75rem 0.75rem;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+/* --- Nav Links --- */
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.25rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-ink-soft);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background var(--transition), color var(--transition);
+}
+
+.nav-link:hover {
+    background-color: var(--color-surface-light);
+    color: var(--color-ink);
+}
+
+.nav-link.active {
+    background-color: var(--color-bronze);
+    color: var(--color-white);
+    font-weight: 500;
+}
+
+.nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* --- Footer & User Profile --- */
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface-light);
+}
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.user-details {
+    overflow: hidden;
+}
+
+.user-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: var(--color-ink-soft);
+    margin: 0.125rem 0 0 0;
+    text-transform: capitalize;
+}
+
+/* --- Sign Out Button --- */
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    width: 100%;
+    min-height: 40px;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-ink-soft);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.sidebar-logout:hover {
+    background-color: #d9534f;
+    border-color: #d9534f;
+    color: var(--color-white);
+}
