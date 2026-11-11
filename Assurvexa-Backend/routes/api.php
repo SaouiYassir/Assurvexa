@@ -22,7 +22,7 @@ Route::get('/policies/{policy}', [PolicyController::class, 'show']);
 
 
 // Protected Routes :
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth.cookie')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     // Admin Routes
