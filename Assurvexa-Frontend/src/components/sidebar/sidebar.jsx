@@ -1,5 +1,4 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import api from "../../services/api";
 import {
   LayoutDashboard,
   Users,
@@ -10,6 +9,7 @@ import {
   Briefcase
 } from "lucide-react";
 import './sidebar.css';
+import { useAuth } from '../../context/useAuth';
 
 const NAV_ITEMS_BY_ROLE = {
     admin: [
@@ -35,6 +35,7 @@ const NAV_ITEMS_BY_ROLE = {
 
 function Sidebar({ user }) {
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const scroll = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -45,7 +46,7 @@ function Sidebar({ user }) {
 
     const handleSignOut = async () => {
         try {
-            await api.post('/logout');
+            await logout();
         } catch (error) {
             console.error("Sign-out failed:", error);
         } finally {
@@ -86,7 +87,9 @@ function Sidebar({ user }) {
             <footer className="sidebar-footer">
                 <div className="sidebar-user">
                     <div className="user-details">
-                        <p className="user-name">{user?.name || "User Name"}</p>
+                        <p className="user-name">
+                            {user ? `${user.first_name} ${user.last_name}` : "User Name"}
+                        </p>
                         <p className="user-role">
                             {user?.role || "Role"}
                         </p>

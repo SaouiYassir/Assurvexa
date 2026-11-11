@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react';
-import api from '../../services/api';
+import { useAuth } from '../../context/useAuth';
 import './login.css';
 
 function Login() {
+    const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     const scroll = () => {
@@ -35,7 +36,7 @@ function Login() {
         setLoading(true);
 
         try {
-            await api.post('/login', infos);
+            await login(infos);
             navigate('/dashboard');
         } catch (err) {
             setError(
@@ -47,6 +48,10 @@ function Login() {
             setLoading(false);
         }
     };
+
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     return (
         <main className="login-page">
