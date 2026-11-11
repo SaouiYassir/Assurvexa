@@ -15,14 +15,14 @@ use App\Http\Controllers\Api\ReimbursementController;
 // Unprotected Routes :
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/policies', [PolicyController::class, 'index']);
 Route::get('/policies/{policy}', [PolicyController::class, 'show']);
 
 
 // Protected Routes :
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth.cookie')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     // Admin Routes
