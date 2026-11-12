@@ -59,7 +59,7 @@ class AgentController extends Controller {
 
             return Agent::create([
                 'user_id' => $user->id,
-                'date_integration' => $validated['date_integration'],
+                'date_integration' => now()->toDateString(),
             ]);
         });
 
