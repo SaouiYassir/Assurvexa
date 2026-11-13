@@ -98,7 +98,15 @@ class AdminController extends Controller {
         ]);
     }
 
-    public function destroy(Admin $admin): JsonResponse {
+    public function destroy($id): JsonResponse {
+        $admin = Admin::findOrFail($id);
+
+        if ($admin->user) {
+        $admin->user->delete();
+        }
+
+        $admin->delete();
+
         return response()->json([
             'message' => 'Administrator deletion is not yet enabled.',
         ], 409);

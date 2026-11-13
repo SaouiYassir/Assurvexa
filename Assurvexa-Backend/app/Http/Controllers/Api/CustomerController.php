@@ -66,7 +66,15 @@ class CustomerController extends Controller {
         ]);
     }
 
-    public function destroy(Customer $customer): JsonResponse {
+    public function destroy($id): JsonResponse {
+        $customer = Customer::findOrFail($id);
+
+        if ($customer->user) {
+        $customer->user->delete();
+        }
+
+        $customer->delete();
+
         return response()->json([
             'message' => 'Customer deletion is not yet enabled.',
         ], 409);
