@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from 'react';
 import api from '../../../services/api';
 import './agents.css';
@@ -7,8 +6,11 @@ function Agents() {
     const [agents, setAgents] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const [showForm, setShowForm] = useState(false);
+    const [addForm, setAddForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    
+    const [updateForm, setUpdateForm] = useState(false);
+    const [selectedAgent, setSelectedAgent] = useState(null);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordConf, setShowPasswordConf] = useState(false);
@@ -17,12 +19,13 @@ function Agents() {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        document.body.style.overflow = showForm ? 'hidden' : '';
+        const modalOpen = addForm || updateForm;
+        document.body.style.overflow = modalOpen ? 'hidden' : '';
 
         return () => {
             document.body.style.overflow = '';
         };
-    }, [showForm]);
+    }, [addForm, updateForm]);
 
     const initialFormState = {
         first_name: '',
@@ -104,7 +107,7 @@ function Agents() {
 
             // Reset and close form
             resetForm();
-            setShowForm(false);
+            setAddForm(false);
 
             // Refresh agents list
             await getAgents();
@@ -130,10 +133,110 @@ function Agents() {
         }
     };
 
+    // Delete agent
+    const deleteAgent = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this agent?")) {
+            return;
+        }
+
+        try {
+            await api.delete(`/agents/${id}`);
+            getAgents();
+        } catch (err) {
+            console.error("Failed to delete agent:", err);
+            if (err.response && err.response.data) {
+                console.error("Conflict details:", err.response.data);
+            }
+            setError("Could not delete agent.");
+        }
+
+    }
+
+    // Modify agents info
+    const modifyAgent = (agent) => {
+        setSelectedAgent(agent);
+
+        setInfos({
+            first_name: agent.user?.first_name || '',
+            last_name: agent.user?.last_name || '',
+            username: agent.user?.username || '',
+            CIN: agent.user?.CIN || '',
+            phone: agent.user?.phone || '',
+            email: agent.user?.email || '',
+            password: '',
+            password_confirmation: ''
+        });
+
+        setError('');
+        setSuccess('');
+        setShowPassword(false);
+        setShowPasswordConf(false);
+
+        setAddForm(false);
+        setUpdateForm(true);
+    };
+
+    const updateAgent = async (e) => {
+        e.preventDefault();
+
+        if (!selectedAgent) return;
+
+        setSubmitting(true);
+        setError('');
+        setSuccess('');
+
+        try {
+            const payload = {
+                first_name: infos.first_name,
+                last_name: infos.last_name,
+                username: infos.username,
+                CIN: infos.CIN,
+                phone: infos.phone,
+                email: infos.email
+            };
+
+            await api.patch(
+                `/agents/${selectedAgent.id}`,
+                payload
+            );
+
+            setUpdateForm(false);
+            setSelectedAgent(null);
+            resetForm();
+
+            await getAgents();
+
+            setSuccess('Agent updated successfully.');
+
+        } catch (err) {
+            console.error('Failed to update agent:', err);
+
+            const validationErrors = err.response?.data?.errors;
+
+            if (validationErrors) {
+                const firstError = Object.values(validationErrors)[0]?.[0];
+
+                setError(
+                    firstError || 'Please check the submitted information.'
+                );
+            } else {
+                setError(
+                    err.response?.data?.message ||
+                    'Could not update agent.'
+                );
+            }
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     // Cancel form
     const handleCancel = () => {
         resetForm();
-        setShowForm(false);
+
+        setAddForm(false);
+        setUpdateForm(false);
+        setSelectedAgent(null);
     };
 
     // Initial data loading
@@ -154,12 +257,21 @@ function Agents() {
                 <button
                     className="btn-primary"
                     onClick={() => {
-                        setShowForm(prev => !prev);
+                        if (addForm || updateForm) {
+                            handleCancel();
+                            return;
+                        }
+
+                        resetForm();
+                        setSelectedAgent(null);
+                        setUpdateForm(false);
+                        setAddForm(true);
+
                         setError('');
                         setSuccess('');
                     }}
                 >
-                    {showForm ? 'Close form' : '+ Add agent'}
+                    {addForm ? 'Close form' : '+ Add agent'}
                 </button>
             </div>
 
@@ -177,7 +289,7 @@ function Agents() {
             )}
 
             {/* Add Agent Form */}
-            {showForm && (
+            {(addForm || updateForm) && (
                 <div
                     className="modal-overlay"
                     onClick={handleCancel}
@@ -189,8 +301,16 @@ function Agents() {
                         <div className="modal-header">
                             <div>
                                 <span className="eyebrow">ASSURVEXA TEAM</span>
-                                <h2>Add new agent</h2>
-                                <p>Create a new agent account.</p>
+
+                                <h2>
+                                    {updateForm ? 'Edit agent' : 'Add new agent'}
+                                </h2>
+
+                                <p>
+                                    {updateForm
+                                        ? 'Update the agent account information.'
+                                        : 'Create a new agent account.'}
+                                </p>
                             </div>
 
                             <button
@@ -205,7 +325,7 @@ function Agents() {
 
                         {/* Keep your existing form here */}
                         
-                        <form onSubmit={createAgent} className="agent-form">
+                        <form onSubmit={updateForm ? updateAgent : createAgent} className="agent-form">
 
                             <div className="form-grid">
 
@@ -292,58 +412,59 @@ function Agents() {
                                     />
                                 </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="password">Password</label>
+                                {!updateForm && ( <>
+                                    <div className="form-group">
+                                        <label htmlFor="password">Password</label>
 
-                                    <div className="password-wrapper">
-                                        <input
-                                            type={showPassword ? 'text' : 'password'}
-                                            id="password"
-                                            name="password"
-                                            placeholder="Minimum 8 characters"
-                                            value={infos.password}
-                                            onChange={handleChanges}
-                                            autoComplete="new-password"
-                                            minLength={8}
-                                            required
-                                        />
+                                        <div className="password-wrapper">
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                id="password"
+                                                name="password"
+                                                placeholder="Minimum 8 characters"
+                                                value={infos.password}
+                                                onChange={handleChanges}
+                                                autoComplete="new-password"
+                                                minLength={8}
+                                                required
+                                            />
 
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(prev => !prev)}
-                                        >
-                                            {showPassword ? 'Hide' : 'Show'}
-                                        </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(prev => !prev)}
+                                            >
+                                                {showPassword ? 'Hide' : 'Show'}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group">
-                                    <label htmlFor="password_confirmation">
-                                        Confirm password
-                                    </label>
+                                    <div className="form-group">
+                                        <label htmlFor="password_confirmation">
+                                            Confirm password
+                                        </label>
 
-                                    <div className="password-wrapper">
-                                        <input
-                                            type={showPasswordConf ? 'text' : 'password'}
-                                            id="password_confirmation"
-                                            name="password_confirmation"
-                                            placeholder="Re-enter password"
-                                            value={infos.password_confirmation}
-                                            onChange={handleChanges}
-                                            autoComplete="new-password"
-                                            minLength={8}
-                                            required
-                                        />
+                                        <div className="password-wrapper">
+                                            <input
+                                                type={showPasswordConf ? 'text' : 'password'}
+                                                id="password_confirmation"
+                                                name="password_confirmation"
+                                                placeholder="Re-enter password"
+                                                value={infos.password_confirmation}
+                                                onChange={handleChanges}
+                                                autoComplete="new-password"
+                                                minLength={8}
+                                                required
+                                            />
 
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPasswordConf(prev => !prev)}
-                                        >
-                                            {showPasswordConf ? 'Hide' : 'Show'}
-                                        </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPasswordConf(prev => !prev)}
+                                            >
+                                                {showPasswordConf ? 'Hide' : 'Show'}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-
+                                </>)}
                             </div>
 
                             <div className="form-actions">
@@ -361,7 +482,9 @@ function Agents() {
                                     className="btn-primary"
                                     disabled={submitting}
                                 >
-                                    {submitting ? 'Creating...' : 'Add agent'}
+                                    {submitting
+                                        ? (updateForm ? 'Updating...' : 'Creating...')
+                                        : (updateForm ? 'Save changes' : 'Add agent')}
                                 </button>
                             </div>
 
@@ -423,7 +546,7 @@ function Agents() {
                                                         type="button"
                                                         className="btn-icon btn-edit"
                                                         title="Edit agent (not implemented yet)"
-                                                        disabled
+                                                        onClick={() => modifyAgent(agent)}
                                                     >
                                                         Edit
                                                     </button>
@@ -431,8 +554,7 @@ function Agents() {
                                                     <button
                                                         type="button"
                                                         className="btn-icon btn-delete"
-                                                        title="Delete agent (not implemented yet)"
-                                                        disabled
+                                                        onClick={() => deleteAgent(agent.id)}
                                                     >
                                                         Delete
                                                     </button>
