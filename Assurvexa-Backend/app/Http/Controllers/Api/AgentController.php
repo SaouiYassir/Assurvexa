@@ -71,7 +71,8 @@ class AgentController extends Controller {
         ], 201);
     }
 
-    public function update(Request $request, Agent $agent): JsonResponse {
+    public function update(Request $request, $id): JsonResponse {
+        $agent = Agent::findOrFail($id);
         $user = $agent->user;
 
         $validated = $request->validate([
@@ -113,9 +114,17 @@ class AgentController extends Controller {
         ]);
     }
 
-    public function destroy(Agent $agent): JsonResponse {
+    public function destroy($id): JsonResponse {
+        $agent = Agent::findOrFail($id);
+
+        if ($agent->user) {
+        $agent->user->delete();
+        }
+
+        $agent->delete();
+
         return response()->json([
-            'message' => 'Agent deletion is not yet enabled.',
-        ], 409);
+            'message' => 'Agent deleted successfully.'
+        ], 200);
     }
 }
