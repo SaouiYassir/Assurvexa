@@ -56,8 +56,8 @@ Route::middleware('auth.cookie')->group(function () {
 
 
         // View customers
-        Route::get('/customers', [CustomerController::class, 'indexForAgent']);
-        Route::get('/customers/{customer}', [CustomerController::class, 'showForAgent']);
+        Route::get('/customers', [CustomerController::class, 'index']);
+        Route::get('/customers/{customer}', [CustomerController::class, 'show']);
 
         // Claims update
         Route::get('/claims', [ClaimController::class, 'index']);
