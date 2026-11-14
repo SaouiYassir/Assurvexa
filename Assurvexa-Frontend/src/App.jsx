@@ -8,6 +8,7 @@ import Register from "./pages/register/register";
 import Dashboard from "./pages/dashboard/dashboard";
 import Agents from "./pages/dashboard/agents/agents";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Policies from "./pages/dashboard/policies/policies";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}>
             {/* <Route index element={<Overview />} /> */}
             <Route path="agents" element={<Agents />} />
+            <Route path="policies" element={<Policies />} />
           </Route>
         </Route>
       </Routes>
