@@ -30,14 +30,23 @@ class PolicyController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'admin_id'    => ['required', 'exists:admins,id'],
             'nom'         => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
             'type'        => ['required', Rule::enum(InsuranceType::class)],
             'prix'        => ['required', 'numeric', 'min:0'],
         ]);
 
-        $policy = Policy::create($validated);
+        $user = $request->user();
+        $admin = $user->admin;
+
+        if (!$admin) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admin record not found for this user.'
+            ], 403);
+        }
+
+        $policy = $admin->policies()->create($validated);
 
         return response()->json([
             'success' => true,

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->unique()->constrained('admins')->cascadeOnDelete();
+            $table->foreignId('admin_id')->constrained('admins')->cascadeOnDelete();
             $table->string('nom');
             $table->string('description');
             $table->enum('type', ['automobile', 'habitation', 'sante', 'vie', 'professionnelle', 'voyage']);
