@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('reimbursements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('claim_id')->constrained('claims')->cascadeOnDelete();
+            $table->foreignId('claim_id')->unique()->constrained('claims')->cascadeOnDelete();
             $table->decimal('prix', 10, 2);
             $table->enum('methode_paiement', ['cash', 'check', 'transfer_bancaire']);
             $table->enum('status_paiement', ['paid', 'pending', 'failed']);
-            $table->date('date_paiement');
+            $table->date('date_paiement')->nullable();
             $table->timestamps();
         });
     }

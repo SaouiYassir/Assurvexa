@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Enums\ClaimStatus;
+use App\Http\Controllers\Controller;
 use App\Models\Claim;
 use App\Models\Contract;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class ClaimController extends Controller
@@ -15,17 +15,29 @@ class ClaimController extends Controller
     /**
      * Display a listing of claims.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $claims = Claim::with([
+        $query = Claim::with([
             'contract',
             'agent.user',
-            'customer.user'
-        ])->paginate(10);
+            'customer.user',
+        ]);
+
+        if ($request->user()->role === 'customer') {
+            $customerId = $request->user()->customer?->id;
+            abort_unless($customerId, 403, 'Customer profile not found.');
+            $query->where('customer_id', $customerId);
+        } elseif ($request->user()->role === 'agent') {
+            $agentId = $request->user()->agent?->id;
+            abort_unless($agentId, 403, 'Agent profile not found.');
+            $query->where('agent_id', $agentId);
+        }
+
+        $claims = $query->latest()->paginate(10);
 
         return response()->json([
             'success' => true,
-            'data' => $claims
+            'data' => $claims,
         ], 200);
     }
 
@@ -34,33 +46,40 @@ class ClaimController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        abort_unless($request->user()->role === 'customer', 403,
+            'Only customers can submit claims.');
+
         $validated = $request->validate([
-            'contract_id' => [
-                'required',
-                'exists:contracts,id',
-            ],
-            'description' => [
-                'required',
-                'string',
-            ],
-            'incident_date' => [
-                'required',
-                'date',
-            ],
-            'prix_estime' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+            'contract_id' => ['required', 'integer', 'exists:contracts,id'],
+            'description' => ['required', 'string'],
+            'incident_date' => ['required', 'date', 'before_or_equal:today'], // Good practice!
+            'prix_estime' => ['required', 'numeric', 'min:0'],
         ]);
 
-        // Retrieve the contract and its associated agent/customer.
-        $contract = Contract::findOrFail($validated['contract_id']);
+        $user = $request->user();
+        $customer = $user->customer;
+
+        if (! $customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Customer record not found for this user.',
+            ], 403);
+        }
+
+        // Ensure the contract belongs to this customer
+        $contract = $customer->contracts()->find($validated['contract_id']);
+
+        if (! $contract) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Contract not found or does not belong to this customer.',
+            ], 403);
+        }
 
         $claim = Claim::create([
             'contract_id' => $contract->id,
             'agent_id' => $contract->agent_id,
-            'customer_id' => $contract->customer_id,
+            'customer_id' => $customer->id,
             'description' => $validated['description'],
             'incident_date' => $validated['incident_date'],
             'prix_estime' => $validated['prix_estime'],
@@ -69,11 +88,11 @@ class ClaimController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Claim created successfully.',
+            'message' => 'Claim submitted successfully.',
             'data' => $claim->load([
                 'contract',
                 'agent.user',
-                'customer.user'
+                'customer.user',
             ]),
         ], 201);
     }
@@ -81,17 +100,19 @@ class ClaimController extends Controller
     /**
      * Display the specified claim.
      */
-    public function show(Claim $claim): JsonResponse
+    public function show(Request $request, Claim $claim): JsonResponse
     {
+        $this->ensureCanView($request, $claim);
+
         $claim->load([
             'contract',
             'agent.user',
-            'customer.user'
+            'customer.user',
         ]);
 
         return response()->json([
             'success' => true,
-            'data' => $claim
+            'data' => $claim,
         ], 200);
     }
 
@@ -100,6 +121,17 @@ class ClaimController extends Controller
      */
     public function update(Request $request, Claim $claim): JsonResponse
     {
+        abort_unless(in_array($request->user()->role, ['admin', 'agent'], true), 403,
+            'Only agents and administrators can review claims.');
+
+        if ($request->user()->role === 'agent' &&
+            $claim->agent_id !== $request->user()->agent?->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only review claims assigned to you.',
+            ], 403);
+        }
+
         $validated = $request->validate([
             'description' => [
                 'sometimes',
@@ -142,9 +174,20 @@ class ClaimController extends Controller
             'data' => $claim->fresh()->load([
                 'contract',
                 'agent.user',
-                'customer.user'
+                'customer.user',
             ]),
         ], 200);
+    }
+
+    private function ensureCanView(Request $request, Claim $claim): void
+    {
+        $user = $request->user();
+
+        $allowed = $user->role === 'admin'
+            || ($user->role === 'customer' && $claim->customer_id === $user->customer?->id)
+            || ($user->role === 'agent' && $claim->agent_id === $user->agent?->id);
+
+        abort_unless($allowed, 403, 'You are not allowed to view this claim.');
     }
 
     /**
@@ -156,7 +199,7 @@ class ClaimController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Claim deleted successfully.'
+            'message' => 'Claim deleted successfully.',
         ], 200);
     }
 }

@@ -1,16 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\AgentController;
 // Controllers :
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\CustomerController;
-use App\Http\Controllers\Api\AgentController;
-use App\Http\Controllers\Api\PolicyController;
-use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\ClaimController;
+use App\Http\Controllers\Api\ContractController;
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\PolicyController;
 use App\Http\Controllers\Api\ReimbursementController;
-
+use Illuminate\Support\Facades\Route;
 
 // Unprotected Routes :
 Route::post('/register', [AuthController::class, 'register']);
@@ -20,74 +18,43 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/policies', [PolicyController::class, 'index']);
 Route::get('/policies/{policy}', [PolicyController::class, 'show']);
 
-
 // Protected Routes :
 Route::middleware('auth.cookie')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
+    // Authenticated users can view only the contracts, claims, and
+    // reimbursements allowed by their role and ownership.
+    Route::get('/claims', [ClaimController::class, 'index']);
+    Route::get('/claims/{claim}', [ClaimController::class, 'show']);
+    Route::post('/claims', [ClaimController::class, 'store']);
+    Route::put('/claims/{claim}', [ClaimController::class, 'update']);
+    Route::get('/contracts', [ContractController::class, 'index']);
+    Route::get('/contracts/{contract}', [ContractController::class, 'show']);
+    Route::post('/contracts', [ContractController::class, 'store']);
+    Route::put('/contracts/{contract}', [ContractController::class, 'update']);
+    Route::get('/reimbursements', [ReimbursementController::class, 'index']);
+    Route::get('/reimbursements/{reimbursement}', [ReimbursementController::class, 'show']);
+    Route::post('/reimbursements', [ReimbursementController::class, 'store']);
+    Route::put('/reimbursements/{reimbursement}', [ReimbursementController::class, 'update']);
+    Route::get('/customers/{customer}', [CustomerController::class, 'show']);
+    Route::put('/customers/{customer}', [CustomerController::class, 'update']);
+
     // Admin Routes
     Route::middleware('admin')->group(function () {
-        // Customers
-        Route::apiResource('customers', CustomerController::class);
-
-        // Policies
+        Route::apiResource('customers', CustomerController::class)->except(['show', 'update']);
         Route::apiResource('policies', PolicyController::class)->except(['index', 'show']);
-
-        // Agents
         Route::apiResource('agents', AgentController::class);
-
-        // Reimbursements
-        Route::apiResource('reimbursements', ReimbursementController::class);
-
-        // Claims
-        Route::apiResource('claims', ClaimController::class);
-
-        // Contracts
-        Route::apiResource('contracts', ContractController::class);
+        Route::apiResource('claims', ClaimController::class)
+            ->except(['index', 'show', 'store', 'update']);
+        Route::apiResource('contracts', ContractController::class)
+            ->except(['index', 'show', 'store', 'update']);
+        Route::apiResource('reimbursements', ReimbursementController::class)
+            ->except(['index', 'show', 'store', 'update']);
     });
 
     // Agent Routes
     Route::middleware('agent')->group(function () {
-        // Contracts
-        Route::get('/contracts', [ContractController::class, 'index']);
-        Route::post('/contracts', [ContractController::class, 'store']);
-        Route::get('/contracts/{contract}', [ContractController::class, 'show']);
-        Route::put('/contracts/{contract}', [ContractController::class, 'update']);
-
-
-        // View customers
         Route::get('/customers', [CustomerController::class, 'index']);
-        Route::get('/customers/{customer}', [CustomerController::class, 'show']);
-
-        // Claims update
-        Route::get('/claims', [ClaimController::class, 'index']);
-        Route::get('/claims/{claim}', [ClaimController::class, 'show']);
-        Route::put('/claims/{claim}', [ClaimController::class, 'update']);
-
-        // Reimbursements
-        Route::get('/reimbursements', [ReimbursementController::class, 'index']);
-        Route::post('/reimbursements', [ReimbursementController::class, 'store']);
-        Route::get('/reimbursements/{reimbursement}', [ReimbursementController::class, 'show']);
-        Route::put('/reimbursements/{reimbursement}', [ReimbursementController::class, 'update']);
     });
 
-    // Customer Routes
-    Route::middleware('customer')->group(function () {
-        // Own profile
-        Route::get('/customers/{customer}', [CustomerController::class, 'show']);
-        Route::put('/customers/{customer}', [CustomerController::class, 'update']);
-
-        // Own contracts
-        Route::get('/contracts', [ContractController::class, 'index']);
-        Route::get('/contracts/{contract}', [ContractController::class, 'show']);
-
-        // Claims
-        Route::get('/claims', [ClaimController::class, 'index']);
-        Route::post('/claims', [ClaimController::class, 'store']);
-        Route::get('/claims/{claim}', [ClaimController::class, 'show']);
-
-        // Own reimbursements
-        Route::get('/reimbursements', [ReimbursementController::class, 'index']);
-        Route::get('/reimbursements/{reimbursement}', [ReimbursementController::class, 'show']);
-    });
 });
