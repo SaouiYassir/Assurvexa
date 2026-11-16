@@ -17,6 +17,7 @@ const NAV_ITEMS_BY_ROLE = {
         { label: "Agents", path: "/dashboard/agents", icon: Briefcase },
         { label: "Customers", path: "/dashboard/customers", icon: Users },
         { label: "Policies", path: "/dashboard/policies", icon: ShieldCheck },
+        { label: "Contracts", path: "/dashboard/contracts", icon: ShieldCheck },
         { label: "Claims", path: "/dashboard/claims", icon: FileText },
     ],
     agent: [

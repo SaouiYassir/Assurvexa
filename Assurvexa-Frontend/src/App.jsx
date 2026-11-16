@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Policies from "./pages/dashboard/policies/policies";
 import Customers from "./pages/dashboard/customers/customers";
 import Claims from "./pages/dashboard/claims/claims";
+import Contracts from "./pages/dashboard/contracts/contracts";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="policies" element={<Policies />} />
             <Route path="customers" element={<Customers />} />
             <Route path="claims" element={<Claims />} />
+            <Route path="contracts" element={<Contracts />} />
           </Route>
         </Route>
       </Routes>
