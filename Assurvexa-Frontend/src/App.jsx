@@ -10,6 +10,7 @@ import Agents from "./pages/dashboard/agents/agents";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Policies from "./pages/dashboard/policies/policies";
 import Customers from "./pages/dashboard/customers/customers";
+import Claims from "./pages/dashboard/claims/claims";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="agents" element={<Agents />} />
             <Route path="policies" element={<Policies />} />
             <Route path="customers" element={<Customers />} />
+            <Route path="claims" element={<Claims />} />
           </Route>
         </Route>
       </Routes>
