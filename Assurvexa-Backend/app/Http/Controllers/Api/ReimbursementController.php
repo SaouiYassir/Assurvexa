@@ -19,6 +19,12 @@ class ReimbursementController extends Controller
      */
     public function index(Request $request)
     {
+        abort_unless(
+            in_array($request->user()->role, ['customer', 'agent'], true),
+            403,
+            'Only customers and agents can view reimbursements.'
+        );
+
         $query = Reimbursement::with(['claim']);
 
         if ($request->user()->role === 'customer') {
@@ -46,8 +52,8 @@ class ReimbursementController extends Controller
      */
     public function store(Request $request)
     {
-        abort_unless(in_array($request->user()->role, ['admin', 'agent'], true), 403,
-            'Only agents and administrators can issue reimbursements.');
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can issue reimbursements.');
 
         $validated = $request->validate([
             'claim_id' => [
@@ -107,8 +113,7 @@ class ReimbursementController extends Controller
     {
         $claim = $reimbursement->claim;
         $user = $request->user();
-        $allowed = $user->role === 'admin'
-            || ($user->role === 'customer' && $claim->customer_id === $user->customer?->id)
+        $allowed = ($user->role === 'customer' && $claim->customer_id === $user->customer?->id)
             || ($user->role === 'agent' && $claim->agent_id === $user->agent?->id);
 
         abort_unless($allowed, 403, 'You are not allowed to view this reimbursement.');
@@ -126,8 +131,8 @@ class ReimbursementController extends Controller
      */
     public function update(Request $request, Reimbursement $reimbursement)
     {
-        abort_unless(in_array($request->user()->role, ['admin', 'agent'], true), 403,
-            'Only agents and administrators can update reimbursements.');
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can update reimbursements.');
 
         $validated = $request->validate([
             'claim_id' => [
@@ -191,6 +196,9 @@ class ReimbursementController extends Controller
      */
     public function destroy(Reimbursement $reimbursement)
     {
+        abort_unless(request()->user()->role === 'agent', 403,
+            'Only agents can delete reimbursements.');
+
         $reimbursement->delete();
 
         return response()->json([

@@ -46,8 +46,8 @@ class ContractController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        abort_unless(in_array($request->user()->role, ['admin', 'agent'], true), 403,
-            'Only agents and administrators can create contracts.');
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can create contracts.');
 
         $validated = $request->validate([
             'customer_id' => [
@@ -125,8 +125,8 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract): JsonResponse
     {
-        abort_unless(in_array($request->user()->role, ['admin', 'agent'], true), 403,
-            'Only agents and administrators can update contracts.');
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can update contracts.');
 
         if ($request->user()->role === 'agent' &&
             $contract->agent_id !== $request->user()->agent?->id) {
@@ -202,6 +202,9 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract): JsonResponse
     {
+        abort_unless(request()->user()->role === 'agent', 403,
+            'Only agents can delete contracts.');
+
         $contract->delete();
 
         return response()->json([

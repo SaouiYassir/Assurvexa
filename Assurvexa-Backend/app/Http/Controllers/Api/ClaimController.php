@@ -17,6 +17,12 @@ class ClaimController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        abort_unless(
+            in_array($request->user()->role, ['admin', 'customer', 'agent'], true),
+            403,
+            'Only administrators, customers, and agents can view claims.'
+        );
+
         $query = Claim::with([
             'contract',
             'agent.user',
@@ -121,8 +127,8 @@ class ClaimController extends Controller
      */
     public function update(Request $request, Claim $claim): JsonResponse
     {
-        abort_unless(in_array($request->user()->role, ['admin', 'agent'], true), 403,
-            'Only agents and administrators can review claims.');
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can update claims.');
 
         if ($request->user()->role === 'agent' &&
             $claim->agent_id !== $request->user()->agent?->id) {
