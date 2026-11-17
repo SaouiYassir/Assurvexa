@@ -13,6 +13,7 @@ import Policies from "./pages/dashboard/policies/policies";
 import Customers from "./pages/dashboard/customers/customers";
 import Claims from "./pages/dashboard/claims/claims";
 import Contracts from "./pages/dashboard/contracts/contracts";
+import Reimbursements from "./pages/dashboard/reimbursements/reimbursements";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="customers" element={<Customers />} />
             <Route path="claims" element={<Claims />} />
             <Route path="contracts" element={<Contracts />} />
+            <Route path="reimbursements" element={<Reimbursements />} />
           </Route>
         </Route>
       </Routes>
