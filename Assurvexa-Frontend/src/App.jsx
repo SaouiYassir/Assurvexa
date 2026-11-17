@@ -5,13 +5,14 @@ import Home from "./pages/home/home";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 
-import Dashboard from "./pages/dashboard/dashboard";
-import Agents from "./pages/dashboard/agents/agents";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Dashboard from "./pages/dashboard/dashboard";
+import Overview from "./pages/dashboard/overview/overview";
+import Agents from "./pages/dashboard/agents/agents";
 import Policies from "./pages/dashboard/policies/policies";
 import Customers from "./pages/dashboard/customers/customers";
-import Claims from "./pages/dashboard/claims/claims";
-import Contracts from "./pages/dashboard/contracts/contracts";
+// import Claims from "./pages/dashboard/claims/claims";
+// import Contracts from "./pages/dashboard/contracts/contracts";
 
 function App() {
   return (
@@ -36,12 +37,12 @@ function App() {
         {/* --- DASHBOARD ROUTES (No Global Header/Footer, Sidebar Only) --- */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
-            {/* <Route index element={<Overview />} /> */}
+            <Route index element={<Overview />} />
             <Route path="agents" element={<Agents />} />
             <Route path="policies" element={<Policies />} />
             <Route path="customers" element={<Customers />} />
-            <Route path="claims" element={<Claims />} />
-            <Route path="contracts" element={<Contracts />} />
+            {/* <Route path="claims" element={<Claims />} /> */}
+            {/* <Route path="contracts" element={<Contracts />} /> */}
           </Route>
         </Route>
       </Routes>
