@@ -6,7 +6,8 @@ import {
   ShieldCheck,
   FileText,
   LogOut,
-  Briefcase
+  Briefcase,
+  HandCoins
 } from "lucide-react";
 import './sidebar.css';
 import { useAuth } from '../../context/useAuth';
@@ -19,18 +20,22 @@ const NAV_ITEMS_BY_ROLE = {
         { label: "Policies", path: "/dashboard/policies", icon: ShieldCheck },
         { label: "Contracts", path: "/dashboard/contracts", icon: ShieldCheck },
         { label: "Claims", path: "/dashboard/claims", icon: FileText },
+        { label: "Reimbursements", path: "/dashboard/reimbursements", icon: HandCoins }
     ],
     agent: [
         { label: "My Activity", path: "/dashboard", icon: LayoutDashboard },
         { label: "My Clients", path: "/dashboard/customers", icon: UserCheck },
         { label: "Policies", path: "/dashboard/policies", icon: ShieldCheck },
+        { label: "Contracts", path: "/dashboard/contracts", icon: ShieldCheck },
         { label: "Claims", path: "/dashboard/claims", icon: FileText },
+        { label: "Reimbursements", path: "/dashboard/reimbursements", icon: HandCoins }
     ],
     client: [
         { label: "My Workspace", path: "/dashboard", icon: LayoutDashboard },
         { label: "My Insurance", path: "/dashboard/policies", icon: ShieldCheck },
         { label: "My Claims", path: "/dashboard/claims", icon: FileText },
-        { label: "My Documents", path: "/dashboard/documents", icon: FileText },
+        { label: "My Contracts", path: "/dashboard/contracts", icon: FileText },
+        { label: "My Reimbursements", path: "/dashboard/reimbursements", icon: HandCoins }
     ],
 };
 
