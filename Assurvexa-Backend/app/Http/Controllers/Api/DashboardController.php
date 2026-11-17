@@ -48,8 +48,8 @@ class DashboardController extends Controller
                 'reimbursements' => Reimbursement::count(),
             ],
             'financials' => [
-                'total_reimbursed_amount' => Reimbursement::where('status_paiement', 'paid')->sum('amount'), // adjust column/status names to match your DB
-                'pending_reimbursement_amount' => Reimbursement::where('status_paiement', 'pending')->sum('amount'),
+                'total_reimbursed_amount'      => Reimbursement::where('status_paiement', 'paid')->sum('prix'),
+                'pending_reimbursement_amount' => Reimbursement::where('status_paiement', 'pending')->sum('prix'),
             ],
             'claims_by_status' => Claim::query()
                 ->selectRaw('status, COUNT(*) as total')
@@ -73,17 +73,15 @@ class DashboardController extends Controller
     {
         $agent = $user->agent; // Assumes User hasOne Agent
 
-        // Scope queries to this agent if contracts/customers belong to an agent;
-        // otherwise remove ->where('agent_id', ...) if agents share the global queue.
         $contractsQuery = Contract::where('agent_id', $agent->id);
         $contractIds = $contractsQuery->pluck('id');
 
         return [
             'totals' => [
-                'my_customers'      => Customer::where('agent_id', $agent->id)->count(),
-                'active_contracts'  => (clone $contractsQuery)->where('status', 'active')->count(),
-                'pending_claims'    => Claim::whereIn('contract_id', $contractIds)->where('status', 'pending')->count(),
-                'pending_payments'  => Reimbursement::whereHas('claim', fn ($q) => $q->whereIn('contract_id', $contractIds))
+                'my_customers'     => (clone $contractsQuery)->distinct('customer_id')->count('customer_id'),
+                'active_contracts' => (clone $contractsQuery)->where('status', 'active')->count(),
+                'pending_claims'   => Claim::whereIn('contract_id', $contractIds)->where('status', 'pending')->count(),
+                'pending_payments' => Reimbursement::whereHas('claim', fn ($q) => $q->whereIn('contract_id', $contractIds))
                     ->where('status_paiement', 'pending')
                     ->count(),
             ],
@@ -112,9 +110,9 @@ class DashboardController extends Controller
                 'active_contracts'   => Contract::where('customer_id', $customer->id)->where('status', 'active')->count(),
                 'total_claims'       => Claim::where('customer_id', $customer->id)->count(),
                 'pending_claims'     => Claim::where('customer_id', $customer->id)->where('status', 'pending')->count(),
-                'total_reimbursed'   => Reimbursement::whereHas('claim', fn ($q) => $q->where('customer_id', $customer->id))
+                'total_reimbursed' => Reimbursement::whereHas('claim', fn ($q) => $q->where('customer_id', $customer->id))
                     ->where('status_paiement', 'paid')
-                    ->sum('amount'),
+                    ->sum('prix'),
             ],
             'claims_by_status' => Claim::where('customer_id', $customer->id)
                 ->selectRaw('status, COUNT(*) as total')

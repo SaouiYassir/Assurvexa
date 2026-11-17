@@ -50,6 +50,12 @@ Route::middleware('auth.cookie')->group(function () {
         'show'
     ]);
 
+    // Customers
+    Route::get('/customers', [CustomerController::class, 'index']);
+    Route::get('/customers/{customer}', [CustomerController::class, 'show']);
+    Route::post('/customers', [CustomerController::class, 'store']);
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy']);
+
 
     // ======================================
     // ADMIN ROUTES
@@ -64,10 +70,6 @@ Route::middleware('auth.cookie')->group(function () {
 
         // Agents
         Route::apiResource('agents', AgentController::class);
-
-        // Customers
-        Route::apiResource('customers', CustomerController::class)
-            ->only(['index', 'show']);
     });
 
 
@@ -96,12 +98,6 @@ Route::middleware('auth.cookie')->group(function () {
             ReimbursementController::class,
             'destroy'
         ]);
-
-        // Customers
-        Route::get('/customers', [CustomerController::class, 'index']);
-        Route::get('/customers/{customer}', [CustomerController::class, 'show']);
-        Route::post('/customers', [CustomerController::class, 'store']);
-        Route::delete('/customers/{customer}', [CustomerController::class, 'destroy']);
     });
 
 
