@@ -40,6 +40,7 @@ Route::middleware('auth.cookie')->group(function () {
 
     Route::get('/claims', [ClaimController::class, 'index']);
     Route::get('/claims/{claim}', [ClaimController::class, 'show']);
+    Route::put('/claims/{claim}', [ClaimController::class, 'update']);
 
     Route::get('/contracts', [ContractController::class, 'index']);
     Route::get('/contracts/{contract}', [ContractController::class, 'show']);
@@ -80,7 +81,7 @@ Route::middleware('auth.cookie')->group(function () {
     Route::middleware('agent')->group(function () {
 
         // Claims
-        Route::put('/claims/{claim}', [ClaimController::class, 'update']);
+        // Route::put('/claims/{claim}', [ClaimController::class, 'update']);
         Route::delete('/claims/{claim}', [ClaimController::class, 'destroy']);
 
         // Contracts
@@ -109,7 +110,7 @@ Route::middleware('auth.cookie')->group(function () {
 
         // Claims
         Route::post('/claims', [ClaimController::class, 'store']);
-        Route::put('/claims/{claim}', [ClaimController::class, 'update']);
+        // Route::put('/claims/{claim}', [ClaimController::class, 'update']);
 
         // Customer profile
         Route::put('/customers/{customer}', [CustomerController::class, 'update']);
