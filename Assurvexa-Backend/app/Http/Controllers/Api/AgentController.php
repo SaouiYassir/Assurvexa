@@ -5,16 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Agent;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use App\Http\Resources\UserResource;
 
-class AgentController extends Controller {
-    
-    public function index(): JsonResponse {
+class AgentController extends Controller
+{
+    public function index(): JsonResponse
+    {
         $agents = Agent::with('user')->paginate(10);
 
         return response()->json([
@@ -23,7 +23,8 @@ class AgentController extends Controller {
         ]);
     }
 
-    public function show(Agent $agent): JsonResponse {
+    public function show(Agent $agent): JsonResponse
+    {
         $agent->load('user');
 
         return response()->json([
@@ -32,7 +33,8 @@ class AgentController extends Controller {
         ]);
     }
 
-    public function store(Request $request): JsonResponse {
+    public function store(Request $request): JsonResponse
+    {
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -59,7 +61,7 @@ class AgentController extends Controller {
 
             return Agent::create([
                 'user_id' => $user->id,
-                'date_integration' => now()->toDateString(),
+                'date_integration' => $validated['date_integration'],
             ]);
         });
 
@@ -71,7 +73,8 @@ class AgentController extends Controller {
         ], 201);
     }
 
-    public function update(Request $request, $id): JsonResponse {
+    public function update(Request $request, $id): JsonResponse
+    {
         $agent = Agent::findOrFail($id);
         $user = $agent->user;
 
@@ -95,7 +98,7 @@ class AgentController extends Controller {
         ]);
 
         $userData = collect($validated)->only([
-            'first_name', 'last_name', 'username', 'email', 'phone', 'CIN'
+            'first_name', 'last_name', 'username', 'email', 'phone', 'CIN',
         ])->all();
 
         DB::transaction(function () use ($agent, $user, $userData, $validated) {
@@ -114,17 +117,18 @@ class AgentController extends Controller {
         ]);
     }
 
-    public function destroy($id): JsonResponse {
+    public function destroy($id): JsonResponse
+    {
         $agent = Agent::findOrFail($id);
 
         if ($agent->user) {
-        $agent->user->delete();
+            $agent->user->delete();
         }
 
         $agent->delete();
 
         return response()->json([
-            'message' => 'Agent deleted successfully.'
+            'message' => 'Agent deleted successfully.',
         ], 200);
     }
 }

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Enums\ClaimStatus;
+use App\Http\Controllers\Controller;
 use App\Models\Claim;
-use App\Models\Contract;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class ClaimController extends Controller
@@ -15,52 +14,79 @@ class ClaimController extends Controller
     /**
      * Display a listing of claims.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $claims = Claim::with([
+        abort_unless(
+            in_array($request->user()->role, ['admin', 'customer', 'agent'], true),
+            403,
+            'Only administrators, customers, and agents can view claims.'
+        );
+
+        $query = Claim::with([
             'contract',
             'agent.user',
-            'customer.user'
-        ])->paginate(10);
+            'customer.user',
+        ]);
+
+        if ($request->user()->role === 'customer') {
+            $customerId = $request->user()->customer?->id;
+            abort_unless($customerId, 403, 'Customer profile not found.');
+            $query->where('customer_id', $customerId);
+        } elseif ($request->user()->role === 'agent') {
+            $agentId = $request->user()->agent?->id;
+            abort_unless($agentId, 403, 'Agent profile not found.');
+            $query->where('agent_id', $agentId);
+        }
+
+        $claims = $query->latest()->paginate(10);
 
         return response()->json([
             'success' => true,
-            'data' => $claims
+            'data' => $claims,
         ], 200);
     }
 
     /**
-     * Store a newly created claim.
+     * Store a newly created claim (Customer only).
      */
     public function store(Request $request): JsonResponse
     {
+        abort_unless(
+            $request->user()->role === 'customer',
+            403,
+            'Only customers can submit claims.'
+        );
+
         $validated = $request->validate([
-            'contract_id' => [
-                'required',
-                'exists:contracts,id',
-            ],
-            'description' => [
-                'required',
-                'string',
-            ],
-            'incident_date' => [
-                'required',
-                'date',
-            ],
-            'prix_estime' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+            'contract_id' => ['required', 'integer', 'exists:contracts,id'],
+            'description' => ['required', 'string'],
+            'incident_date' => ['required', 'date', 'before_or_equal:today'],
+            'prix_estime' => ['required', 'numeric', 'min:0'],
         ]);
 
-        // Retrieve the contract and its associated agent/customer.
-        $contract = Contract::findOrFail($validated['contract_id']);
+        $customer = $request->user()->customer;
+
+        if (! $customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Customer record not found for this user.',
+            ], 403);
+        }
+
+        // Ensure the contract belongs to this customer
+        $contract = $customer->contracts()->find($validated['contract_id']);
+
+        if (! $contract) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Contract not found or does not belong to this customer.',
+            ], 403);
+        }
 
         $claim = Claim::create([
             'contract_id' => $contract->id,
             'agent_id' => $contract->agent_id,
-            'customer_id' => $contract->customer_id,
+            'customer_id' => $customer->id,
             'description' => $validated['description'],
             'incident_date' => $validated['incident_date'],
             'prix_estime' => $validated['prix_estime'],
@@ -69,11 +95,11 @@ class ClaimController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Claim created successfully.',
+            'message' => 'Claim submitted successfully.',
             'data' => $claim->load([
                 'contract',
                 'agent.user',
-                'customer.user'
+                'customer.user',
             ]),
         ], 201);
     }
@@ -81,58 +107,113 @@ class ClaimController extends Controller
     /**
      * Display the specified claim.
      */
-    public function show(Claim $claim): JsonResponse
+    public function show(Request $request, Claim $claim): JsonResponse
     {
+        $this->ensureCanView($request, $claim);
+
         $claim->load([
             'contract',
             'agent.user',
-            'customer.user'
+            'customer.user',
         ]);
 
         return response()->json([
             'success' => true,
-            'data' => $claim
+            'data' => $claim,
         ], 200);
     }
 
     /**
      * Update the specified claim.
+     * - Agent: reviews/adjudicates assigned claims (status, decision_note, date_review).
+     * - Customer: modifies their own pending claim details (contract_id, description, incident_date, prix_estime).
      */
     public function update(Request $request, Claim $claim): JsonResponse
     {
+        $user = $request->user();
+
+        abort_unless(
+            in_array($user->role, ['agent', 'customer'], true),
+            403,
+            'Only agents and customers can update claims.'
+        );
+
+        // AGENT: Adjudicate assigned claim
+        if ($user->role === 'agent') {
+            if ($claim->agent_id !== $user->agent?->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You can only review claims assigned to you.',
+                ], 403);
+            }
+
+            $validated = $request->validate([
+                'description' => ['sometimes', 'required', 'string'],
+                'incident_date' => ['sometimes', 'required', 'date', 'before_or_equal:today'],
+                'prix_estime' => ['sometimes', 'required', 'numeric', 'min:0'],
+                'status' => ['sometimes', 'required', Rule::enum(ClaimStatus::class)],
+                'decision_note' => ['sometimes', 'nullable', 'string'],
+                'date_review' => ['sometimes', 'nullable', 'date'],
+            ]);
+
+            if (isset($validated['status']) && ! array_key_exists('date_review', $validated)) {
+                $validated['date_review'] = now();
+            }
+
+            $claim->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Claim updated successfully.',
+                'data' => $claim->fresh()->load([
+                    'contract',
+                    'agent.user',
+                    'customer.user',
+                ]),
+            ], 200);
+        }
+
+        // CUSTOMER: Edit own pending claim
+        $customer = $user->customer;
+
+        if (! $customer || $claim->customer_id !== $customer->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only update your own claims.',
+            ], 403);
+        }
+
+        $currentStatus = $claim->status instanceof ClaimStatus
+            ? $claim->status->value
+            : $claim->status;
+
+        if ($currentStatus !== ClaimStatus::PENDING->value) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only pending claims can be modified.',
+            ], 422);
+        }
+
         $validated = $request->validate([
-            'description' => [
-                'sometimes',
-                'required',
-                'string',
-            ],
-            'incident_date' => [
-                'sometimes',
-                'required',
-                'date',
-            ],
-            'prix_estime' => [
-                'sometimes',
-                'required',
-                'numeric',
-                'min:0',
-            ],
-            'status' => [
-                'sometimes',
-                'required',
-                Rule::enum(ClaimStatus::class),
-            ],
-            'decision_note' => [
-                'sometimes',
-                'nullable',
-                'string',
-            ],
-            'date_review' => [
-                'sometimes',
-                'nullable',
-                'date',
-            ],
+            'contract_id' => ['sometimes', 'required', 'integer', 'exists:contracts,id'],
+            'description' => ['sometimes', 'required', 'string'],
+            'incident_date' => ['sometimes', 'required', 'date', 'before_or_equal:today'],
+            'prix_estime' => ['sometimes', 'required', 'numeric', 'min:0'],
         ]);
+
+        // If customer changes contract_id, verify ownership & sync agent_id
+        if (isset($validated['contract_id'])) {
+            $contract = $customer->contracts()->find($validated['contract_id']);
+
+            if (! $contract) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Contract not found or does not belong to this customer.',
+                ], 403);
+            }
+
+            $validated['agent_id'] = $contract->agent_id;
+        }
 
         $claim->update($validated);
 
@@ -142,21 +223,45 @@ class ClaimController extends Controller
             'data' => $claim->fresh()->load([
                 'contract',
                 'agent.user',
-                'customer.user'
+                'customer.user',
             ]),
         ], 200);
     }
 
     /**
-     * Remove the specified claim.
+     * Remove the specified claim (Agent only).
      */
-    public function destroy(Claim $claim): JsonResponse
+    public function destroy(Request $request, Claim $claim): JsonResponse
     {
+        abort_unless(
+            $request->user()->role === 'agent',
+            403,
+            'Only agents can delete claims.'
+        );
+
+        if ($claim->agent_id !== $request->user()->agent?->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only delete claims assigned to you.',
+            ], 403);
+        }
+
         $claim->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Claim deleted successfully.'
+            'message' => 'Claim deleted successfully.',
         ], 200);
+    }
+
+    private function ensureCanView(Request $request, Claim $claim): void
+    {
+        $user = $request->user();
+
+        $allowed = $user->role === 'admin'
+            || ($user->role === 'customer' && $claim->customer_id === $user->customer?->id)
+            || ($user->role === 'agent' && $claim->agent_id === $user->agent?->id);
+
+        abort_unless($allowed, 403, 'You are not allowed to view this claim.');
     }
 }

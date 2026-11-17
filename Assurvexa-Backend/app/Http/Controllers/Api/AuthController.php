@@ -44,7 +44,7 @@ class AuthController extends Controller
                 'CIN'        => $validated['CIN'],
                 'phone'      => $validated['phone'],
                 'email'      => $validated['email'],
-                'password'   => $validated['password'],
+                'password' => Hash::make($validated['password']),
                 'role'       => 'customer',
             ]);
 

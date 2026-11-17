@@ -15,10 +15,10 @@ class AgentMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== 'agent') {
+        if (! $request->user() || $request->user()->role !== 'agent') {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized. Agent access only.'
+                'message' => 'Unauthorized. Agent access required.',
             ], 403);
         }
 

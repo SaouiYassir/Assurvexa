@@ -2,30 +2,42 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ContractStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use App\Enums\ContractStatus;
+use Illuminate\Validation\ValidationException;
 
 class ContractController extends Controller
 {
     /**
      * Display a listing of contracts.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $contracts = Contract::with([
+        $query = Contract::with([
             'customer.user',
             'agent.user',
-            'policy'
-        ])->paginate(10);
+            'policy',
+        ]);
+
+        if ($request->user()->role === 'customer') {
+            $customerId = $request->user()->customer?->id;
+            abort_unless($customerId, 403, 'Customer profile not found.');
+            $query->where('customer_id', $customerId);
+        } elseif ($request->user()->role === 'agent') {
+            $agentId = $request->user()->agent?->id;
+            abort_unless($agentId, 403, 'Agent profile not found.');
+            $query->where('agent_id', $agentId);
+        }
+
+        $contracts = $query->latest()->paginate(10);
 
         return response()->json([
             'success' => true,
-            'data' => $contracts
+            'data' => $contracts,
         ], 200);
     }
 
@@ -34,6 +46,9 @@ class ContractController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can create contracts.');
+
         $validated = $request->validate([
             'customer_id' => [
                 'required',
@@ -58,9 +73,20 @@ class ContractController extends Controller
             ],
             'status' => [
                 'required',
-                Rule::enum(ContractStatus::class)
+                Rule::enum(ContractStatus::class),
             ],
         ]);
+
+        if ($request->user()->role === 'agent') {
+            $agent = $request->user()->agent;
+
+            if (! $agent || (int) $validated['agent_id'] !== (int) $agent->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Agents can only create contracts assigned to themselves.',
+                ], 403);
+            }
+        }
 
         $contract = Contract::create($validated);
 
@@ -70,7 +96,7 @@ class ContractController extends Controller
             'data' => $contract->load([
                 'customer.user',
                 'agent.user',
-                'policy'
+                'policy',
             ]),
         ], 201);
     }
@@ -78,17 +104,19 @@ class ContractController extends Controller
     /**
      * Display the specified contract.
      */
-    public function show(Contract $contract): JsonResponse
+    public function show(Request $request, Contract $contract): JsonResponse
     {
+        $this->ensureCanView($request, $contract);
+
         $contract->load([
             'customer.user',
             'agent.user',
-            'policy'
+            'policy',
         ]);
 
         return response()->json([
             'success' => true,
-            'data' => $contract
+            'data' => $contract,
         ], 200);
     }
 
@@ -97,6 +125,17 @@ class ContractController extends Controller
      */
     public function update(Request $request, Contract $contract): JsonResponse
     {
+        abort_unless($request->user()->role === 'agent', 403,
+            'Only agents can update contracts.');
+
+        if ($request->user()->role === 'agent' &&
+            $contract->agent_id !== $request->user()->agent?->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only update contracts assigned to you.',
+            ], 403);
+        }
+
         $validated = $request->validate([
             'customer_id' => [
                 'sometimes',
@@ -126,8 +165,7 @@ class ContractController extends Controller
             'status' => [
                 'sometimes',
                 'required',
-                'string',
-                'max:50',
+                Rule::enum(ContractStatus::class),
             ],
         ]);
 
@@ -141,7 +179,7 @@ class ContractController extends Controller
         if (strtotime($dateFin) < strtotime($dateDebut)) {
             throw ValidationException::withMessages([
                 'date_fin' => [
-                    'The end date must be after or equal to the start date.'
+                    'The end date must be after or equal to the start date.',
                 ],
             ]);
         }
@@ -154,7 +192,7 @@ class ContractController extends Controller
             'data' => $contract->fresh()->load([
                 'customer.user',
                 'agent.user',
-                'policy'
+                'policy',
             ]),
         ], 200);
     }
@@ -164,11 +202,25 @@ class ContractController extends Controller
      */
     public function destroy(Contract $contract): JsonResponse
     {
+        abort_unless(request()->user()->role === 'agent', 403,
+            'Only agents can delete contracts.');
+
         $contract->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Contract deleted successfully.'
+            'message' => 'Contract deleted successfully.',
         ], 200);
+    }
+
+    private function ensureCanView(Request $request, Contract $contract): void
+    {
+        $user = $request->user();
+
+        $allowed = $user->role === 'admin'
+            || ($user->role === 'customer' && $contract->customer_id === $user->customer?->id)
+            || ($user->role === 'agent' && $contract->agent_id === $user->agent?->id);
+
+        abort_unless($allowed, 403, 'You are not allowed to view this contract.');
     }
 }
