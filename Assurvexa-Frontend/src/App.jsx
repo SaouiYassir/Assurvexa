@@ -11,7 +11,7 @@ import Overview from "./pages/dashboard/overview/overview";
 import Agents from "./pages/dashboard/agents/agents";
 import Policies from "./pages/dashboard/policies/policies";
 import Customers from "./pages/dashboard/customers/customers";
-// import Claims from "./pages/dashboard/claims/claims";
+import Claims from "./pages/dashboard/claims/claims";
 // import Contracts from "./pages/dashboard/contracts/contracts";
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
             <Route path="agents" element={<Agents />} />
             <Route path="policies" element={<Policies />} />
             <Route path="customers" element={<Customers />} />
-            {/* <Route path="claims" element={<Claims />} /> */}
+            <Route path="claims" element={<Claims />} />
             {/* <Route path="contracts" element={<Contracts />} /> */}
           </Route>
         </Route>
