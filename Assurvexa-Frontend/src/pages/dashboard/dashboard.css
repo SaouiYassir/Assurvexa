@@ -23,3 +23,32 @@
         width: auto;
     }
 }
+
+.dashboard-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+}
+
+.dashboard-pagination button,
+.dashboard-record-select > button {
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    background: #fff;
+    color: #1e293b;
+    padding: 0.375rem 0.625rem;
+    cursor: pointer;
+}
+
+.dashboard-pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.dashboard-record-select {
+    display: grid;
+    gap: 0.375rem;
+}

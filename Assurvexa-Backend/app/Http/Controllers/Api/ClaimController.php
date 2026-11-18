@@ -38,7 +38,24 @@ class ClaimController extends Controller
             $query->where('agent_id', $agentId);
         }
 
-        $claims = $query->latest()->paginate(10);
+        $filters = $request->validate([
+            'search' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'reimbursable' => ['sometimes', 'boolean'],
+        ]);
+        if ($filters['reimbursable'] ?? false) {
+            $query->where('status', ClaimStatus::APPROVED)->whereDoesntHave('reimbursement');
+        }
+        $search = $filters['search'] ?? '';
+        if ($search !== '') {
+            $query->where(function ($match) use ($search) {
+                $match->whereLike('description', "%{$search}%");
+                if (ctype_digit($search)) {
+                    $match->orWhere('id', (int) $search);
+                }
+            });
+        }
+
+        $claims = $query->latest()->orderByDesc('id')->paginate(10);
 
         return response()->json([
             'success' => true,

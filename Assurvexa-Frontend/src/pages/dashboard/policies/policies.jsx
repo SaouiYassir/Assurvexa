@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
+import RecordPagination from '../RecordPagination';
+import { useAuth } from '../../../context/useAuth';
+import { useEffect, useMemo, useState } from 'react';
 import api from '../../../services/api';
 import { can } from '../../../services/permissions';
 import './policies.css';
@@ -25,12 +28,10 @@ const INITIAL_FORM = {
 };
 
 function Policies({ role: propRole }) {
-  const [role, setRole] = useState(propRole || null);
-  const [policies, setPolicies] = useState([]);
+  const { user } = useAuth();
+  const role = propRole ?? user?.role;
   const [selectedPolicy, setSelectedPolicy] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [error, setError] = useState('');
@@ -46,36 +47,6 @@ function Policies({ role: propRole }) {
   const [policyForm, setPolicyForm] = useState(INITIAL_FORM);
   const [validationErrors, setValidationErrors] = useState({});
 
-  // Sync propRole if passed externally
-  useEffect(() => {
-    if (propRole) {
-      setRole(propRole);
-    }
-  }, [propRole]);
-
-  // Resolve authenticated user's role if not passed via props
-  useEffect(() => {
-    if (propRole) return;
-    let isMounted = true;
-
-    const fetchCurrentUserRole = async () => {
-      try {
-        const res = await api.get('/me');
-        const userRole = res.data?.user?.role ?? res.data?.data?.role ?? res.data?.role;
-        if (isMounted && userRole) {
-          setRole(userRole);
-        }
-      } catch (err) {
-        console.error('Failed to resolve user role:', err);
-      }
-    };
-
-    fetchCurrentUserRole();
-    return () => {
-      isMounted = false;
-    };
-  }, [propRole]);
-
   // Prevent background scrolling when modal is open
   useEffect(() => {
     document.body.style.overflow = modal ? 'hidden' : '';
@@ -85,34 +56,8 @@ function Policies({ role: propRole }) {
   }, [modal]);
 
   // READ POLICIES
-  const getPolicies = useCallback(async (isManualRefresh = false) => {
-    try {
-      if (isManualRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError('');
-
-      const response = await api.get('/policies');
-      const data =
-        response.data?.data?.data ??
-        response.data?.data ??
-        response.data;
-
-      setPolicies(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch policies:', err);
-      setError(err.response?.data?.message || 'Could not load policies data.');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getPolicies();
-  }, [getPolicies]);
+  const { records: policies, loading, refreshing, reload: getPolicies } =
+    useDashboardRecords('/policies', setError);
 
   // FILTERED & SORTED POLICIES
   const filteredPolicies = useMemo(() => {
@@ -291,6 +236,8 @@ function Policies({ role: propRole }) {
   const canDelete = can(role, 'policies', 'delete');
   const hasRowActions = canUpdate || canDelete;
 
+  const { rows: visibleRows, controls: pagination } = useRecordPage(filteredPolicies);
+
   return (
     <section className="policies-section" id="policies-section">
       <div className="container">
@@ -442,8 +389,7 @@ function Policies({ role: propRole }) {
         {/* LEDGER SUMMARY BAR */}
         <div className="policies-ledger-bar">
           <span className="policies-count-label">
-            Showing <strong>{filteredPolicies.length}</strong> of{' '}
-            <strong>{policies.length}</strong> Insurance Policies
+            <strong>{filteredPolicies.length}</strong> of <strong>{policies.length}</strong> policies match
           </span>
         </div>
 
@@ -470,7 +416,7 @@ function Policies({ role: propRole }) {
                     </td>
                   </tr>
                 ) : filteredPolicies.length > 0 ? (
-                  filteredPolicies.map((policy) => (
+                  visibleRows.map((policy) => (
                     <tr key={policy.id}>
                       <td className="policy-id">#{policy.id}</td>
 
@@ -536,6 +482,7 @@ function Policies({ role: propRole }) {
               </tbody>
             </table>
           </div>
+          <RecordPagination {...pagination} />
         </div>
       </div>
 

@@ -33,7 +33,17 @@ class ContractController extends Controller
             $query->where('agent_id', $agentId);
         }
 
-        $contracts = $query->latest()->paginate(10);
+        $search = $request->validate(['search' => ['sometimes', 'nullable', 'string', 'max:100']])['search'] ?? '';
+        if ($search !== '') {
+            $query->where(function ($match) use ($search) {
+                $match->whereHas('policy', fn ($policy) => $policy->whereLike('nom', "%{$search}%"));
+                if (ctype_digit($search)) {
+                    $match->orWhere('id', (int) $search);
+                }
+            });
+        }
+
+        $contracts = $query->latest()->orderByDesc('id')->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -200,10 +210,11 @@ class ContractController extends Controller
     /**
      * Remove the specified contract.
      */
-    public function destroy(Contract $contract): JsonResponse
+    public function destroy(Request $request, Contract $contract): JsonResponse
     {
-        abort_unless(request()->user()->role === 'agent', 403,
-            'Only agents can delete contracts.');
+        $user = $request->user();
+        abort_unless($user->role === 'agent' && $contract->agent_id === $user->agent?->id, 403,
+            'You can only delete contracts assigned to you.');
 
         $contract->delete();
 

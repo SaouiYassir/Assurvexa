@@ -1,6 +1,10 @@
+import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
+import RecordPagination from '../RecordPagination';
+import { useAuth } from '../../../context/useAuth';
+import RecordSelect from '../RecordSelect';
 import api from '../../../services/api';
 import { can } from '../../../services/permissions';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
     Search,
@@ -27,13 +31,29 @@ const INITIAL_CONTRACT_FORM = {
     status: 'active',
 };
 
-function Contracts({ role: propRole }) {
-    const [role, setRole] = useState(propRole || null);
-    const [contracts, setContracts] = useState([]);
-    const [customers, setCustomers] = useState([]);
-    const [policies, setPolicies] = useState([]);
+const normalizeStatus = (status) =>
+    String(status || 'unknown').toLowerCase();
 
-    const [loading, setLoading] = useState(true);
+const isExpired = (contract) => {
+    if (normalizeStatus(contract.status) === 'expired') return true;
+    if (!contract.date_fin) return false;
+
+    const endDate = new Date(`${contract.date_fin.slice(0, 10)}T00:00:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return (
+        endDate < today &&
+        !['cancelled', 'canceled', 'terminated', 'rejected'].includes(
+            normalizeStatus(contract.status)
+        )
+    );
+};
+
+function Contracts({ role: propRole }) {
+    const { user } = useAuth();
+    const role = propRole ?? user?.role;
+
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
@@ -46,35 +66,6 @@ function Contracts({ role: propRole }) {
     const [validationErrors, setValidationErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
     const [deleting, setDeleting] = useState(false);
-
-    useEffect(() => {
-        if (propRole) setRole(propRole);
-    }, [propRole]);
-
-    useEffect(() => {
-        if (propRole) return;
-        let isMounted = true;
-
-        const fetchCurrentUserRole = async () => {
-            try {
-                const res = await api.get('/me');
-                const userRole =
-                    res.data?.user?.role ??
-                    res.data?.data?.role ??
-                    res.data?.role;
-                if (isMounted && userRole) {
-                    setRole(userRole);
-                }
-            } catch (err) {
-                console.error('Failed to resolve user role:', err);
-            }
-        };
-
-        fetchCurrentUserRole();
-        return () => {
-            isMounted = false;
-        };
-    }, [propRole]);
 
     // Lock body scroll when any modal is open
     const isAnyModalOpen = Boolean(selectedContract || formModal);
@@ -95,76 +86,12 @@ function Contracts({ role: propRole }) {
     // FETCH CONTRACTS
     // =====================================
 
-    const getContracts = useCallback(async () => {
-        try {
-            setError('');
-            setLoading(true);
-
-            const response = await api.get('/contracts');
-            const data =
-                response.data?.data?.data ??
-                response.data?.data ??
-                response.data;
-
-            setContracts(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error('Failed to fetch contracts:', err);
-            setError(
-                err.response?.data?.message ||
-                'Could not load contracts data.'
-            );
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        getContracts();
-    }, [getContracts]);
-
-    // Fetch customers & policies for Agent form
-    useEffect(() => {
-        if (!canCreate && !canUpdate) return;
-        let isMounted = true;
-
-        const fetchFormOptions = async () => {
-            try {
-                const [customersRes, policiesRes] = await Promise.all([
-                    api.get('/customers'),
-                    api.get('/policies'),
-                ]);
-
-                const customersData =
-                    customersRes.data?.data?.data ??
-                    customersRes.data?.data ??
-                    customersRes.data;
-
-                const policiesData =
-                    policiesRes.data?.data?.data ??
-                    policiesRes.data?.data ??
-                    policiesRes.data;
-
-                if (isMounted) {
-                    setCustomers(Array.isArray(customersData) ? customersData : []);
-                    setPolicies(Array.isArray(policiesData) ? policiesData : []);
-                }
-            } catch (err) {
-                console.error('Failed to load customers or policies:', err);
-            }
-        };
-
-        fetchFormOptions();
-        return () => {
-            isMounted = false;
-        };
-    }, [canCreate, canUpdate]);
+    const { records: contracts, loading, reload: getContracts } =
+      useDashboardRecords('/contracts', setError);
 
     // =====================================
     // STATUS HELPERS
     // =====================================
-
-    const normalizeStatus = (status) =>
-        String(status || 'unknown').toLowerCase();
 
     const getStatusClass = (status) => {
         const value = normalizeStatus(status);
@@ -181,22 +108,6 @@ function Contracts({ role: propRole }) {
         String(status || 'Unknown')
             .replace(/_/g, ' ')
             .replace(/\b\w/g, char => char.toUpperCase());
-
-    const isExpired = (contract) => {
-        if (normalizeStatus(contract.status) === 'expired') return true;
-        if (!contract.date_fin) return false;
-
-        const endDate = new Date(`${contract.date_fin.slice(0, 10)}T00:00:00`);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        return (
-            endDate < today &&
-            !['cancelled', 'canceled', 'terminated', 'rejected'].includes(
-                normalizeStatus(contract.status)
-            )
-        );
-    };
 
     // =====================================
     // STATISTICS
@@ -373,7 +284,7 @@ function Contracts({ role: propRole }) {
         if (!canDelete) return;
 
         const confirmed = window.confirm(
-            `Are you sure you want to delete contract #${contractId}?`
+            `Delete contract #${contractId} and its related claims and reimbursements?`
         );
         if (!confirmed) return;
 
@@ -401,6 +312,8 @@ function Contracts({ role: propRole }) {
     // RENDER
     // =====================================
 
+    const { rows: visibleRows, controls: pagination } = useRecordPage(filteredContracts);
+
     return (
         <section className="contracts-page">
 
@@ -419,7 +332,7 @@ function Contracts({ role: propRole }) {
                 <div className="contracts-header-actions">
                     <button
                         className="contracts-refresh"
-                        onClick={getContracts}
+                        onClick={() => getContracts()}
                         disabled={loading}
                     >
                         <RefreshCw size={16} />
@@ -554,7 +467,7 @@ function Contracts({ role: propRole }) {
                             </thead>
 
                             <tbody>
-                                {filteredContracts.map(contract => (
+                                {visibleRows.map(contract => (
                                     <tr key={contract.id}>
                                         <td>
                                             <strong>#{contract.id}</strong>
@@ -633,8 +546,9 @@ function Contracts({ role: propRole }) {
                     </div>
                 )}
 
+                {!loading && <RecordPagination {...pagination} />}
                 <div className="contracts-footer">
-                    Showing {filteredContracts.length} of {contracts.length} contracts
+                    {filteredContracts.length} of {contracts.length} contracts match
                 </div>
             </div>
 
@@ -823,24 +737,17 @@ function Contracts({ role: propRole }) {
 
                                 <div className="contract-form-group">
                                     <label htmlFor="customer_id">Customer</label>
-                                    <select
-                                        id="customer_id"
+                                    <RecordSelect
+                                        label="Customer"
                                         name="customer_id"
+                                        path="/customers"
                                         value={contractForm.customer_id}
                                         onChange={handleFormChange}
-                                        required
-                                    >
-                                        <option value="" disabled>
-                                            Select a customer
-                                        </option>
-                                        {customers.map(customer => (
-                                            <option key={customer.id} value={customer.id}>
-                                                {customer.user
-                                                    ? `${customer.user.first_name} ${customer.user.last_name} (${customer.user.email})`
-                                                    : `Customer #${customer.id}`}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        initialOption={formModal === 'edit' ? selectedContract?.customer : undefined}
+                                        formatOption={(customer) => customer.user
+                                            ? `${customer.user.first_name} ${customer.user.last_name} (${customer.user.email})`
+                                            : `Customer #${customer.id}`}
+                                    />
                                     {validationErrors.customer_id && (
                                         <span className="contract-field-error">
                                             {validationErrors.customer_id[0]}
@@ -851,25 +758,17 @@ function Contracts({ role: propRole }) {
                                 <div className="contract-form-row">
                                     <div className="contract-form-group">
                                         <label htmlFor="policy_id">Insurance Policy</label>
-                                        <select
-                                            id="policy_id"
+                                        <RecordSelect
+                                            label="Insurance policy"
                                             name="policy_id"
+                                            path="/policies"
                                             value={contractForm.policy_id}
                                             onChange={handleFormChange}
-                                            required
-                                        >
-                                            <option value="" disabled>
-                                                Select a policy
-                                            </option>
-                                            {policies.map(policy => (
-                                                <option key={policy.id} value={policy.id}>
-                                                    {policy.nom}
-                                                    {policy.prix != null
-                                                        ? ` — ${policy.prix} MAD`
-                                                        : ''}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            initialOption={formModal === 'edit' ? selectedContract?.policy : undefined}
+                                            formatOption={(policy) =>
+                                                `${policy.nom}${policy.prix != null ? ` — ${policy.prix} MAD` : ''}`
+                                            }
+                                        />
                                         {validationErrors.policy_id && (
                                             <span className="contract-field-error">
                                                 {validationErrors.policy_id[0]}

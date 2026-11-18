@@ -1,4 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
+import RecordPagination from '../RecordPagination';
+import { useAuth } from '../../../context/useAuth';
+import RecordSelect from '../RecordSelect';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Search,
@@ -6,11 +10,6 @@ import {
   Eye,
   Plus,
   Pencil,
-  Trash2,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  FileText,
   X,
 } from 'lucide-react';
 import api from '../../../services/api';
@@ -32,18 +31,15 @@ const PAYMENT_STATUSES = [
 const INITIAL_FORM = {
   claim_id: '',
   prix: '',
-  methode_paiement: 'virement',
+  methode_paiement: 'transfer_bancaire',
   status_paiement: 'pending',
   date_paiement: '',
 };
 
 function Reimbursements({ role: propRole }) {
-  const [role, setRole] = useState(propRole || null);
-  const [reimbursements, setReimbursements] = useState([]);
-  const [claims, setClaims] = useState([]);
+  const { user } = useAuth();
+  const role = propRole ?? user?.role;
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -61,35 +57,6 @@ function Reimbursements({ role: propRole }) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [form, setForm] = useState(INITIAL_FORM);
   const [validationErrors, setValidationErrors] = useState({});
-
-  useEffect(() => {
-    if (propRole) setRole(propRole);
-  }, [propRole]);
-
-  useEffect(() => {
-    if (propRole) return;
-    let isMounted = true;
-
-    const fetchCurrentUserRole = async () => {
-      try {
-        const res = await api.get('/me');
-        const userRole =
-          res.data?.user?.role ??
-          res.data?.data?.role ??
-          res.data?.role;
-        if (isMounted && userRole) {
-          setRole(userRole);
-        }
-      } catch (err) {
-        console.error('Failed to resolve user role:', err);
-      }
-    };
-
-    fetchCurrentUserRole();
-    return () => {
-      isMounted = false;
-    };
-  }, [propRole]);
 
   useEffect(() => {
     document.body.style.overflow = modal ? 'hidden' : '';
@@ -112,67 +79,8 @@ function Reimbursements({ role: propRole }) {
   // =====================================
   // FETCH REIMBURSEMENTS
   // =====================================
-  const getReimbursements = useCallback(async (isManualRefresh = false) => {
-    try {
-      if (isManualRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError('');
-
-      const response = await api.get('/reimbursements');
-      const data =
-        response.data?.data?.data ??
-        response.data?.data ??
-        response.data;
-
-      setReimbursements(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch reimbursements:', err);
-      setError(
-        err.response?.data?.message ||
-        'Could not load reimbursements data.'
-      );
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getReimbursements();
-  }, [getReimbursements]);
-
-  // Fetch approved claims for Agent dropdown
-  const fetchClaims = useCallback(async () => {
-    if (!canCreate && !canUpdate) return;
-    try {
-      const res = await api.get('/claims');
-      const data = res.data?.data?.data ?? res.data?.data ?? res.data;
-      setClaims(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch claims:', err);
-    }
-  }, [canCreate, canUpdate]);
-
-  useEffect(() => {
-    fetchClaims();
-  }, [fetchClaims]);
-
-  const eligibleClaims = useMemo(() => {
-    const reimbursedClaimIds = new Set(
-      reimbursements
-        .filter((r) => modal !== 'edit' || r.id !== selectedItem?.id)
-        .map((r) => Number(r.claim_id))
-    );
-
-    return claims.filter(
-      (claim) =>
-        String(claim.status || '').toLowerCase() === 'approved' &&
-        !reimbursedClaimIds.has(Number(claim.id))
-    );
-  }, [claims, reimbursements, modal, selectedItem]);
+  const { records: reimbursements, loading, refreshing, reload: getReimbursements } =
+    useDashboardRecords('/reimbursements', setError);
 
   // =====================================
   // STATISTICS
@@ -331,7 +239,7 @@ function Reimbursements({ role: propRole }) {
     setForm({
       claim_id: item.claim_id ?? '',
       prix: item.prix ?? '',
-      methode_paiement: String(item.methode_paiement || 'virement').toLowerCase(),
+      methode_paiement: String(item.methode_paiement || INITIAL_FORM.methode_paiement).toLowerCase(),
       status_paiement: String(item.status_paiement || 'pending').toLowerCase(),
       date_paiement: item.date_paiement ? String(item.date_paiement).slice(0, 10) : '',
     });
@@ -357,11 +265,10 @@ function Reimbursements({ role: propRole }) {
     setError('');
   };
 
-  const handleFormChange = (e) => {
+  const handleFormChange = (e, chosenClaim) => {
     const { name, value } = e.target;
 
     if (name === 'claim_id' && modal === 'create') {
-      const chosenClaim = eligibleClaims.find((c) => String(c.id) === String(value));
       setForm((prev) => ({
         ...prev,
         claim_id: value,
@@ -452,6 +359,8 @@ function Reimbursements({ role: propRole }) {
   // =====================================
   // RENDER
   // =====================================
+  const { rows: visibleRows, controls: pagination } = useRecordPage(filteredReimbursements);
+
   return (
     <section className="reimbursements-page" id="reimbursements-section">
       {/* HEADER */}
@@ -637,8 +546,7 @@ function Reimbursements({ role: propRole }) {
       {/* LEDGER SUMMARY BAR */}
       <div className="reimb-ledger-bar">
         <span className="reimb-count-label">
-          Showing <strong>{filteredReimbursements.length}</strong> of{' '}
-          <strong>{reimbursements.length}</strong> Recorded Reimbursements
+          <strong>{filteredReimbursements.length}</strong> of <strong>{reimbursements.length}</strong> reimbursements match
         </span>
       </div>
 
@@ -667,7 +575,7 @@ function Reimbursements({ role: propRole }) {
                   </td>
                 </tr>
               ) : filteredReimbursements.length > 0 ? (
-                filteredReimbursements.map((item) => {
+                visibleRows.map((item) => {
                   const customer = item.claim?.customer?.user;
 
                   return (
@@ -759,6 +667,7 @@ function Reimbursements({ role: propRole }) {
             </tbody>
           </table>
         </div>
+        <RecordPagination {...pagination} />
       </div>
 
       {/* =====================================
@@ -917,31 +826,22 @@ function Reimbursements({ role: propRole }) {
 
                 <div className="reimb-form-group">
                   <label htmlFor="claim_id">Approved Claim</label>
-                  <select
-                    id="claim_id"
+                  <RecordSelect
+                    label="Approved claim"
                     name="claim_id"
+                    path="/claims"
                     value={form.claim_id}
                     onChange={handleFormChange}
-                    required
-                  >
-                    <option value="" disabled>
-                      {eligibleClaims.length > 0
-                        ? 'Select an approved claim'
-                        : 'No eligible approved claims available'}
-                    </option>
-                    {eligibleClaims.map((claim) => {
+                    reimbursable
+                    initialOption={modal === 'edit' ? selectedItem?.claim : undefined}
+                    formatOption={(claim) => {
                       const customer = claim.customer?.user;
                       const customerLabel = customer
                         ? `${customer.first_name} ${customer.last_name}`
                         : 'Customer';
-                      return (
-                        <option key={claim.id} value={claim.id}>
-                          Claim #{claim.id} — {customerLabel} (Est.{' '}
-                          {formatPrice(claim.prix_estime)} MAD)
-                        </option>
-                      );
-                    })}
-                  </select>
+                      return `Claim #${claim.id} — ${customerLabel} (Est. ${formatPrice(claim.prix_estime)} MAD)`;
+                    }}
+                  />
                   {validationErrors.claim_id && (
                     <span className="reimb-field-error">
                       {validationErrors.claim_id[0]}

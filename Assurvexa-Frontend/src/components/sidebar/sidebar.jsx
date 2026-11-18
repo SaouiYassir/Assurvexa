@@ -25,8 +25,9 @@ const NAV_ITEMS_BY_ROLE = {
         { label: "Claims", path: "/dashboard/claims", icon: FileText },
         { label: "Reimbursements", path: "/dashboard/reimbursements", icon: HandCoins }
     ],
-    client: [
+    customer: [
         { label: "My Workspace", path: "/dashboard", icon: LayoutDashboard },
+        { label: "My Profile", path: "/dashboard/customers", icon: UserCheck },
         { label: "My Insurance", path: "/dashboard/policies", icon: ShieldCheck },
         { label: "My Claims", path: "/dashboard/claims", icon: FileText },
         { label: "My Contracts", path: "/dashboard/contracts", icon: FileText },
@@ -42,7 +43,7 @@ function Sidebar({ user }) {
 
     const navItems = Object.hasOwn(NAV_ITEMS_BY_ROLE, user?.role)
         ? NAV_ITEMS_BY_ROLE[user.role]
-        : NAV_ITEMS_BY_ROLE.client;
+        : [];
 
     const name =
         [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "User";

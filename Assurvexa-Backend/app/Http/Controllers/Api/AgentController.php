@@ -15,7 +15,7 @@ class AgentController extends Controller
 {
     public function index(): JsonResponse
     {
-        $agents = Agent::with('user')->paginate(10);
+        $agents = Agent::with('user')->orderBy('id')->paginate(10);
 
         return response()->json([
             'success' => true,

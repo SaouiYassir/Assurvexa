@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
+import RecordPagination from '../RecordPagination';
+import { useEffect, useMemo, useState } from 'react';
 import api from '../../../services/api';
 import { can } from '../../../services/permissions';
 import './agents.css';
@@ -24,9 +26,6 @@ const formatDate = (dateString) => {
 };
 
 function Agents({ role = 'admin' }) {
-  const [agents, setAgents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [error, setError] = useState('');
@@ -55,34 +54,8 @@ function Agents({ role = 'admin' }) {
   }, [modal]);
 
   // FETCH AGENTS
-  const getAgents = useCallback(async (isManualRefresh = false) => {
-    try {
-      if (isManualRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError('');
-
-      const response = await api.get('/agents');
-      const data =
-        response.data?.data?.data ??
-        response.data?.data ??
-        response.data;
-
-      setAgents(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch agents:', err);
-      setError('Could not load agents data.');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getAgents();
-  }, [getAgents]);
+  const { records: agents, loading, refreshing, reload: getAgents } =
+    useDashboardRecords('/agents', setError);
 
   // FILTERED & SORTED AGENTS
   const filteredAgents = useMemo(() => {
@@ -341,6 +314,8 @@ function Agents({ role = 'admin' }) {
   const canDelete = can(role, 'agents', 'delete');
   const hasRowActions = canUpdate || canDelete;
 
+  const { rows: visibleRows, controls: pagination } = useRecordPage(filteredAgents);
+
   return (
     <section className="section agents-section" id="agents-section">
       <div className="container">
@@ -489,8 +464,7 @@ function Agents({ role = 'admin' }) {
         {/* LEDGER SUMMARY BAR */}
         <div className="agents-ledger-bar">
           <span className="agents-count-label">
-            Showing <strong>{filteredAgents.length}</strong> of{' '}
-            <strong>{agents.length}</strong> Registered Agents
+            <strong>{filteredAgents.length}</strong> of <strong>{agents.length}</strong> agents match
           </span>
         </div>
 
@@ -517,7 +491,7 @@ function Agents({ role = 'admin' }) {
                     </td>
                   </tr>
                 ) : filteredAgents.length > 0 ? (
-                  filteredAgents.map((agent) => (
+                  visibleRows.map((agent) => (
                     <tr key={agent.id}>
                       <td className="agent-id">#{agent.id}</td>
 
@@ -586,6 +560,7 @@ function Agents({ role = 'admin' }) {
               </tbody>
             </table>
           </div>
+          <RecordPagination {...pagination} />
         </div>
       </div>
 

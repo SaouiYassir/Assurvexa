@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
+import RecordPagination from '../RecordPagination';
+import { useAuth } from '../../../context/useAuth';
+import { useEffect, useMemo, useState } from 'react';
 import api from '../../../services/api';
 import { can } from '../../../services/permissions';
 import './customers.css';
@@ -26,12 +29,10 @@ const INITIAL_EDIT_FORM = {
 };
 
 function Customers({ role: propRole }) {
-  const [role, setRole] = useState(propRole || null);
-  const [customers, setCustomers] = useState([]);
+  const { user } = useAuth();
+  const role = propRole ?? user?.role;
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [error, setError] = useState('');
@@ -51,36 +52,6 @@ function Customers({ role: propRole }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConf, setShowPasswordConf] = useState(false);
 
-  // Sync propRole if passed externally
-  useEffect(() => {
-    if (propRole) {
-      setRole(propRole);
-    }
-  }, [propRole]);
-
-  // Resolve authenticated user's role if not passed via props
-  useEffect(() => {
-    if (propRole) return;
-    let isMounted = true;
-
-    const fetchCurrentUserRole = async () => {
-      try {
-        const res = await api.get('/me');
-        const userRole = res.data?.user?.role ?? res.data?.data?.role ?? res.data?.role;
-        if (isMounted && userRole) {
-          setRole(userRole);
-        }
-      } catch (err) {
-        console.error('Failed to resolve user role:', err);
-      }
-    };
-
-    fetchCurrentUserRole();
-    return () => {
-      isMounted = false;
-    };
-  }, [propRole]);
-
   // Prevent background scrolling when modal is open
   useEffect(() => {
     document.body.style.overflow = modal ? 'hidden' : '';
@@ -90,38 +61,8 @@ function Customers({ role: propRole }) {
   }, [modal]);
 
   // FETCH CUSTOMERS
-  const getCustomers = useCallback(async (isManualRefresh = false) => {
-    try {
-      if (isManualRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError('');
-
-      const response = await api.get('/customers');
-      const data =
-        response.data?.data?.data ??
-        response.data?.data ??
-        response.data;
-
-      setCustomers(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch customers:', err);
-      if (err.response?.status === 403) {
-        setError('You do not have permission to view the customers registry.');
-      } else {
-        setError(err.response?.data?.message || 'Could not load customers data.');
-      }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getCustomers();
-  }, [getCustomers]);
+  const { records: customers, loading, refreshing, reload: getCustomers } =
+    useDashboardRecords('/customers', setError);
 
   // FILTERED & SORTED CUSTOMERS
   const filteredCustomers = useMemo(() => {
@@ -349,6 +290,8 @@ function Customers({ role: propRole }) {
   const canDelete = can(role, 'customers', 'delete');
   const hasRowActions = canUpdate || canDelete;
 
+  const { rows: visibleRows, controls: pagination } = useRecordPage(filteredCustomers);
+
   return (
     <section className="customers-section" id="customers-section">
       <div className="container">
@@ -356,9 +299,9 @@ function Customers({ role: propRole }) {
         <header className="customers-header">
           <div>
             <span className="eyebrow">Policyholder Registry</span>
-            <h1 className="customers-title">Customers Management</h1>
+            <h1 className="customers-title">{role === 'customer' ? 'My Profile' : 'Customers Management'}</h1>
             <p className="customers-subtitle">
-              Manage, verify, and audit registered policyholders and their contact records.
+              {role === 'customer' ? 'View and update your account details.' : 'Manage policyholders and their contact records.'}
             </p>
           </div>
 
@@ -499,8 +442,7 @@ function Customers({ role: propRole }) {
         {/* LEDGER SUMMARY BAR */}
         <div className="customers-ledger-bar">
           <span className="customers-count-label">
-            Showing <strong>{filteredCustomers.length}</strong> of{' '}
-            <strong>{customers.length}</strong> Registered Customers
+            <strong>{filteredCustomers.length}</strong> of <strong>{customers.length}</strong> customers match
           </span>
         </div>
 
@@ -527,7 +469,7 @@ function Customers({ role: propRole }) {
                     </td>
                   </tr>
                 ) : filteredCustomers.length > 0 ? (
-                  filteredCustomers.map((customer) => {
+                  visibleRows.map((customer) => {
                     const addressValue = customer.adresse || customer.address;
 
                     return (
@@ -605,6 +547,7 @@ function Customers({ role: propRole }) {
               </tbody>
             </table>
           </div>
+          <RecordPagination {...pagination} />
         </div>
       </div>
 

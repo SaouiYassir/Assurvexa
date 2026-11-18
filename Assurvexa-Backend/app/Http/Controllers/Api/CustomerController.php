@@ -13,15 +13,27 @@ use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $user = $request->user();
         abort_unless(
-            in_array(request()->user()->role, ['admin', 'agent'], true),
+            in_array($user->role, ['admin', 'agent', 'customer'], true),
             403,
-            'Only administrators and agents can view customers.'
+            'You are not allowed to view customers.'
         );
 
-        $customers = Customer::with('user')->paginate(10);
+        $query = Customer::with('user')->orderBy('id');
+        if ($user->role === 'customer') {
+            $query->where('user_id', $user->id);
+        }
+        $search = $request->validate(['search' => ['sometimes', 'nullable', 'string', 'max:100']])['search'] ?? '';
+        foreach (preg_split('/\s+/', $search, -1, PREG_SPLIT_NO_EMPTY) as $term) {
+            $query->whereHas('user', fn ($profile) => $profile
+                ->whereLike('first_name', "%{$term}%")
+                ->orWhereLike('last_name', "%{$term}%")
+                ->orWhereLike('email', "%{$term}%"));
+        }
+        $customers = $query->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -76,7 +88,8 @@ class CustomerController extends Controller
     public function show(Request $request, Customer $customer): JsonResponse
     {
         $user = $request->user();
-        $allowed = in_array($user->role, ['admin', 'agent'], true);
+        $allowed = in_array($user->role, ['admin', 'agent'], true)
+            || ($user->role === 'customer' && $customer->user_id === $user->id);
 
         abort_unless($allowed, 403, 'You are not allowed to view this customer.');
 
@@ -90,10 +103,12 @@ class CustomerController extends Controller
 
     public function update(Request $request, Customer $customer): JsonResponse
     {
+        $actor = $request->user();
         abort_unless(
-            in_array($request->user()->role, ['admin', 'agent'], true),
+            in_array($actor->role, ['admin', 'agent'], true)
+                || ($actor->role === 'customer' && $customer->user_id === $actor->id),
             403,
-            'Only administrators and agents can update customers.'
+            'You are not allowed to edit this customer.'
         );
 
         $user = $customer->user;
@@ -106,15 +121,15 @@ class CustomerController extends Controller
                 Rule::unique('users', 'username')->ignore($user->id),
             ],
             'email' => [
-                'sometimes', 'required', 'email',
+                'sometimes', 'required', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
-            'phone' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'phone' => ['sometimes', 'required', 'string', 'max:20'],
             'CIN' => [
-                'sometimes', 'nullable', 'string', 'max:50',
+                'sometimes', 'required', 'string', 'max:50',
                 Rule::unique('users', 'CIN')->ignore($user->id),
             ],
-            'adresse' => ['sometimes', 'nullable', 'string', 'max:500'],
+            'adresse' => ['sometimes', 'required', 'string', 'max:255'],
         ]);
 
         $userData = collect($validated)->only([
@@ -123,8 +138,10 @@ class CustomerController extends Controller
 
         $customerData = collect($validated)->only(['adresse'])->all();
 
-        $user->update($userData);
-        $customer->update($customerData);
+        DB::transaction(function () use ($user, $customer, $userData, $customerData) {
+            $user->update($userData);
+            $customer->update($customerData);
+        });
 
         return response()->json([
             'message' => 'Customer updated successfully.',

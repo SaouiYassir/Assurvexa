@@ -1,4 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
+import RecordPagination from '../RecordPagination';
+import { useAuth } from '../../../context/useAuth';
+import RecordSelect from '../RecordSelect';
+import { useEffect, useMemo, useState } from 'react';
 import api from '../../../services/api';
 import { can } from '../../../services/permissions';
 import './claims.css';
@@ -11,13 +15,10 @@ const INITIAL_CLAIM_FORM = {
 };
 
 function Claims({ role: propRole }) {
-  const [role, setRole] = useState(propRole || null);
-  const [claims, setClaims] = useState([]);
-  const [contracts, setContracts] = useState([]);
+  const { user } = useAuth();
+  const role = propRole ?? user?.role;
   const [selectedClaim, setSelectedClaim] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const [error, setError] = useState('');
@@ -35,33 +36,6 @@ function Claims({ role: propRole }) {
   const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
-    if (propRole) setRole(propRole);
-  }, [propRole]);
-
-  // Resolve authenticated user's role if not passed via props
-  useEffect(() => {
-    if (propRole) return;
-    let isMounted = true;
-
-    const fetchCurrentUserRole = async () => {
-      try {
-        const res = await api.get('/me');
-        const userRole = res.data?.user?.role ?? res.data?.data?.role ?? res.data?.role;
-        if (isMounted && userRole) {
-          setRole(userRole);
-        }
-      } catch (err) {
-        console.error('Failed to resolve user role:', err);
-      }
-    };
-
-    fetchCurrentUserRole();
-    return () => {
-      isMounted = false;
-    };
-  }, [propRole]);
-
-  useEffect(() => {
     document.body.style.overflow = modal ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
@@ -69,34 +43,8 @@ function Claims({ role: propRole }) {
   }, [modal]);
 
   // READ CLAIMS
-  const getClaims = useCallback(async (isManualRefresh = false) => {
-    try {
-      if (isManualRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-      setError('');
-
-      const response = await api.get('/claims');
-      const data =
-        response.data?.data?.data ??
-        response.data?.data ??
-        response.data;
-
-      setClaims(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Failed to fetch claims:', err);
-      setError(err.response?.data?.message || 'Could not load claims data.');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getClaims();
-  }, [getClaims]);
+  const { records: claims, loading, refreshing, reload: getClaims } =
+    useDashboardRecords('/claims', setError);
 
   // Role-specific capabilities
   const isAgent = role === 'agent';
@@ -111,29 +59,6 @@ function Claims({ role: propRole }) {
 
   // Admin has NO actions column; only Agent and Customer do
   const showActionsColumn = isAgent || isCustomer;
-
-  // Fetch contracts when customer can file/edit claims
-  useEffect(() => {
-    if (!canCreate && !canCustomerEdit) return;
-    let isMounted = true;
-
-    const fetchContracts = async () => {
-      try {
-        const res = await api.get('/contracts');
-        const data = res.data?.data?.data ?? res.data?.data ?? res.data;
-        if (isMounted && Array.isArray(data)) {
-          setContracts(data);
-        }
-      } catch (err) {
-        console.error('Failed to load contracts:', err);
-      }
-    };
-
-    fetchContracts();
-    return () => {
-      isMounted = false;
-    };
-  }, [canCreate, canCustomerEdit]);
 
   // STATISTICS
   const stats = useMemo(
@@ -386,6 +311,8 @@ function Claims({ role: propRole }) {
     }
   };
 
+  const { rows: visibleRows, controls: pagination } = useRecordPage(filteredClaims);
+
   return (
     <section className="claims-section" id="claims-section">
       <div className="container">
@@ -596,8 +523,7 @@ function Claims({ role: propRole }) {
         {/* LEDGER SUMMARY BAR */}
         <div className="claims-ledger-bar">
           <span className="claims-count-label">
-            Showing <strong>{filteredClaims.length}</strong> of{' '}
-            <strong>{claims.length}</strong> Recorded Claims
+            <strong>{filteredClaims.length}</strong> of <strong>{claims.length}</strong> claims match
           </span>
         </div>
 
@@ -625,7 +551,7 @@ function Claims({ role: propRole }) {
                     </td>
                   </tr>
                 ) : filteredClaims.length > 0 ? (
-                  filteredClaims.map((claim) => {
+                  visibleRows.map((claim) => {
                     const customer = claim.customer?.user;
 
                     return (
@@ -714,6 +640,7 @@ function Claims({ role: propRole }) {
               </tbody>
             </table>
           </div>
+          <RecordPagination {...pagination} />
         </div>
       </div>
 
@@ -890,37 +817,18 @@ function Claims({ role: propRole }) {
               <div className="claim-form-row">
                 <div className="claim-form-group">
                   <label htmlFor="contract_id">Contract</label>
-                  {contracts.length > 0 ? (
-                    <select
-                      id="contract_id"
-                      className="form-control"
-                      name="contract_id"
-                      value={claimForm.contract_id}
-                      onChange={handleFormChange}
-                      required
-                    >
-                      <option value="" disabled>
-                        Select a contract
-                      </option>
-                      {contracts.map((contract) => (
-                        <option key={contract.id} value={contract.id}>
-                          Contract #{contract.id}{' '}
-                          {contract.policy?.nom ? `— ${contract.policy.nom}` : ''}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      id="contract_id"
-                      className="form-control"
-                      type="number"
-                      name="contract_id"
-                      value={claimForm.contract_id}
-                      onChange={handleFormChange}
-                      placeholder="Enter Contract ID"
-                      required
-                    />
-                  )}
+                  <RecordSelect
+                    className="form-control"
+                    label="Contract"
+                    name="contract_id"
+                    path="/contracts"
+                    value={claimForm.contract_id}
+                    onChange={handleFormChange}
+                    initialOption={modal === 'edit' ? selectedClaim?.contract : undefined}
+                    formatOption={(contract) =>
+                      `Contract #${contract.id}${contract.policy?.nom ? ` — ${contract.policy.nom}` : ''}`
+                    }
+                  />
                   {validationErrors.contract_id && (
                     <span className="field-error">{validationErrors.contract_id[0]}</span>
                   )}

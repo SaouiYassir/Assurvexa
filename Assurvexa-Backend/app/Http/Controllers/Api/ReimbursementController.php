@@ -40,7 +40,7 @@ class ReimbursementController extends Controller
                 ->where('agent_id', $agentId));
         }
 
-        $reimbursements =$query->latest()->paginate(10);
+        $reimbursements = $query->latest()->orderByDesc('id')->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -59,7 +59,7 @@ class ReimbursementController extends Controller
             'Only agents can issue reimbursements.'
         );
 
-        $validated =$request->validate([
+        $validated = $request->validate([
             'claim_id' => [
                 'required',
                 'exists:claims,id',
@@ -140,7 +140,7 @@ class ReimbursementController extends Controller
     /**
      * Update the specified resource in storage (Agent only).
      */
-    public function update(Request $request, Reimbursement$reimbursement)
+    public function update(Request $request, Reimbursement $reimbursement)
     {
         abort_unless(
             $request->user()->role === 'agent',
@@ -148,7 +148,11 @@ class ReimbursementController extends Controller
             'Only agents can update reimbursements.'
         );
 
-        $validated =$request->validate([
+        $agentId = $request->user()->agent?->id;
+        abort_unless($agentId !== null && $reimbursement->claim?->agent_id === $agentId, 403,
+            'You can only update reimbursements for your assigned claims.');
+
+        $validated = $request->validate([
             'claim_id' => [
                 'sometimes',
                 'required',
@@ -181,7 +185,7 @@ class ReimbursementController extends Controller
 
         $claim = Claim::findOrFail($validated['claim_id'] ?? $reimbursement->claim_id);
 
-        if ($claim->agent_id !==$request->user()->agent?->id) {
+        if ($claim->agent_id !== $agentId) {
             return response()->json([
                 'success' => false,
                 'message' => 'You can only update reimbursements for your assigned claims.',

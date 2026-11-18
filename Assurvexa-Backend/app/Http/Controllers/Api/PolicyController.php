@@ -14,9 +14,14 @@ class PolicyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $policies = Policy::with('admin.user')->paginate(10);
+        $search = $request->validate(['search' => ['sometimes', 'nullable', 'string', 'max:100']])['search'] ?? '';
+        $query = Policy::orderBy('id');
+        if ($search !== '') {
+            $query->whereLike('nom', "%{$search}%");
+        }
+        $policies = $query->paginate(10);
 
         return response()->json([
             'success' => true,
@@ -60,8 +65,6 @@ class PolicyController extends Controller
      */
     public function show(Policy $policy): JsonResponse
     {
-        $policy->load('admin.user');
-
         return response()->json([
             'success' => true,
             'data' => $policy
