@@ -1,16 +1,11 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Users,
-  UserCheck,
-  ShieldCheck,
-  FileText,
-  LogOut,
-  Briefcase,
-  HandCoins
+    LayoutDashboard, Users, UserCheck, ShieldCheck, FileText,
+    LogOut, Briefcase, HandCoins, Menu, X,
 } from "lucide-react";
-import './sidebar.css';
-import { useAuth } from '../../context/useAuth';
+import { useAuth } from "../../context/useAuth";
+import "./sidebar.css";
 
 const NAV_ITEMS_BY_ROLE = {
     admin: [
@@ -41,14 +36,49 @@ const NAV_ITEMS_BY_ROLE = {
 
 function Sidebar({ user }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const { logout } = useAuth();
+    const drawerRef = useRef(null);
 
-    const scroll = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    const navItems = Object.hasOwn(NAV_ITEMS_BY_ROLE, user?.role)
+        ? NAV_ITEMS_BY_ROLE[user.role]
+        : NAV_ITEMS_BY_ROLE.client;
+
+    const name =
+        [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "User";
+    const role = user?.role || "Client";
+
+    const closeDrawer = () => drawerRef.current?.close();
+
+    useEffect(() => {
+        drawerRef.current?.close();
+    }, [location.key]);
+
+    useEffect(() => {
+        const desktop = window.matchMedia("(min-width: 901px)");
+
+        const closeOnDesktop = () => {
+            if (desktop.matches) drawerRef.current?.close();
+        };
+
+        desktop.addEventListener("change", closeOnDesktop);
+        return () => desktop.removeEventListener("change", closeOnDesktop);
+    }, []);
+
+    const handleNavigation = (event) => {
+        if (
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+        ) {
+            return;
+        }
+
+        closeDrawer();
+        window.scrollTo({ top: 0, behavior: "instant" });
     };
-
-    const role = user?.role && NAV_ITEMS_BY_ROLE[user.role] ? user.role : 'client';
-    const navItems = NAV_ITEMS_BY_ROLE[role];
 
     const handleSignOut = async () => {
         try {
@@ -56,57 +86,102 @@ function Sidebar({ user }) {
         } catch (error) {
             console.error("Sign-out failed:", error);
         } finally {
-            navigate('/', { replace: true });
+            closeDrawer();
+            navigate("/", { replace: true });
         }
     };
 
-    return (
-        <aside className="sidebar">
-            <header className="sidebar-header">
-                <NavLink className="logo" to="/dashboard" onClick={scroll}>
-                    Assurvexa<span className="logo-dot">.</span>
-                </NavLink>
+    const brand = (
+        <NavLink
+            className="av-sidebar__brand"
+            to="/dashboard"
+            end
+            onClick={handleNavigation}
+        >
+            Assurvexa<span>.</span>
+        </NavLink>
+    );
+
+    const panel = (isDrawer = false) => (
+        <div className="av-sidebar__panel">
+            <header className="av-sidebar__header">
+                {brand}
+                {isDrawer && (
+                    <button
+                        type="button"
+                        className="av-sidebar__icon-button"
+                        aria-label="Close navigation"
+                        onClick={closeDrawer}
+                        autoFocus
+                    >
+                        <X size={20} aria-hidden="true" />
+                    </button>
+                )}
             </header>
 
-            <nav className="sidebar-nav">
-                <p className="sidebar-section-title">NAVIGATION</p>
-
-                {navItems.map((item) => {
-                    const IconComponent = item.icon;
-                    const isDashboardHome = item.path === "/dashboard";
-
-                    return (
-                        <NavLink 
-                            key={item.path} 
-                            to={item.path} 
-                            end={isDashboardHome}
-                            onClick={scroll}
-                            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                        >
-                            {IconComponent && <IconComponent className="nav-icon" />}
-                            <span>{item.label}</span>
-                        </NavLink>
-                    );
-                })}
+            <nav className="av-sidebar__nav" aria-label="Dashboard navigation">
+                {navItems.map(({ label, path, icon: Icon }) => (
+                    <NavLink
+                        key={path}
+                        to={path}
+                        end={path === "/dashboard"}
+                        onClick={handleNavigation}
+                        className={({ isActive }) =>
+                            `av-sidebar__link${isActive ? " is-active" : ""}`
+                        }
+                    >
+                        <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
+                        <span>{label}</span>
+                    </NavLink>
+                ))}
             </nav>
 
-            <footer className="sidebar-footer">
-                <div className="sidebar-user">
-                    <div className="user-details">
-                        <p className="user-name">
-                            {user ? `${user.first_name} ${user.last_name}` : "User Name"}
-                        </p>
-                        <p className="user-role">
-                            {user?.role || "Role"}
-                        </p>
-                    </div>
+            <footer className="av-sidebar__footer">
+                <div className="av-sidebar__identity">
+                    <p className="av-sidebar__name">{name}</p>
+                    <p className="av-sidebar__role">{role}</p>
                 </div>
-                <button type="button" className="sidebar-logout" onClick={handleSignOut}>
-                    <LogOut size={18} strokeWidth={1.8} />
+
+                <button
+                    type="button"
+                    className="av-sidebar__logout"
+                    onClick={handleSignOut}
+                >
+                    <LogOut size={18} strokeWidth={1.8} aria-hidden="true" />
                     <span>Sign out</span>
                 </button>
             </footer>
-        </aside>
+        </div>
+    );
+
+    return (
+        <div className="av-sidebar">
+            <aside className="av-sidebar__desktop">{panel()}</aside>
+
+            <header className="av-sidebar__mobile">
+                {brand}
+                <button
+                    type="button"
+                    className="av-sidebar__icon-button"
+                    aria-label="Open navigation"
+                    aria-haspopup="dialog"
+                    onClick={() => drawerRef.current?.showModal()}
+                >
+                    <Menu size={22} aria-hidden="true" />
+                </button>
+            </header>
+
+            <dialog
+                ref={drawerRef}
+                className="av-sidebar__drawer"
+                aria-label="Dashboard menu"
+                onClick={(event) => {
+                    if (event.target === event.currentTarget) closeDrawer();
+                }}
+            >
+                {panel(true)}
+            </dialog>
+        </div>
     );
 }
 
