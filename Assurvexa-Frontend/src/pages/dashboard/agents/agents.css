@@ -1,0 +1,954 @@
+/* =========================================
+   ASSURVEXA — AGENTS MANAGEMENT
+   Uses Global Design System
+========================================= */
+
+/* =========================================
+   1. MAIN SECTION
+========================================= */
+
+.agents-section {
+    min-height: calc(100vh - var(--header-height));
+    padding-block: 3.5rem 5rem;
+    background: var(--color-bg);
+}
+
+.agents-section .container {
+    width: min(100% - 3rem, var(--container-width));
+    margin-inline: auto;
+}
+
+/* =========================================
+   2. HEADER
+========================================= */
+
+.agents-header {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    height: auto !important;
+    min-height: unset !important;
+    max-height: none !important;
+    margin-bottom: 2.5rem;
+    padding-top: 0;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+}
+
+.agents-header > div:first-child {
+    max-width: 650px;
+}
+
+.agents-header .eyebrow {
+    margin-bottom: 0.8rem;
+}
+
+.agents-title {
+    margin-bottom: 0.8rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+}
+
+.agents-subtitle {
+    max-width: 550px;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.agents-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.agents-header-actions .btn {
+    min-height: 45px;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.8rem;
+}
+
+.agents-header-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.agents-header-actions .btn-primary {
+    background: var(--color-bronze);
+    color: var(--color-white);
+}
+
+.agents-header-actions .btn-primary:hover {
+    background: var(--color-bronze-dark);
+}
+
+.agents-header-actions .btn-secondary {
+    border-color: var(--color-border);
+    background: var(--color-surface-light);
+}
+
+.agents-header-actions .btn-secondary:hover {
+    border-color: var(--color-bronze);
+    color: var(--color-bronze);
+}
+
+/* Refresh Icon */
+
+.spin-icon {
+    display: inline-block;
+    margin-right: 0.4rem;
+    font-size: 1.15rem;
+    animation: agents-spin 0.8s linear infinite;
+}
+
+@keyframes agents-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================
+   3. ALERT NOTIFICATIONS
+========================================= */
+
+.agents-alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid transparent;
+    border-left-width: 3px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    animation: agents-alert-in 0.25s ease;
+}
+
+.agents-alert--error {
+    background: #f7eeeb;
+    border-color: #ead5d0;
+    border-left-color: #a45e51;
+    color: #914d42;
+}
+
+.agents-alert--success {
+    background: #edf3ed;
+    border-color: #d7e5d7;
+    border-left-color: #648269;
+    color: #4d7053;
+}
+
+.alert-dismiss {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity var(--transition);
+}
+
+.alert-dismiss:hover {
+    opacity: 1;
+}
+
+@keyframes agents-alert-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   4. SEARCH & FILTER TOOLBAR
+========================================= */
+
+.agents-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding: 1.25rem;
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.agents-search-group,
+.agents-filter-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.agents-search-group {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+.agents-filter-group {
+    flex: 0 1 auto;
+}
+
+/* Search Field */
+
+.agents-field-select {
+    width: 145px;
+    flex-shrink: 0;
+}
+
+.agents-search-input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+}
+
+.agents-search-input {
+    padding-right: 2.75rem;
+}
+
+.agents-search-input-wrap input,
+.agents-toolbar select {
+    min-height: 44px;
+    font-size: 0.8rem;
+}
+
+.agents-search-input::placeholder {
+    color: #a19b92;
+    font-size: 0.78rem;
+}
+
+.agents-toolbar .form-control {
+    background: var(--color-white);
+    border-color: var(--color-border);
+}
+
+.agents-toolbar .form-control:focus {
+    border-color: var(--color-bronze);
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.08);
+}
+
+/* Select Dropdowns */
+
+.agents-toolbar select {
+    width: auto;
+    min-width: 175px;
+    padding-right: 2rem;
+    cursor: pointer;
+}
+
+/* Clear Search */
+
+.search-clear-btn {
+    position: absolute;
+    top: 50%;
+    right: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-ink-soft);
+    font-size: 1.2rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.search-clear-btn:hover {
+    background: var(--color-bronze);
+    color: white;
+}
+
+/* Reset Filters */
+
+.btn-reset-filters {
+    min-height: 42px;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-bronze);
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: all var(--transition);
+}
+
+.btn-reset-filters:hover {
+    border-color: var(--color-bronze);
+    background: var(--color-surface);
+}
+
+/* =========================================
+   5. LEDGER SUMMARY
+========================================= */
+
+.agents-ledger-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.9rem;
+}
+
+.agents-count-label {
+    color: var(--color-ink-soft);
+    font-size: 0.8rem;
+}
+
+.agents-count-label strong {
+    color: var(--color-ink);
+    font-weight: 700;
+}
+
+/* =========================================
+   6. AGENTS TABLE CONTAINER
+========================================= */
+
+.agents-ledger-card {
+    overflow: hidden;
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 3px 14px rgba(45, 45, 45, 0.025);
+    transition: border-color var(--transition);
+}
+
+.agents-ledger-card:hover {
+    border-color: var(--color-bronze);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+/* =========================================
+   7. TABLE
+========================================= */
+
+.table-agents {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table-agents thead {
+    background: var(--color-surface);
+}
+
+.table-agents th {
+    padding: 1.1rem 1.25rem;
+    color: var(--color-ink-soft);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.table-agents td {
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-ink);
+    font-size: 0.83rem;
+    vertical-align: middle;
+}
+
+.table-agents tbody tr {
+    transition: background var(--transition);
+}
+
+.table-agents tbody tr:hover {
+    background: rgba(232, 228, 221, 0.35);
+}
+
+.table-agents tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Agent ID */
+
+.agent-id {
+    color: var(--color-bronze) !important;
+    font-size: 0.78rem !important;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Agent Name */
+
+.agent-name {
+    display: block;
+    color: var(--color-ink);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.agent-subtext {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--color-ink-soft);
+    font-size: 0.73rem;
+    line-height: 1.5;
+}
+
+/* CIN Badge */
+
+.badge--neutral {
+    padding: 0.35rem 0.65rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink-soft);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+}
+
+/* Integration Date */
+
+.agent-date {
+    color: var(--color-ink-soft) !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap;
+}
+
+/* Text Alignment */
+
+.text-right {
+    text-align: right !important;
+}
+
+/* Empty / Loading Table State */
+
+.no-data {
+    padding: 3.5rem 1.5rem !important;
+    color: var(--color-ink-soft) !important;
+    font-size: 0.85rem !important;
+    text-align: center;
+}
+
+/* =========================================
+   8. TABLE ACTIONS
+========================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.btn-ledger {
+    min-height: 33px;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-ledger:hover {
+    border-color: var(--color-bronze);
+    background: var(--color-surface);
+    color: var(--color-bronze);
+}
+
+.btn-ledger--danger {
+    border-color: #e6d2ce;
+    color: #99584f;
+}
+
+.btn-ledger--danger:hover {
+    border-color: #99584f;
+    background: #f5e9e6;
+    color: #88463d;
+}
+
+/* =========================================
+   9. MODAL OVERLAY
+========================================= */
+
+.agent-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: rgba(35, 33, 30, 0.58);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: modal-overlay-in 0.2s ease;
+}
+
+@keyframes modal-overlay-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =========================================
+   10. MODAL
+========================================= */
+
+.agent-modal {
+    position: relative;
+    width: min(100%, 720px);
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    padding: 2.25rem;
+    background: var(--color-surface-light);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.2);
+    animation: modal-content-in 0.25s ease;
+}
+
+@keyframes modal-content-in {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Header */
+
+.agent-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.agent-modal-header .eyebrow {
+    margin-bottom: 0.75rem;
+}
+
+.agent-modal-header h2 {
+    margin-bottom: 0.65rem;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 400;
+}
+
+.agent-modal-header p {
+    color: var(--color-ink-soft);
+    font-size: 0.83rem;
+    line-height: 1.6;
+}
+
+/* Close Button */
+
+.modal-close {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-ink-soft);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.modal-close:hover {
+    border-color: var(--color-bronze);
+    background: var(--color-surface);
+    color: var(--color-bronze);
+}
+
+.modal-close:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   11. AGENT FORM
+========================================= */
+
+.agent-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+.agent-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.agent-form-group {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.agent-form-group label {
+    color: var(--color-ink);
+    font-size: 0.77rem;
+    font-weight: 600;
+    letter-spacing: 0.015em;
+}
+
+.agent-form-group .form-control {
+    min-height: 46px;
+    padding: 0.7rem 0.9rem;
+    border-color: var(--color-border);
+    background: var(--color-white);
+    font-size: 0.82rem;
+    cursor: text;
+}
+
+.agent-form-group .form-control::placeholder {
+    color: #aaa49b;
+    font-size: 0.78rem;
+}
+
+.agent-form-group .form-control:focus {
+    border-color: var(--color-bronze);
+    box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.08);
+}
+
+/* =========================================
+   12. PASSWORD INPUTS
+========================================= */
+
+.agent-password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.agent-password-wrapper .form-control {
+    width: 100%;
+    padding-right: 4rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.85rem;
+    border: none;
+    background: transparent;
+    color: var(--color-bronze);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.password-toggle:hover {
+    color: var(--color-bronze-dark);
+}
+
+/* =========================================
+   13. MODAL FOOTER ACTIONS
+========================================= */
+
+.agent-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.agent-modal-actions .btn {
+    min-width: 125px;
+    min-height: 44px;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.8rem;
+}
+
+.agent-modal-actions .btn-primary {
+    background: var(--color-bronze);
+    color: var(--color-white);
+}
+
+.agent-modal-actions .btn-primary:hover {
+    background: var(--color-bronze-dark);
+}
+
+.agent-modal-actions .btn-secondary {
+    border-color: var(--color-border);
+    background: transparent;
+}
+
+.agent-modal-actions .btn-secondary:hover {
+    border-color: var(--color-bronze);
+    color: var(--color-bronze);
+}
+
+.agent-modal-actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   14. DELETE CONFIRMATION MODAL
+========================================= */
+
+.agent-modal--delete {
+    width: min(100%, 500px);
+}
+
+.agent-modal--delete .agent-modal-header h2 {
+    font-size: 1.65rem;
+}
+
+.delete-agent-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    padding: 1.2rem 1.25rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-bronze);
+}
+
+.delete-agent-box strong {
+    color: var(--color-ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.delete-agent-box span {
+    color: var(--color-ink-soft);
+    font-size: 0.78rem;
+}
+
+.btn-danger {
+    border: 1px solid #99584f;
+    border-radius: var(--radius-sm);
+    background: #99584f;
+    color: var(--color-white);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all var(--transition);
+}
+
+.btn-danger:hover {
+    border-color: #7e4038;
+    background: #7e4038;
+}
+
+.btn-danger:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   15. RESPONSIVE — TABLET
+========================================= */
+
+@media (max-width: 1024px) {
+    .agents-toolbar {
+        align-items: stretch;
+    }
+
+    .agents-search-group {
+        flex-basis: 100%;
+    }
+
+    .agents-filter-group {
+        flex: 1 1 100%;
+    }
+
+    .agents-filter-group select {
+        flex: 1;
+    }
+
+    .agents-header {
+        align-items: flex-start;
+    }
+}
+
+/* =========================================
+   16. RESPONSIVE — MOBILE
+========================================= */
+
+@media (max-width: 640px) {
+    .agents-section {
+        padding-block: 2.5rem 3rem;
+    }
+
+    .agents-section .container {
+        width: min(100% - 2rem, var(--container-width));
+    }
+
+    .agents-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+        margin-bottom: 1.75rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .agents-header-actions {
+        width: 100%;
+    }
+
+    .agents-header-actions .btn {
+        flex: 1;
+        padding-inline: 0.8rem;
+    }
+
+    .agents-toolbar {
+        padding: 1rem;
+    }
+
+    .agents-search-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .agents-field-select,
+    .agents-search-input-wrap {
+        width: 100%;
+    }
+
+    .agents-filter-group {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .agents-filter-group select {
+        width: 100%;
+    }
+
+    .btn-reset-filters {
+        width: 100%;
+    }
+
+    .agents-ledger-bar {
+        align-items: flex-start;
+    }
+
+    .agents-ledger-card {
+        border-radius: var(--radius-sm);
+    }
+
+    .table-agents {
+        min-width: 720px;
+    }
+
+    /* Modal */
+
+    .agent-modal-overlay {
+        align-items: flex-start;
+        padding: 0.75rem;
+    }
+
+    .agent-modal {
+        max-height: calc(100vh - 1.5rem);
+        margin-block: auto;
+        padding: 1.4rem;
+    }
+
+    .agent-modal-header {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .agent-modal-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .agent-form-row {
+        grid-template-columns: 1fr;
+        gap: 1.1rem;
+    }
+
+    .agent-modal-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .agent-modal-actions .btn {
+        width: 100%;
+        min-width: 0;
+        padding-inline: 0.5rem;
+    }
+}
+
+/* =========================================
+   17. ACCESSIBILITY
+========================================= */
+
+.agents-section button:focus-visible,
+.agents-section a:focus-visible,
+.agent-modal button:focus-visible,
+.agent-modal input:focus-visible {
+    outline: 2px solid var(--color-bronze);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .agents-section *,
+    .agents-section *::before,
+    .agents-section *::after,
+    .agent-modal *,
+    .agent-modal *::before,
+    .agent-modal *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

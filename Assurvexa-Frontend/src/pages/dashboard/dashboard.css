@@ -1,0 +1,25 @@
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 16.5rem minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    min-height: 100vh;
+}
+
+.dashboard-container > .av-sidebar {
+    width: var(--sidebar-width);
+}
+
+.dashboard-main-content {
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .dashboard-container {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dashboard-container > .av-sidebar {
+        width: auto;
+    }
+}

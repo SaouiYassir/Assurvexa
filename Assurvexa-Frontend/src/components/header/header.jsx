@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { useAuth } from '../../context/useAuth'
 import './header.css'
 
 const links = [
@@ -11,7 +12,7 @@ const links = [
 ]
 
 function Header() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { isAuthenticated } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const scrollToTop = () => {

@@ -1,0 +1,223 @@
+.av-sidebar {
+    --sidebar-width: 16.5rem;
+
+    position: sticky;
+    top: 0;
+    align-self: start;
+    z-index: 10;
+    min-width: 0;
+}
+
+.av-sidebar__desktop {
+    height: 100vh;
+    height: 100dvh;
+    border-inline-end: 1px solid var(--color-border);
+}
+
+.av-sidebar__panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--color-surface-light);
+    color: var(--color-ink);
+}
+
+.av-sidebar__header,
+.av-sidebar__mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.5rem;
+    padding: 0.75rem 1.25rem;
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-light);
+}
+
+.av-sidebar__brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+}
+
+.av-sidebar__brand span {
+    color: var(--color-bronze-dark);
+}
+
+.av-sidebar__nav {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem 0.75rem;
+}
+
+.av-sidebar__link,
+.av-sidebar__logout {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-ink-soft);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-align: start;
+    transition:
+        background-color var(--transition),
+        border-color var(--transition),
+        color var(--transition);
+}
+
+.av-sidebar__link svg,
+.av-sidebar__logout svg {
+    flex: none;
+}
+
+.av-sidebar__link:hover,
+.av-sidebar__logout:hover,
+.av-sidebar__icon-button:hover {
+    background: var(--color-surface);
+    color: var(--color-ink);
+}
+
+.av-sidebar__link.is-active {
+    border-inline-start: 3px solid var(--color-bronze);
+    padding-inline-start: calc(0.75rem - 2px);
+    background: var(--color-surface);
+    color: var(--color-bronze-dark);
+    font-weight: 700;
+}
+
+.av-sidebar__footer {
+    display: grid;
+    gap: 0.5rem;
+    margin-block-start: auto;
+    padding: 0.875rem 0.75rem calc(0.875rem + env(safe-area-inset-bottom));
+    border-block-start: 1px solid var(--color-border);
+}
+
+.av-sidebar__identity {
+    padding-inline: 0.75rem;
+    overflow-wrap: anywhere;
+}
+
+.av-sidebar__name {
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.av-sidebar__role {
+    color: var(--color-ink-soft);
+    font-size: 0.8125rem;
+    text-transform: capitalize;
+}
+
+.av-sidebar__icon-button {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: transparent;
+}
+
+.av-sidebar :is(a, button):focus-visible {
+    outline: 2px solid var(--color-bronze-dark);
+    outline-offset: 2px;
+}
+
+.av-sidebar__mobile {
+    display: none;
+}
+
+.av-sidebar__drawer {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(20rem, 90vw);
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-inline-end: 1px solid var(--color-border);
+    background: var(--color-surface-light);
+}
+
+.av-sidebar__drawer::backdrop {
+    background: rgb(45 45 45 / 55%);
+}
+
+html:has(.av-sidebar__drawer[open]) {
+    overflow: hidden;
+}
+
+.av-sidebar__drawer {
+    transform: translateX(-100%);
+    transition:
+        transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+        display 300ms allow-discrete,
+        overlay 300ms allow-discrete;
+}
+
+.av-sidebar__drawer[open] {
+    transform: translateX(0);
+}
+
+.av-sidebar__drawer::backdrop {
+    opacity: 0;
+    transition:
+        opacity 300ms ease,
+        display 300ms allow-discrete,
+        overlay 300ms allow-discrete;
+}
+
+.av-sidebar__drawer[open]::backdrop {
+    opacity: 1;
+}
+
+@starting-style {
+    .av-sidebar__drawer[open] {
+        transform: translateX(-100%);
+    }
+
+    .av-sidebar__drawer[open]::backdrop {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .av-sidebar__drawer,
+    .av-sidebar__drawer::backdrop {
+        transition: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .av-sidebar__desktop {
+        display: none;
+    }
+
+    .av-sidebar__mobile {
+        display: flex;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .av-sidebar__link,
+    .av-sidebar__logout {
+        transition: none;
+    }
+}
