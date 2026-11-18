@@ -71,6 +71,7 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 156px;
+  min-width: 0; /* Prevents grid blowout */
 }
 
 .stat-card--accent {
@@ -100,11 +101,12 @@
 
 .stat-value {
   font-family: var(--font-heading);
-  font-size: clamp(1.85rem, 2.8vw, 2.5rem);
+  font-size: clamp(1.35rem, 2vw, 2rem);
   font-variant-numeric: tabular-nums;
   color: var(--color-ink);
-  line-height: 1.1;
+  line-height: 1.15;
   margin-block: 0.85rem;
+  white-space: nowrap;
 }
 
 .stat-meta {
