@@ -59,14 +59,17 @@ Run the backend tests from `Assurvexa-Backend/`. PHPUnit uses an in-memory SQLit
 php vendor/bin/phpunit
 ```
 
-The feature tests cover cookie authentication, login throttling, customer profile access, agent ownership checks, policy response privacy, and paginated search.
+The feature tests cover cookie authentication, customer registration and profiles, agent administration, the policy catalog, contract validation and assignment, claim review, reimbursement eligibility, and dashboard totals by role.
 
 Run the frontend checks from `Assurvexa-Frontend/`.
 
 ```sh
+npm test
 npm run lint
 npm run build
 ```
+
+Vitest runs React interaction tests in jsdom. The tests cover registration, sign-in, protected routes, contract creation, claim submission, reimbursement, and paginated record selection. They mock API responses and can run without Docker.
 
 ## API and deployment notes
 
