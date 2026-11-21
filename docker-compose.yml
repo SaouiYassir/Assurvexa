@@ -1,0 +1,63 @@
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: assurvexa-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: &db_name assurvexa
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: &db_user assurvexa_user
+      MYSQL_PASSWORD: &db_password secretpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-prootpassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./Assurvexa-Backend
+      dockerfile: Dockerfile
+    container_name: assurvexa-backend
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: php -S 0.0.0.0:8000 -t public
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: *db_name
+      DB_USERNAME: *db_user
+      DB_PASSWORD: *db_password
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Assurvexa-Backend:/app
+      - /app/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./Assurvexa-Frontend
+      dockerfile: Dockerfile
+    container_name: assurvexa-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./Assurvexa-Frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
