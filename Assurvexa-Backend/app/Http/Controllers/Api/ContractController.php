@@ -56,8 +56,12 @@ class ContractController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        abort_unless($request->user()->role === 'agent', 403,
+        $user = $request->user();
+        abort_unless($user->role === 'agent', 403,
             'Only agents can create contracts.');
+
+        $agent = $user->agent;
+        abort_unless($agent, 403, 'Agent profile not found.');
 
         $validated = $request->validate([
             'customer_id' => [
@@ -65,6 +69,7 @@ class ContractController extends Controller
                 'exists:customers,id',
             ],
             'agent_id' => [
+                'sometimes',
                 'required',
                 'exists:agents,id',
             ],
@@ -87,18 +92,14 @@ class ContractController extends Controller
             ],
         ]);
 
-        if ($request->user()->role === 'agent') {
-            $agent = $request->user()->agent;
-
-            if (! $agent || (int) $validated['agent_id'] !== (int) $agent->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Agents can only create contracts assigned to themselves.',
-                ], 403);
-            }
+        if (isset($validated['agent_id']) && (int) $validated['agent_id'] !== (int) $agent->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Agents can only create contracts assigned to themselves.',
+            ], 403);
         }
 
-        $contract = Contract::create($validated);
+        $contract = $agent->contracts()->create($validated);
 
         return response()->json([
             'success' => true,
