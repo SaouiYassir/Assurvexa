@@ -1,5 +1,5 @@
 .av-sidebar {
-    --sidebar-width: 16.5rem;
+    --sidebar-width: 16rem;
 
     position: sticky;
     top: 0;
@@ -20,7 +20,8 @@
     height: 100%;
     overflow-y: auto;
     overscroll-behavior: contain;
-    background: var(--color-surface-light);
+    padding: 1.5rem;
+    background: var(--dashboard-sidebar);
     color: var(--color-ink);
 }
 
@@ -30,10 +31,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    min-height: 4.5rem;
-    padding: 0.75rem 1.25rem;
-    border-block-end: 1px solid var(--color-border);
-    background: var(--color-surface-light);
+    background: var(--dashboard-sidebar);
 }
 
 .av-sidebar__brand {
@@ -41,19 +39,25 @@
     align-items: center;
     min-height: 44px;
     font-family: var(--font-heading);
-    font-size: 1.3rem;
+    font-size: 1.875rem;
     font-weight: 700;
     letter-spacing: -0.035em;
-}
-
-.av-sidebar__brand span {
-    color: var(--color-bronze-dark);
+    line-height: 1.1;
 }
 
 .av-sidebar__nav {
     display: grid;
     gap: 0.25rem;
-    padding: 1rem 0.75rem;
+    margin-block: 1.75rem;
+}
+
+.av-sidebar__nav-label {
+    padding: 0 0.75rem 0.5rem;
+    color: var(--color-ink-soft);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
 }
 
 .av-sidebar__link,
@@ -68,7 +72,7 @@
     border-radius: var(--radius-md);
     background: transparent;
     color: var(--color-ink-soft);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     text-align: start;
     transition:
@@ -85,32 +89,33 @@
 .av-sidebar__link:hover,
 .av-sidebar__logout:hover,
 .av-sidebar__icon-button:hover {
-    background: var(--color-surface);
+    background: var(--dashboard-nav-hover);
     color: var(--color-ink);
 }
 
 .av-sidebar__link.is-active {
-    border-inline-start: 3px solid var(--color-bronze);
-    padding-inline-start: calc(0.75rem - 2px);
-    background: var(--color-surface);
-    color: var(--color-bronze-dark);
-    font-weight: 700;
+    background: var(--dashboard-nav-active);
+    color: var(--color-ink);
+    font-weight: 600;
 }
 
 .av-sidebar__footer {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.75rem;
     margin-block-start: auto;
-    padding: 0.875rem 0.75rem calc(0.875rem + env(safe-area-inset-bottom));
+    padding: 1.25rem 0 env(safe-area-inset-bottom);
     border-block-start: 1px solid var(--color-border);
 }
 
 .av-sidebar__identity {
-    padding-inline: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     overflow-wrap: anywhere;
 }
 
 .av-sidebar__name {
+    font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.4;
 }
@@ -118,7 +123,10 @@
 .av-sidebar__role {
     color: var(--color-ink-soft);
     font-size: 0.8125rem;
-    text-transform: capitalize;
+}
+
+.av-sidebar__logout {
+    padding-inline: 0.25rem;
 }
 
 .av-sidebar__icon-button {
@@ -153,7 +161,7 @@
     padding: 0;
     border: 0;
     border-inline-end: 1px solid var(--color-border);
-    background: var(--color-surface-light);
+    background: var(--dashboard-sidebar);
 }
 
 .av-sidebar__drawer::backdrop {
@@ -212,6 +220,13 @@ html:has(.av-sidebar__drawer[open]) {
 
     .av-sidebar__mobile {
         display: flex;
+        min-height: 4.25rem;
+        padding: 0.625rem 1rem;
+        border-block-end: 1px solid var(--color-border);
+    }
+
+    .av-sidebar__mobile .av-sidebar__brand {
+        font-size: 1.625rem;
     }
 }
 

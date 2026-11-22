@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
 import RecordPagination from '../RecordPagination';
 import { useAuth } from '../../../context/useAuth';
@@ -293,13 +294,12 @@ function Customers({ role: propRole }) {
   const { rows: visibleRows, controls: pagination } = useRecordPage(filteredCustomers);
 
   return (
-    <section className="customers-section" id="customers-section">
+    <section className="customers-section dashboard-page" id="customers-section">
       <div className="container">
         {/* HEADER */}
-        <header className="customers-header">
+        <header className="customers-header dashboard-page-header">
           <div>
-            <span className="eyebrow">Policyholder Registry</span>
-            <h1 className="customers-title">{role === 'customer' ? 'My Profile' : 'Customers Management'}</h1>
+            <h1 className="customers-title">{role === 'customer' ? 'My Profile' : 'Customer Directory'}</h1>
             <p className="customers-subtitle">
               {role === 'customer' ? 'View and update your account details.' : 'Manage policyholders and their contact records.'}
             </p>
@@ -359,7 +359,7 @@ function Customers({ role: propRole }) {
         )}
 
         {/* SEARCH & FILTER TOOLBAR */}
-        <div className="customers-toolbar">
+        <div className="customers-toolbar dashboard-toolbar">
           <div className="customers-search-group">
             <select
               className="form-control customers-field-select"
@@ -375,7 +375,8 @@ function Customers({ role: propRole }) {
               <option value="adresse">Address</option>
             </select>
 
-            <div className="customers-search-input-wrap">
+            <div className="customers-search-input-wrap dashboard-search">
+              <Search size={16} aria-hidden="true" />
               <input
                 type="text"
                 className="form-control customers-search-input"
@@ -447,7 +448,7 @@ function Customers({ role: propRole }) {
         </div>
 
         {/* CUSTOMERS TABLE */}
-        <div className="customers-ledger-card">
+        <div className="customers-ledger-card dashboard-panel">
           <div className="table-responsive">
             <table className="table-customers">
               <thead>
@@ -553,7 +554,7 @@ function Customers({ role: propRole }) {
 
       {/* CREATE CUSTOMER MODAL */}
       {modal === 'create' && (
-        <div className="customer-modal-overlay" onClick={closeModal}>
+        <div className="customer-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="customer-modal"
             onClick={(e) => e.stopPropagation()}
@@ -783,7 +784,7 @@ function Customers({ role: propRole }) {
 
       {/* DELETE CONFIRMATION MODAL */}
       {modal === 'delete' && (
-        <div className="customer-modal-overlay" onClick={closeModal}>
+        <div className="customer-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="customer-modal customer-modal--delete"
             onClick={(e) => e.stopPropagation()}
@@ -854,7 +855,7 @@ function Customers({ role: propRole }) {
 
       {/* MODIFY CUSTOMER MODAL */}
       {modal === 'modify' && (
-        <div className="customer-modal-overlay" onClick={closeModal}>
+        <div className="customer-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="customer-modal"
             onClick={(e) => e.stopPropagation()}

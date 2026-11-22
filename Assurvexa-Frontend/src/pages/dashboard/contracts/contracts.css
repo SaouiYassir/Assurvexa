@@ -7,74 +7,9 @@
    1. MAIN SECTION & CONTAINER
 ========================================= */
 
-.contracts-page {
-    min-height: calc(100vh - var(--header-height));
-    padding-block: 3.5rem 5rem;
-    background: var(--color-bg);
-}
-
-.contracts-page > * {
-    width: min(100% - 3rem, var(--container-width));
-    margin-inline: auto;
-}
-
 /* =========================================
    2. HEADER
 ========================================= */
-
-.contracts-header {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
-    height: auto !important;
-    min-height: unset !important;
-    max-height: none !important;
-    margin-bottom: 2.5rem;
-    padding-top: 0;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-}
-
-.contracts-header::before,
-.contracts-header::after {
-    content: none !important;
-    display: none !important;
-}
-
-.contracts-header > div:first-child {
-    max-width: 650px;
-}
-
-.contracts-eyebrow {
-    display: inline-block;
-    margin-bottom: 0.8rem;
-    color: var(--color-bronze);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-}
-
-.contracts-header h1 {
-    margin-bottom: 0.8rem;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 1.1;
-}
-
-.contracts-header p {
-    max-width: 550px;
-    color: var(--color-ink-soft);
-    font-size: 0.9rem;
-    line-height: 1.7;
-}
 
 .contracts-header-actions {
     display: flex;
@@ -165,25 +100,6 @@
     border-radius: var(--radius-sm);
     background: var(--color-surface);
     color: var(--color-bronze);
-}
-
-.contract-stat-card span {
-    display: block;
-    margin-bottom: 0.35rem;
-    color: var(--color-ink-soft);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-.contract-stat-card h2 {
-    margin: 0;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: 1.85rem;
-    font-weight: 400;
-    line-height: 1.1;
 }
 
 /* =========================================
@@ -357,38 +273,8 @@
     text-align: left;
 }
 
-.contracts-table thead {
-    background: var(--color-surface);
-}
-
-.contracts-table th {
-    padding: 1.05rem 1.25rem;
-    color: var(--color-ink-soft);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.contracts-table td {
-    padding: 1.05rem 1.25rem;
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-ink);
-    font-size: 0.83rem;
-    vertical-align: middle;
-}
-
 .contracts-table tbody tr {
     transition: background var(--transition);
-}
-
-.contracts-table tbody tr:hover {
-    background: rgba(232, 228, 221, 0.35);
-}
-
-.contracts-table tbody tr:last-child td {
-    border-bottom: none;
 }
 
 .contracts-table td:first-child strong {
@@ -848,21 +734,6 @@
 }
 
 @media (max-width: 640px) {
-    .contracts-page {
-        padding-block: 2.5rem 3rem;
-    }
-
-    .contracts-page > * {
-        width: min(100% - 2rem, var(--container-width));
-    }
-
-    .contracts-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
-        margin-bottom: 1.75rem;
-        padding-bottom: 1.5rem;
-    }
 
     .contracts-header-actions,
     .contracts-refresh,

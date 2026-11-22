@@ -315,14 +315,11 @@ function Contracts({ role: propRole }) {
     const { rows: visibleRows, controls: pagination } = useRecordPage(filteredContracts);
 
     return (
-        <section className="contracts-page">
+        <section className="contracts-page dashboard-page">
 
             {/* HEADER */}
-            <div className="contracts-header">
+            <div className="contracts-header dashboard-page-header">
                 <div>
-                    <span className="contracts-eyebrow">
-                        INSURANCE MANAGEMENT
-                    </span>
                     <h1>Contracts Management</h1>
                     <p>
                         Manage insurance contracts and monitor their validity.
@@ -353,57 +350,57 @@ function Contracts({ role: propRole }) {
 
             {/* STATISTICS */}
             <div className="contracts-stats">
-                <div className="contract-stat-card">
+                <div className="contract-stat-card dashboard-metric">
                     <div className="contract-stat-icon">
                         <FileText />
                     </div>
                     <div>
-                        <span>Total Contracts</span>
-                        <h2>{stats.total}</h2>
+                        <span className="contract-stat-label">Total Contracts</span>
+                        <p className="contract-stat-value">{stats.total}</p>
                     </div>
                 </div>
 
-                <div className="contract-stat-card">
+                <div className="contract-stat-card dashboard-metric">
                     <div className="contract-stat-icon">
                         <CheckCircle />
                     </div>
                     <div>
-                        <span>Active Contracts</span>
-                        <h2>{stats.active}</h2>
+                        <span className="contract-stat-label">Active Contracts</span>
+                        <p className="contract-stat-value">{stats.active}</p>
                     </div>
                 </div>
 
-                <div className="contract-stat-card">
+                <div className="contract-stat-card dashboard-metric">
                     <div className="contract-stat-icon">
                         <Clock />
                     </div>
                     <div>
-                        <span>Pending Contracts</span>
-                        <h2>{stats.pending}</h2>
+                        <span className="contract-stat-label">Pending Contracts</span>
+                        <p className="contract-stat-value">{stats.pending}</p>
                     </div>
                 </div>
 
-                <div className="contract-stat-card">
+                <div className="contract-stat-card dashboard-metric">
                     <div className="contract-stat-icon">
                         <AlertCircle />
                     </div>
                     <div>
-                        <span>Expired Contracts</span>
-                        <h2>{stats.expired}</h2>
+                        <span className="contract-stat-label">Expired Contracts</span>
+                        <p className="contract-stat-value">{stats.expired}</p>
                     </div>
                 </div>
             </div>
 
             {/* CONTRACTS TABLE */}
-            <div className="contracts-container">
-                <div className="contracts-toolbar">
+            <div className="contracts-container dashboard-panel">
+                <div className="contracts-toolbar dashboard-toolbar">
                     <div>
                         <h2>All Contracts</h2>
                         <p>View and monitor insurance agreements.</p>
                     </div>
 
                     <div className="contracts-filters">
-                        <div className="contracts-search">
+                        <div className="contracts-search dashboard-search">
                             <Search size={17} />
                             <input
                                 type="text"
@@ -558,7 +555,7 @@ function Contracts({ role: propRole }) {
             {selectedContract && !formModal &&
                 createPortal(
                     <div
-                        className="contract-modal-overlay"
+                        className="contract-modal-overlay dashboard-dialog"
                         onClick={() => setSelectedContract(null)}
                     >
                         <div
@@ -688,7 +685,7 @@ function Contracts({ role: propRole }) {
             {formModal && (canCreate || canUpdate) &&
                 createPortal(
                     <div
-                        className="contract-modal-overlay"
+                        className="contract-modal-overlay dashboard-dialog"
                         onClick={closeFormModal}
                     >
                         <div

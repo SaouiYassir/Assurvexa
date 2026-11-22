@@ -7,7 +7,7 @@ function Footer() {
     const scroll = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
     return (
-        <footer>
+        <footer className="site-footer">
             <div className="footer-grid">
                 <div className='footer-left'>
                     <Link to="/" onClick={scroll}>

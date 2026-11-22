@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
 import RecordPagination from '../RecordPagination';
 import { useEffect, useMemo, useState } from 'react';
@@ -317,13 +318,12 @@ function Agents({ role = 'admin' }) {
   const { rows: visibleRows, controls: pagination } = useRecordPage(filteredAgents);
 
   return (
-    <section className="section agents-section" id="agents-section">
+    <section className="agents-section dashboard-page" id="agents-section">
       <div className="container">
         {/* HEADER */}
-        <header className="agents-header">
+        <header className="agents-header dashboard-page-header">
           <div>
-            <span className="eyebrow">Directory &amp; Roster</span>
-            <h1 className="agents-title">Agents Management</h1>
+            <h1 className="agents-title">Agents Overview</h1>
             <p className="agents-subtitle">
               Manage authorized insurance advisors and portfolio representatives.
             </p>
@@ -383,7 +383,7 @@ function Agents({ role = 'admin' }) {
         )}
 
         {/* SEARCH & FILTER TOOLBAR */}
-        <div className="agents-toolbar">
+        <div className="agents-toolbar dashboard-toolbar">
           <div className="agents-search-group">
             <select
               className="form-control agents-field-select"
@@ -399,7 +399,8 @@ function Agents({ role = 'admin' }) {
               <option value="username">Username</option>
             </select>
 
-            <div className="agents-search-input-wrap">
+            <div className="agents-search-input-wrap dashboard-search">
+              <Search size={16} aria-hidden="true" />
               <input
                 type="text"
                 className="form-control agents-search-input"
@@ -469,7 +470,7 @@ function Agents({ role = 'admin' }) {
         </div>
 
         {/* AGENTS TABLE */}
-        <div className="agents-ledger-card">
+        <div className="agents-ledger-card dashboard-panel">
           <div className="table-responsive">
             <table className="table-agents">
               <thead>
@@ -496,12 +497,22 @@ function Agents({ role = 'admin' }) {
                       <td className="agent-id">#{agent.id}</td>
 
                       <td>
-                        <strong className="agent-name">
-                          {agent.user?.first_name} {agent.user?.last_name}
-                        </strong>
-                        {agent.user?.username && (
-                          <span className="agent-subtext">@{agent.user.username}</span>
-                        )}
+                        <div className="dashboard-person">
+                          <span className="dashboard-avatar" aria-hidden="true">
+                            {[agent.user?.first_name, agent.user?.last_name]
+                              .filter(Boolean)
+                              .map((name) => name.charAt(0).toUpperCase())
+                              .join('') || 'A'}
+                          </span>
+                          <div>
+                            <strong className="agent-name">
+                              {agent.user?.first_name} {agent.user?.last_name}
+                            </strong>
+                            {agent.user?.username && (
+                              <span className="agent-subtext">@{agent.user.username}</span>
+                            )}
+                          </div>
+                        </div>
                       </td>
 
                       <td>
@@ -566,7 +577,7 @@ function Agents({ role = 'admin' }) {
 
       {/* CREATE / EDIT MODAL */}
       {(modal === 'create' || modal === 'edit') && (
-        <div className="agent-modal-overlay" onClick={closeModal}>
+        <div className="agent-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="agent-modal"
             onClick={(e) => e.stopPropagation()}
@@ -786,7 +797,7 @@ function Agents({ role = 'admin' }) {
 
       {/* DELETE CONFIRMATION MODAL */}
       {modal === 'delete' && (
-        <div className="agent-modal-overlay" onClick={closeModal}>
+        <div className="agent-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="agent-modal agent-modal--delete"
             onClick={(e) => e.stopPropagation()}

@@ -362,11 +362,10 @@ function Reimbursements({ role: propRole }) {
   const { rows: visibleRows, controls: pagination } = useRecordPage(filteredReimbursements);
 
   return (
-    <section className="reimbursements-page" id="reimbursements-section">
+    <section className="reimbursements-page dashboard-page" id="reimbursements-section">
       {/* HEADER */}
-      <header className="reimbursements-header">
+      <header className="reimbursements-header dashboard-page-header">
         <div>
-          <span className="reimbursements-eyebrow">PAYOUT LEDGER</span>
           <h1 className="reimbursements-title">Reimbursements</h1>
           <p className="reimbursements-subtitle">
             {isCustomer
@@ -431,7 +430,7 @@ function Reimbursements({ role: propRole }) {
       {/* KPI STRIP */}
       <div className="reimb-stats-grid">
         <div
-          className={`reimb-stat-card ${statusFilter === 'all' ? 'is-active' : ''}`}
+          className={`reimb-stat-card dashboard-metric ${statusFilter === 'all' ? 'is-active' : ''}`}
           onClick={() => setStatusFilter('all')}
           role="button"
           tabIndex={0}
@@ -442,7 +441,7 @@ function Reimbursements({ role: propRole }) {
         </div>
 
         <div
-          className={`reimb-stat-card ${statusFilter === 'paid' ? 'is-active' : ''}`}
+          className={`reimb-stat-card dashboard-metric ${statusFilter === 'paid' ? 'is-active' : ''}`}
           onClick={() => setStatusFilter('paid')}
           role="button"
           tabIndex={0}
@@ -455,7 +454,7 @@ function Reimbursements({ role: propRole }) {
         </div>
 
         <div
-          className={`reimb-stat-card ${statusFilter === 'pending' ? 'is-active' : ''}`}
+          className={`reimb-stat-card dashboard-metric ${statusFilter === 'pending' ? 'is-active' : ''}`}
           onClick={() => setStatusFilter('pending')}
           role="button"
           tabIndex={0}
@@ -467,7 +466,7 @@ function Reimbursements({ role: propRole }) {
           </strong>
         </div>
 
-        <div className="reimb-stat-card">
+        <div className="reimb-stat-card dashboard-metric">
           <span className="reimb-stat-label">Total Disbursed Value</span>
           <strong className="reimb-stat-value">
             {formatPrice(stats.totalAmount)} <small>MAD</small>
@@ -476,8 +475,8 @@ function Reimbursements({ role: propRole }) {
       </div>
 
       {/* TOOLBAR */}
-      <div className="reimb-toolbar">
-        <div className="reimb-search-wrap">
+      <div className="reimb-toolbar dashboard-toolbar">
+        <div className="reimb-search-wrap dashboard-search">
           <Search size={16} />
           <input
             type="text"
@@ -551,7 +550,7 @@ function Reimbursements({ role: propRole }) {
       </div>
 
       {/* TABLE */}
-      <div className="reimb-ledger-card">
+      <div className="reimb-ledger-card dashboard-panel">
         <div className="reimb-table-responsive">
           <table className="table-reimbursements">
             <thead>
@@ -677,7 +676,7 @@ function Reimbursements({ role: propRole }) {
         selectedItem &&
         showActionsColumn &&
         createPortal(
-          <div className="reimb-modal-overlay" onClick={closeModal}>
+          <div className="reimb-modal-overlay dashboard-dialog" onClick={closeModal}>
             <div
               className="reimb-modal"
               onClick={(e) => e.stopPropagation()}
@@ -780,7 +779,7 @@ function Reimbursements({ role: propRole }) {
       {(modal === 'create' || modal === 'edit') &&
         (canCreate || canUpdate) &&
         createPortal(
-          <div className="reimb-modal-overlay" onClick={closeModal}>
+          <div className="reimb-modal-overlay dashboard-dialog" onClick={closeModal}>
             <div
               className="reimb-modal"
               onClick={(e) => e.stopPropagation()}
@@ -968,7 +967,7 @@ function Reimbursements({ role: propRole }) {
         selectedItem &&
         canDelete &&
         createPortal(
-          <div className="reimb-modal-overlay" onClick={closeModal}>
+          <div className="reimb-modal-overlay dashboard-dialog" onClick={closeModal}>
             <div
               className="reimb-modal reimb-modal--delete"
               onClick={(e) => e.stopPropagation()}

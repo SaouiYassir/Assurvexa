@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
 import RecordPagination from '../RecordPagination';
 import { useAuth } from '../../../context/useAuth';
@@ -239,13 +240,12 @@ function Policies({ role: propRole }) {
   const { rows: visibleRows, controls: pagination } = useRecordPage(filteredPolicies);
 
   return (
-    <section className="policies-section" id="policies-section">
+    <section className="policies-section dashboard-page" id="policies-section">
       <div className="container">
         {/* HEADER */}
-        <header className="policies-header">
+        <header className="policies-header dashboard-page-header">
           <div>
-            <span className="eyebrow">Coverage Catalog</span>
-            <h1 className="policies-title">Policies Management</h1>
+            <h1 className="policies-title">Insurance Policies</h1>
             <p className="policies-subtitle">
               Configure, review, and manage available insurance plans, coverage types, and base premiums.
             </p>
@@ -305,7 +305,7 @@ function Policies({ role: propRole }) {
         )}
 
         {/* SEARCH & FILTER TOOLBAR */}
-        <div className="policies-toolbar">
+        <div className="policies-toolbar dashboard-toolbar">
           <div className="policies-search-group">
             <select
               className="form-control policies-field-select"
@@ -318,7 +318,8 @@ function Policies({ role: propRole }) {
               <option value="description">Description</option>
             </select>
 
-            <div className="policies-search-input-wrap">
+            <div className="policies-search-input-wrap dashboard-search">
+              <Search size={16} aria-hidden="true" />
               <input
                 type="text"
                 className="form-control policies-search-input"
@@ -394,7 +395,7 @@ function Policies({ role: propRole }) {
         </div>
 
         {/* POLICIES TABLE */}
-        <div className="policies-ledger-card">
+        <div className="policies-ledger-card dashboard-panel">
           <div className="table-responsive">
             <table className="table-policies">
               <thead>
@@ -488,7 +489,7 @@ function Policies({ role: propRole }) {
 
       {/* CREATE / EDIT MODAL */}
       {(modal === 'create' || modal === 'edit') && (
-        <div className="policy-modal-overlay" onClick={closeModal}>
+        <div className="policy-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="policy-modal"
             onClick={(e) => e.stopPropagation()}
@@ -634,7 +635,7 @@ function Policies({ role: propRole }) {
 
       {/* DELETE MODAL */}
       {modal === 'delete' && (
-        <div className="policy-modal-overlay" onClick={closeModal}>
+        <div className="policy-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="policy-modal policy-modal--delete"
             onClick={(e) => e.stopPropagation()}

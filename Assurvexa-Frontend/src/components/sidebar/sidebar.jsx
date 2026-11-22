@@ -121,6 +121,7 @@ function Sidebar({ user }) {
             </header>
 
             <nav className="av-sidebar__nav" aria-label="Dashboard navigation">
+                <p className="av-sidebar__nav-label" aria-hidden="true">Navigation</p>
                 {navItems.map(({ label, path, icon: Icon }) => (
                     <NavLink
                         key={path}
@@ -139,8 +140,11 @@ function Sidebar({ user }) {
 
             <footer className="av-sidebar__footer">
                 <div className="av-sidebar__identity">
-                    <p className="av-sidebar__name">{name}</p>
-                    <p className="av-sidebar__role">{role}</p>
+                    <span className="dashboard-avatar" aria-hidden="true">{name[0].toUpperCase()}</span>
+                    <div>
+                        <p className="av-sidebar__name">{name}</p>
+                        <p className="av-sidebar__role">{role}</p>
+                    </div>
                 </div>
 
                 <button

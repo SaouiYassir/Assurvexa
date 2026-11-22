@@ -23,7 +23,7 @@ function Header() {
     const closeMenu = () => setIsMobileMenuOpen(false);
 
     return (
-        <header>
+        <header className="site-header">
             <NavLink 
                 to="/" 
                 className="logo" 

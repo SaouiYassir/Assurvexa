@@ -1,3 +1,4 @@
+import { Search } from 'lucide-react';
 import { useDashboardRecords, useRecordPage } from '../useDashboardRecords';
 import RecordPagination from '../RecordPagination';
 import { useAuth } from '../../../context/useAuth';
@@ -314,13 +315,12 @@ function Claims({ role: propRole }) {
   const { rows: visibleRows, controls: pagination } = useRecordPage(filteredClaims);
 
   return (
-    <section className="claims-section" id="claims-section">
+    <section className="claims-section dashboard-page" id="claims-section">
       <div className="container">
         {/* HEADER */}
-        <header className="claims-header">
+        <header className="claims-header dashboard-page-header">
           <div>
-            <span className="eyebrow">Claims Ledger</span>
-            <h1 className="claims-title">Claims Management</h1>
+            <h1 className="claims-title">Claims Workflow</h1>
             <p className="claims-subtitle">
               {isCustomer
                 ? 'Submit new insurance claims, track review progress, and update pending declarations.'
@@ -384,7 +384,7 @@ function Claims({ role: propRole }) {
         {/* KPI SUMMARY STRIP */}
         <div className="claims-stats-grid">
           <div
-            className={`claim-stat-card ${statusFilter === 'all' ? 'is-active' : ''}`}
+            className={`claim-stat-card dashboard-metric ${statusFilter === 'all' ? 'is-active' : ''}`}
             onClick={() => setStatusFilter('all')}
             role="button"
             tabIndex={0}
@@ -395,7 +395,7 @@ function Claims({ role: propRole }) {
           </div>
 
           <div
-            className={`claim-stat-card ${statusFilter === 'pending' ? 'is-active' : ''}`}
+            className={`claim-stat-card dashboard-metric ${statusFilter === 'pending' ? 'is-active' : ''}`}
             onClick={() => setStatusFilter('pending')}
             role="button"
             tabIndex={0}
@@ -408,7 +408,7 @@ function Claims({ role: propRole }) {
           </div>
 
           <div
-            className={`claim-stat-card ${statusFilter === 'approved' ? 'is-active' : ''}`}
+            className={`claim-stat-card dashboard-metric ${statusFilter === 'approved' ? 'is-active' : ''}`}
             onClick={() => setStatusFilter('approved')}
             role="button"
             tabIndex={0}
@@ -421,7 +421,7 @@ function Claims({ role: propRole }) {
           </div>
 
           <div
-            className={`claim-stat-card ${statusFilter === 'rejected' ? 'is-active' : ''}`}
+            className={`claim-stat-card dashboard-metric ${statusFilter === 'rejected' ? 'is-active' : ''}`}
             onClick={() => setStatusFilter('rejected')}
             role="button"
             tabIndex={0}
@@ -435,7 +435,7 @@ function Claims({ role: propRole }) {
         </div>
 
         {/* SEARCH & FILTER TOOLBAR */}
-        <div className="claims-toolbar">
+        <div className="claims-toolbar dashboard-toolbar">
           <div className="claims-search-group">
             <select
               className="form-control claims-field-select"
@@ -450,7 +450,8 @@ function Claims({ role: propRole }) {
               <option value="description">Description</option>
             </select>
 
-            <div className="claims-search-input-wrap">
+            <div className="claims-search-input-wrap dashboard-search">
+              <Search size={16} aria-hidden="true" />
               <input
                 type="text"
                 className="form-control claims-search-input"
@@ -528,7 +529,7 @@ function Claims({ role: propRole }) {
         </div>
 
         {/* CLAIMS TABLE */}
-        <div className="claims-ledger-card">
+        <div className="claims-ledger-card dashboard-panel">
           <div className="table-responsive">
             <table className="table-claims">
               <thead>
@@ -646,7 +647,7 @@ function Claims({ role: propRole }) {
 
       {/* CLAIM DETAILS & AGENT ADJUDICATION MODAL */}
       {modal === 'view' && selectedClaim && showActionsColumn && (
-        <div className="claim-modal-overlay" onClick={closeModal}>
+        <div className="claim-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="claim-modal"
             onClick={(e) => e.stopPropagation()}
@@ -782,7 +783,7 @@ function Claims({ role: propRole }) {
 
       {/* CREATE / MODIFY CLAIM MODAL (Customer) */}
       {(modal === 'create' || modal === 'edit') && (
-        <div className="claim-modal-overlay" onClick={closeModal}>
+        <div className="claim-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="claim-modal"
             onClick={(e) => e.stopPropagation()}
@@ -924,7 +925,7 @@ function Claims({ role: propRole }) {
 
       {/* DELETE CONFIRMATION MODAL (Agent) */}
       {modal === 'delete' && selectedClaim && (
-        <div className="claim-modal-overlay" onClick={closeModal}>
+        <div className="claim-modal-overlay dashboard-dialog" onClick={closeModal}>
           <div
             className="claim-modal claim-modal--delete"
             onClick={(e) => e.stopPropagation()}

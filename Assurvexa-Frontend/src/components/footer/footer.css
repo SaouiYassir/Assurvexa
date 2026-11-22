@@ -3,7 +3,7 @@
    Luxury / Minimal / Responsive
 ========================================= */
 
-footer {
+.site-footer {
     width: 100%;
     padding: 4.5rem max(
         calc((100% - var(--container-width)) / 2),
@@ -112,7 +112,7 @@ footer {
 ========================================= */
 
 @media (max-width: 768px) {
-    footer {
+    .site-footer {
         padding: 3.5rem 1.5rem 1.5rem;
     }
 

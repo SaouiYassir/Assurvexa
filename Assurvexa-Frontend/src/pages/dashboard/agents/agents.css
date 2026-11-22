@@ -7,61 +7,9 @@
    1. MAIN SECTION
 ========================================= */
 
-.agents-section {
-    min-height: calc(100vh - var(--header-height));
-    padding-block: 3.5rem 5rem;
-    background: var(--color-bg);
-}
-
-.agents-section .container {
-    width: min(100% - 3rem, var(--container-width));
-    margin-inline: auto;
-}
-
 /* =========================================
    2. HEADER
 ========================================= */
-
-.agents-header {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
-    height: auto !important;
-    min-height: unset !important;
-    max-height: none !important;
-    margin-bottom: 2.5rem;
-    padding-top: 0;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-}
-
-.agents-header > div:first-child {
-    max-width: 650px;
-}
-
-.agents-header .eyebrow {
-    margin-bottom: 0.8rem;
-}
-
-.agents-title {
-    margin-bottom: 0.8rem;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-}
-
-.agents-subtitle {
-    max-width: 550px;
-    color: var(--color-ink-soft);
-    font-size: 0.9rem;
-    line-height: 1.7;
-}
 
 .agents-header-actions {
     display: flex;
@@ -338,10 +286,6 @@
     transition: border-color var(--transition);
 }
 
-.agents-ledger-card:hover {
-    border-color: var(--color-bronze);
-}
-
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -360,38 +304,8 @@
     text-align: left;
 }
 
-.table-agents thead {
-    background: var(--color-surface);
-}
-
-.table-agents th {
-    padding: 1.1rem 1.25rem;
-    color: var(--color-ink-soft);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.table-agents td {
-    padding: 1.1rem 1.25rem;
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-ink);
-    font-size: 0.83rem;
-    vertical-align: middle;
-}
-
 .table-agents tbody tr {
     transition: background var(--transition);
-}
-
-.table-agents tbody tr:hover {
-    background: rgba(232, 228, 221, 0.35);
-}
-
-.table-agents tbody tr:last-child td {
-    border-bottom: none;
 }
 
 /* Agent ID */
@@ -815,10 +729,6 @@
     .agents-filter-group select {
         flex: 1;
     }
-
-    .agents-header {
-        align-items: flex-start;
-    }
 }
 
 /* =========================================
@@ -826,21 +736,6 @@
 ========================================= */
 
 @media (max-width: 640px) {
-    .agents-section {
-        padding-block: 2.5rem 3rem;
-    }
-
-    .agents-section .container {
-        width: min(100% - 2rem, var(--container-width));
-    }
-
-    .agents-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
-        margin-bottom: 1.75rem;
-        padding-bottom: 1.5rem;
-    }
 
     .agents-header-actions {
         width: 100%;

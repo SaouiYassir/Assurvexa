@@ -7,67 +7,9 @@
    1. MAIN SECTION
 ========================================= */
 
-.policies-section {
-    min-height: calc(100vh - var(--header-height));
-    padding-block: 3.5rem 5rem;
-    background: var(--color-bg);
-}
-
-.policies-section .container {
-    width: min(100% - 3rem, var(--container-width));
-    margin-inline: auto;
-}
-
 /* =========================================
    2. HEADER (Scoped to override global rules)
 ========================================= */
-
-.policies-section .policies-header {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
-    height: auto !important;
-    min-height: unset !important;
-    max-height: none !important;
-    margin-bottom: 2.5rem;
-    padding-top: 0;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-}
-
-.policies-section .policies-header::before,
-.policies-section .policies-header::after {
-    content: none !important;
-    display: none !important;
-}
-
-.policies-header > div:first-child {
-    max-width: 650px;
-}
-
-.policies-header .eyebrow {
-    margin-bottom: 0.8rem;
-}
-
-.policies-title {
-    margin-bottom: 0.8rem;
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-}
-
-.policies-subtitle {
-    max-width: 550px;
-    color: var(--color-ink-soft);
-    font-size: 0.9rem;
-    line-height: 1.7;
-}
 
 .policies-header-actions {
     display: flex;
@@ -336,10 +278,6 @@
     transition: border-color var(--transition);
 }
 
-.policies-ledger-card:hover {
-    border-color: var(--color-bronze);
-}
-
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -358,38 +296,8 @@
     text-align: left;
 }
 
-.table-policies thead {
-    background: var(--color-surface);
-}
-
-.table-policies th {
-    padding: 1.1rem 1.25rem;
-    color: var(--color-ink-soft);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.table-policies td {
-    padding: 1.1rem 1.25rem;
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-ink);
-    font-size: 0.83rem;
-    vertical-align: middle;
-}
-
 .table-policies tbody tr {
     transition: background var(--transition);
-}
-
-.table-policies tbody tr:hover {
-    background: rgba(232, 228, 221, 0.35);
-}
-
-.table-policies tbody tr:last-child td {
-    border-bottom: none;
 }
 
 .policy-id {
@@ -757,21 +665,6 @@
 }
 
 @media (max-width: 640px) {
-    .policies-section {
-        padding-block: 2.5rem 3rem;
-    }
-
-    .policies-section .container {
-        width: min(100% - 2rem, var(--container-width));
-    }
-
-    .policies-section .policies-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
-        margin-bottom: 1.75rem;
-        padding-bottom: 1.5rem;
-    }
 
     .policies-header-actions,
     .policies-header-actions .btn {

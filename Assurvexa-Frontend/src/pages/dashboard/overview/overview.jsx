@@ -1,8 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // Remove or replace with <a> if not using react-router
+import { Briefcase, FileCheck, FilePlus, Plus, UserPlus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '../../../services/api';
 import { can } from '../../../services/permissions';
 import './overview.css';
+
+const OVERVIEW_COPY = {
+  admin: ['Admin Dashboard', 'Track insurance activity, claim status, and reimbursements.'],
+  agent: ['Overview', 'Review your clients, contracts, and claims awaiting action.'],
+  customer: ['Overview', 'View your coverage, claims, and reimbursements.'],
+};
+
+const STATUS_COLORS = {
+  approved: '#547a65',
+  pending: '#b48a53',
+  rejected: '#a76660',
+};
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
@@ -55,11 +68,10 @@ function Overview() {
 
   if (loading) {
     return (
-      <section className="section overview-section">
+      <section className="dashboard-page overview-section">
         <div className="container">
-          <div className="overview-loading">
-            <span className="eyebrow">Assurvexa Workspace</span>
-            <p>Loading portfolio intelligence...</p>
+          <div className="dashboard-panel overview-feedback" role="status">
+            <p>Loading dashboard overview...</p>
           </div>
         </div>
       </section>
@@ -68,10 +80,10 @@ function Overview() {
 
   if (error || !stats) {
     return (
-      <section className="section overview-section">
+      <section className="dashboard-page overview-section">
         <div className="container">
-          <div className="card overview-error">
-            <h3>Dashboard Unavailable</h3>
+          <div className="dashboard-panel overview-feedback" role="alert">
+            <h1>Dashboard unavailable</h1>
             <p>{error || 'No data returned from the server.'}</p>
           </div>
         </div>
@@ -79,44 +91,46 @@ function Overview() {
     );
   }
 
-  return (
-    <section className="section overview-section">
-      <div className="container">
-        {/* Header & Permission-Gated Quick Actions */}
-        <header className="overview-header">
-          <div>
-            <span className="eyebrow">
-              {role === 'admin' && 'Executive Control'}
-              {role === 'agent' && 'Agent Portfolio'}
-              {role === 'customer' && 'Policyholder Portal'}
-            </span>
-            <h1 className="overview-title">Overview</h1>
-          </div>
+  const [title, description] = OVERVIEW_COPY[role] ?? ['Overview', ''];
 
+  return (
+    <section className="dashboard-page overview-section">
+      <div className="container">
+        <header className="dashboard-page-header overview-header">
+          <h1 className="overview-title">
+            {title}{role === 'admin' && <><br />Overview</>}
+          </h1>
+          <p>{description}</p>
           <div className="overview-actions">
             {can(role, 'policies', 'create') && (
               <Link to="/dashboard/policies" className="btn btn-primary">
-                + New Policy
+                <Plus size={16} aria-hidden="true" /> Create Policy
               </Link>
             )}
             {can(role, 'agents', 'create') && (
               <Link to="/dashboard/agents" className="btn btn-secondary">
-                + Register Agent
+                <UserPlus size={16} aria-hidden="true" /> Register Agent
               </Link>
             )}
             {can(role, 'customers', 'create') && (
-              <Link to="/dashboard//customers" className="btn btn-secondary">
-                + Add Customer
+              <Link to="/dashboard/customers" className="btn btn-secondary">
+                <UserPlus size={16} aria-hidden="true" /> Add Customer
               </Link>
             )}
             {can(role, 'contracts', 'create') && (
               <Link to="/dashboard/contracts" className="btn btn-primary">
-                + Issue Contract
+                <Briefcase size={16} aria-hidden="true" /> Issue Contract
               </Link>
             )}
             {can(role, 'claims', 'create') && (
-              <Link to="/dashboard//claims" className="btn btn-primary">
-                + File a Claim
+              <Link to="/dashboard/claims" className="btn btn-primary">
+                <FilePlus size={16} aria-hidden="true" /> File a Claim
+              </Link>
+            )}
+            {can(role, 'claims', 'view') && !can(role, 'claims', 'create') && (
+              <Link to="/dashboard/claims" className="btn btn-secondary">
+                <FileCheck size={16} aria-hidden="true" />
+                {can(role, 'claims', 'update') ? 'Process Claims' : 'View Claims'}
               </Link>
             )}
           </div>
@@ -125,32 +139,13 @@ function Overview() {
         {/* ================= ADMIN VIEW ================= */}
         {role === 'admin' && (
           <>
-            {/* Financial Highlights */}
-            <div className="grid grid-2 overview-block">
-              <div className="card stat-card stat-card--accent">
-                <span className="stat-label">Total Reimbursed (Paid)</span>
-                <div className="stat-value">
-                  {formatCurrency(stats.financials?.total_reimbursed_amount)}
-                </div>
-                <span className="stat-meta">Settled payouts across all policies</span>
-              </div>
-
-              <div className="card stat-card">
-                <span className="stat-label">Pending Reimbursements</span>
-                <div className="stat-value">
-                  {formatCurrency(stats.financials?.pending_reimbursement_amount)}
-                </div>
-                <span className="stat-meta">Awaiting disbursement authorization</span>
-              </div>
-            </div>
-
             {/* System Totals */}
-            <div className="grid grid-3 overview-block">
+            <div className="overview-metrics overview-metrics--admin overview-block">
               <div className="card stat-card">
-                <span className="stat-label">Active Agents</span>
+                <span className="stat-label">Total Agents</span>
                 <div className="stat-value">{stats.totals?.agents ?? 0}</div>
                 {can(role, 'agents', 'view') && (
-                  <Link to="/dashboard/agents" className="stat-link">Manage agents →</Link>
+                  <Link to="/dashboard/agents" className="stat-link">Manage agents</Link>
                 )}
               </div>
 
@@ -158,7 +153,7 @@ function Overview() {
                 <span className="stat-label">Registered Customers</span>
                 <div className="stat-value">{stats.totals?.customers ?? 0}</div>
                 {can(role, 'customers', 'view') && (
-                  <Link to="/dashboard/customers" className="stat-link">View directory →</Link>
+                  <Link to="/dashboard/customers" className="stat-link">View directory</Link>
                 )}
               </div>
 
@@ -166,7 +161,7 @@ function Overview() {
                 <span className="stat-label">Insurance Policies</span>
                 <div className="stat-value">{stats.totals?.policies ?? 0}</div>
                 {can(role, 'policies', 'view') && (
-                  <Link to="/dashboard/policies" className="stat-link">Configure catalog →</Link>
+                  <Link to="/dashboard/policies" className="stat-link">Configure catalog</Link>
                 )}
               </div>
 
@@ -174,7 +169,7 @@ function Overview() {
                 <span className="stat-label">Total Contracts</span>
                 <div className="stat-value">{stats.totals?.contracts ?? 0}</div>
                 {can(role, 'contracts', 'view') && (
-                  <Link to="/dashboard/contracts" className="stat-link">Inspect contracts →</Link>
+                  <Link to="/dashboard/contracts" className="stat-link">Inspect contracts</Link>
                 )}
               </div>
 
@@ -182,7 +177,7 @@ function Overview() {
                 <span className="stat-label">Total Claims</span>
                 <div className="stat-value">{stats.totals?.claims ?? 0}</div>
                 {can(role, 'claims', 'view') && (
-                  <Link to="/dashboard/claims" className="stat-link">Audit claims →</Link>
+                  <Link to="/dashboard/claims" className="stat-link">Audit claims</Link>
                 )}
               </div>
 
@@ -190,34 +185,37 @@ function Overview() {
                 <span className="stat-label">Reimbursement Records</span>
                 <div className="stat-value">{stats.totals?.reimbursements ?? 0}</div>
                 {can(role, 'reimbursements', 'view') && (
-                  <Link to="/dashboard/reimbursements" className="stat-link">View ledger →</Link>
+                  <Link to="/dashboard/reimbursements" className="stat-link">View ledger</Link>
                 )}
               </div>
             </div>
 
-            {/* Breakdown & Recent Claims */}
-            <div className="grid grid-2 overview-block">
-              <div className="card">
-                <h3 className="card-title">Status Breakdown</h3>
+            <div className="overview-charts overview-block">
+              <div className="dashboard-panel overview-panel">
+                <h2 className="card-title">Reimbursements</h2>
+                <p className="overview-subtext">Paid and pending amounts across all claims</p>
+                <ReimbursementBars financials={stats.financials} />
                 <div className="status-group">
-                  <p className="status-group-heading">Claims by Status</p>
-                  <StatusList items={stats.claims_by_status} />
-                </div>
-                <div className="status-group">
-                  <p className="status-group-heading">Reimbursements by Payment Status</p>
+                  <h3 className="status-group-heading">Payment records by status</h3>
                   <StatusList items={stats.reimbursements_by_status} />
                 </div>
               </div>
 
-              <div className="card">
-                <div className="card-header-inline">
-                  <h3 className="card-title">Recent Claims</h3>
-                  {can(role, 'claims', 'view') && (
-                    <Link to="/dashboard/claims" className="stat-link">View all</Link>
-                  )}
-                </div>
-                <ClaimsTable claims={stats.recent_claims} showCustomer />
+              <div className="dashboard-panel overview-panel">
+                <h2 className="card-title">Claims by Status</h2>
+                <p className="overview-subtext">Breakdown of submitted claims</p>
+                <ClaimsDistribution items={stats.claims_by_status} />
               </div>
+            </div>
+
+            <div className="dashboard-panel overview-panel overview-panel--table">
+              <div className="card-header-inline">
+                <h2 className="card-title">Recent Claims</h2>
+                {can(role, 'claims', 'view') && (
+                  <Link to="/dashboard/claims" className="stat-link">View all claims</Link>
+                )}
+              </div>
+              <ClaimsTable claims={stats.recent_claims} showCustomer />
             </div>
           </>
         )}
@@ -225,12 +223,12 @@ function Overview() {
         {/* ================= AGENT VIEW ================= */}
         {role === 'agent' && (
           <>
-            <div className="grid grid-4 overview-block">
+            <div className="overview-metrics overview-block">
               <div className="card stat-card">
                 <span className="stat-label">My Customers</span>
                 <div className="stat-value">{stats.totals?.my_customers ?? 0}</div>
                 {can(role, 'customers', 'view') && (
-                  <Link to="/dashboard/customers" className="stat-link">Client list →</Link>
+                  <Link to="/dashboard/customers" className="stat-link">Client list</Link>
                 )}
               </div>
 
@@ -238,15 +236,15 @@ function Overview() {
                 <span className="stat-label">Active Contracts</span>
                 <div className="stat-value">{stats.totals?.active_contracts ?? 0}</div>
                 {can(role, 'contracts', 'view') && (
-                  <Link to="/dashboard/contracts" className="stat-link">Manage contracts →</Link>
+                  <Link to="/dashboard/contracts" className="stat-link">Manage contracts</Link>
                 )}
               </div>
 
-              <div className="card stat-card stat-card--accent">
+              <div className="card stat-card">
                 <span className="stat-label">Pending Claims</span>
                 <div className="stat-value">{stats.totals?.pending_claims ?? 0}</div>
                 {can(role, 'claims', 'view') && (
-                  <Link to="/dashboard/claims" className="stat-link">Review queue →</Link>
+                  <Link to="/dashboard/claims" className="stat-link">Review queue</Link>
                 )}
               </div>
 
@@ -254,7 +252,7 @@ function Overview() {
                 <span className="stat-label">Pending Payments</span>
                 <div className="stat-value">{stats.totals?.pending_payments ?? 0}</div>
                 {can(role, 'reimbursements', 'view') && (
-                  <Link to="/dashboard/reimbursements" className="stat-link">Process payouts →</Link>
+                  <Link to="/dashboard/reimbursements" className="stat-link">Process payouts</Link>
                 )}
               </div>
             </div>
@@ -262,7 +260,7 @@ function Overview() {
             <div className="grid grid-2 overview-block">
               <div className="card">
                 <h3 className="card-title">Portfolio Claims by Status</h3>
-                <StatusList items={stats.claims_by_status} />
+                <ClaimsDistribution items={stats.claims_by_status} />
               </div>
 
               <div className="card">
@@ -285,12 +283,12 @@ function Overview() {
         {/* ================= CUSTOMER VIEW ================= */}
         {role === 'customer' && (
           <>
-            <div className="grid grid-4 overview-block">
+            <div className="overview-metrics overview-block">
               <div className="card stat-card">
                 <span className="stat-label">Active Contracts</span>
                 <div className="stat-value">{stats.totals?.active_contracts ?? 0}</div>
                 {can(role, 'contracts', 'view') && (
-                  <Link to="/dashboard/contracts" className="stat-link">View coverage →</Link>
+                  <Link to="/dashboard/contracts" className="stat-link">View coverage</Link>
                 )}
               </div>
 
@@ -298,7 +296,7 @@ function Overview() {
                 <span className="stat-label">Total Claims</span>
                 <div className="stat-value">{stats.totals?.total_claims ?? 0}</div>
                 {can(role, 'claims', 'view') && (
-                  <Link to="/dashboard/claims" className="stat-link">Claim history →</Link>
+                  <Link to="/dashboard/claims" className="stat-link">Claim history</Link>
                 )}
               </div>
 
@@ -308,13 +306,13 @@ function Overview() {
                 <span className="stat-meta">Currently under review</span>
               </div>
 
-              <div className="card stat-card stat-card--accent">
+              <div className="card stat-card">
                 <span className="stat-label">Total Reimbursed</span>
                 <div className="stat-value">
                   {formatCurrency(stats.totals?.total_reimbursed)}
                 </div>
                 {can(role, 'reimbursements', 'view') && (
-                  <Link to="/dashboard/reimbursements" className="stat-link">Payout statements →</Link>
+                  <Link to="/dashboard/reimbursements" className="stat-link">Payout statements</Link>
                 )}
               </div>
             </div>
@@ -389,6 +387,67 @@ function StatusList({ items }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+function ReimbursementBars({ financials }) {
+  const amounts = [
+    { label: 'Paid', amount: Number(financials?.total_reimbursed_amount ?? 0), color: '#4a4540' },
+    { label: 'Pending', amount: Number(financials?.pending_reimbursement_amount ?? 0), color: '#b39d87' },
+  ];
+  const max = Math.max(...amounts.map(({ amount }) => amount), 1);
+
+  return (
+    <ul className="overview-bars">
+      {amounts.map(({ label, amount, color }) => (
+        <li key={label}>
+          <div className="overview-bar-label">
+            <span>{label}</span>
+            <strong>{formatCurrency(amount)}</strong>
+          </div>
+          <div className="overview-bar-track" aria-hidden="true">
+            <span style={{ width: `${(amount / max) * 100}%`, backgroundColor: color }} />
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ClaimsDistribution({ items }) {
+  const segments = Object.entries(items ?? {}).map(([status, count]) => ({
+    status,
+    count: Number(count),
+    color: STATUS_COLORS[status] ?? '#8c7a6b',
+  }));
+  const total = segments.reduce((sum, { count }) => sum + count, 0);
+
+  if (total === 0) {
+    return <p className="overview-empty">No claims to display.</p>;
+  }
+
+  let position = 0;
+  const stops = segments.map(({ color, count }) => {
+    const start = position;
+    position += count;
+    return `${color} ${(start / total) * 100}% ${(position / total) * 100}%`;
+  });
+
+  return (
+    <div className="overview-distribution">
+      <div className="overview-donut" style={{ backgroundImage: `conic-gradient(${stops.join(', ')})` }} aria-hidden="true">
+        <div><strong>{total}</strong><span>Claims</span></div>
+      </div>
+      <ul className="overview-legend" aria-label={`Claim counts by status, ${total} total`}>
+        {segments.map(({ status, count, color }) => (
+          <li key={status}>
+            <span className="overview-swatch" style={{ backgroundColor: color }} aria-hidden="true" />
+            <span>{status}</span>
+            <strong>{count}</strong>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
