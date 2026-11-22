@@ -7,8 +7,10 @@ use App\Services\JwtService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Customer;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
 
@@ -123,5 +125,41 @@ class AuthController extends Controller
         return response()->json([
             'user' => $request->user()->load('customer'),
         ], 200);
+    }
+
+    public function updateMe(Request $request): JsonResponse
+    {
+        $user = $request->user()->load('customer');
+        $rules = [
+            'first_name' => ['sometimes', 'required', 'string', 'max:255'],
+            'last_name' => ['sometimes', 'required', 'string', 'max:255'],
+            'username' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'email' => ['sometimes', 'required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'phone' => ['sometimes', 'required', 'string', 'max:20'],
+            'CIN' => ['sometimes', 'required', 'string', 'max:50', Rule::unique('users')->ignore($user->id)],
+        ];
+
+        if ($user->role === 'customer' && $user->customer) {
+            $rules['adresse'] = ['sometimes', 'required', 'string', 'max:255'];
+        }
+
+        $validated = $request->validate($rules);
+
+        DB::transaction(function () use ($user, $validated) {
+            $user->fill(Arr::except($validated, ['adresse']));
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
+            }
+            $user->save();
+
+            if (array_key_exists('adresse', $validated)) {
+                $user->customer->update(['adresse' => $validated['adresse']]);
+            }
+        });
+
+        return response()->json([
+            'message' => 'Profile updated successfully.',
+            'user' => $user->refresh(),
+        ]);
     }
 }

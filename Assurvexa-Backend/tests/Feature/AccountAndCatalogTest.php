@@ -71,6 +71,53 @@ class AccountAndCatalogTest extends ApiTestCase
         }
     }
 
+    public function test_each_authenticated_role_can_update_its_own_profile(): void
+    {
+        $this->patchJson('/api/me', ['first_name' => 'Updated'])->assertUnauthorized();
+
+        foreach (['admin', 'agent', 'customer'] as $role) {
+            $user = $role === 'customer'
+                ? $this->createCustomer()->user
+                : User::factory()->create(['role' => $role]);
+            $this->authenticateAs($user);
+
+            $this->patchJson('/api/me', [
+                'first_name' => 'Updated',
+                'email' => "updated-{$role}@example.test",
+                'adresse' => '20 Main Street',
+                'role' => 'unknown',
+            ])->assertOk()
+                ->assertJsonPath('user.id', $user->id)
+                ->assertJsonPath('user.role', $role)
+                ->assertJsonMissingPath('user.password');
+
+            $profile = $this->getJson('/api/me')->assertOk()
+                ->assertJsonPath('user.first_name', 'Updated')
+                ->assertJsonPath('user.email', "updated-{$role}@example.test")
+                ->assertJsonPath('user.email_verified_at', null);
+
+            if ($role === 'customer') {
+                $profile->assertJsonPath('user.customer.adresse', '20 Main Street');
+            }
+        }
+    }
+
+    public function test_invalid_profile_changes_are_rejected_without_saving_address(): void
+    {
+        $customer = $this->createCustomer();
+        $otherUser = User::factory()->create();
+        $this->authenticateAs($customer->user);
+
+        $this->patchJson('/api/me', [
+            'email' => $otherUser->email,
+            'username' => $otherUser->username,
+            'CIN' => $otherUser->CIN,
+            'adresse' => '20 Main Street',
+        ])->assertUnprocessable()->assertJsonValidationErrors(['email', 'username', 'CIN']);
+
+        $this->assertSame('10 Main Street', $customer->refresh()->adresse);
+    }
+
     public function test_policy_catalog_paginates_and_omits_administrator_personal_data(): void
     {
         $admin = User::factory()->create(['role' => 'admin'])->admin()->create();

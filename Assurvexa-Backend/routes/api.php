@@ -26,6 +26,7 @@ Route::middleware('auth.cookie')->group(function () {
 
     // Authentication
     Route::get('/me', [AuthController::class, 'me']);
+    Route::patch('/me', [AuthController::class, 'updateMe']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Shared dashboard

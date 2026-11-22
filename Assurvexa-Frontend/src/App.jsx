@@ -8,6 +8,7 @@ import Register from "./pages/register/register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Dashboard from "./pages/dashboard/dashboard";
 import Overview from "./pages/dashboard/overview/overview";
+import Profile from "./pages/dashboard/profile";
 import Agents from "./pages/dashboard/agents/agents";
 import Policies from "./pages/dashboard/policies/policies";
 import Customers from "./pages/dashboard/customers/customers";
@@ -39,9 +40,12 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Overview />} />
+            <Route path="profile" element={<Profile />} />
             <Route path="agents" element={<Agents />} />
+            <Route path="agents/:id/profile" element={<Profile resource="agents" />} />
             <Route path="policies" element={<Policies />} />
             <Route path="customers" element={<Customers />} />
+            <Route path="customers/:id/profile" element={<Profile resource="customers" />} />
             <Route path="claims" element={<Claims />} />
             <Route path="contracts" element={<Contracts />} />
             <Route path="reimbursements" element={<Reimbursements />} />

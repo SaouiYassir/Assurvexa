@@ -44,6 +44,9 @@ export function AuthProvider({ children }) {
         user,
         isLoading,
         isAuthenticated: Boolean(user),
+        updateSessionProfile(profile) {
+            setUser(current => current?.id === profile.id ? { ...current, ...profile } : current);
+        },
         async login(credentials) {
             authVersion.current += 1;
             const { data } = await api.post('/login', credentials, {

@@ -30,8 +30,7 @@ const NAV_ITEMS_BY_ROLE = {
         { label: "Plans", path: "/dashboard/policies", icon: ShieldCheck },
         { label: "My Contracts", path: "/dashboard/contracts", icon: FileText },
         { label: "My Claims", path: "/dashboard/claims", icon: FileText },
-        { label: "My Reimbursements", path: "/dashboard/reimbursements", icon: HandCoins },
-        { label: "My Profile", path: "/dashboard/customers", icon: UserCheck }
+        { label: "My Reimbursements", path: "/dashboard/reimbursements", icon: HandCoins }
     ],
 };
 
@@ -139,13 +138,19 @@ function Sidebar({ user }) {
             </nav>
 
             <footer className="av-sidebar__footer">
-                <div className="av-sidebar__identity">
+                <NavLink
+                    className="av-sidebar__identity"
+                    to="/dashboard/profile"
+                    onClick={handleNavigation}
+                    aria-label={`${name}, ${role}. Open profile`}
+                    end
+                >
                     <span className="dashboard-avatar" aria-hidden="true">{name[0].toUpperCase()}</span>
                     <div>
                         <p className="av-sidebar__name">{name}</p>
                         <p className="av-sidebar__role">{role}</p>
                     </div>
-                </div>
+                </NavLink>
 
                 <button
                     type="button"
